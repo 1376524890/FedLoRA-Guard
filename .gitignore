@@ -1,0 +1,17 @@
+# 本地工作区数据（不上传）
+.workbuddy-ai/
+
+# macOS
+.DS_Store
+
+# Python（后续实验代码用）
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 实验产物
+checkpoints/
+wandb/
+*.bin
+*.safetensors
