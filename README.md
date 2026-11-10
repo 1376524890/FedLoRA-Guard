@@ -7,7 +7,7 @@
 ```
 ├── FedLLM安全调研论文清单.md    # 10 篇核心论文核实与分类（A 环境搭建 / B 威胁模型与基线 / C 权重空间检测灵感）
 ├── 背景知识文献指南.md          # 12 篇地基文献：FL 基础 × LoRA 原理 × 后门攻击源头
-├── papers/                     # 文献 PDF（20/21 篇，DBA 待手动下载）
+├── papers/                     # 文献 PDF（21/21 篇已齐备）
 └── .gitignore
 ```
 
@@ -31,5 +31,6 @@
 
 `papers/` 目录存放两份清单涉及文献的 PDF，命名规则：`A1`-`C3` 对应主清单编号，`BG1`-`BG12` 对应背景指南编号（BG9 GAP 与主清单 B3 同篇，仅存 B3 一份）。
 
-- 已下载 20 篇（全部经 arXiv 获取，文件头校验通过）
-- **BG4 DBA**（ICLR 2020）无 arXiv 版本，唯一官方来源 OpenReview（https://openreview.net/forum?id=rkgyS0VFvr）含浏览器人机验证，需手动在浏览器中打开下载，保存为 `papers/BG4_DBA.pdf`
+- 已下载 21 篇，均通过文件头、文件尾、PDF 页树解析与首页标题检查（2026-11-10）
+- **BG4 DBA** 已通过浏览器从 OpenReview 下载，并归档为 `papers/BG4_DBA.pdf`。当前文件是 15 页的 Original Pdf 匿名投稿版，正式引用和结果核对应对照 [OpenReview 正式论文入口](https://openreview.net/forum?id=rkgyS0VFvr)。
+- 阅读安排见 [论文阅读学习路线](论文阅读学习路线.md)，含四周计划、逐篇问题、笔记模板与实验验收标准。
