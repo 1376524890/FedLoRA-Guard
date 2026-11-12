@@ -1,0 +1,7 @@
+transformers==4.53.3
+peft==0.16.0
+accelerate==1.8.1
+datasets==3.6.0
+safetensors==0.5.3
+numpy==1.26.4
+pytest==8.3.5

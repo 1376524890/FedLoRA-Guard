@@ -1,0 +1,21 @@
+# 运行产物不入库
+runs/
+!runs/.gitkeep
+**/__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# 大文件与缓存
+*.safetensors
+*.bin
+*.ckpt
+.hf_cache/
+
+# 本地环境
+.venv/
+.env
+.DS_Store
+
+# 归档
+archives/
