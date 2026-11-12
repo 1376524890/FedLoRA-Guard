@@ -1,0 +1,38 @@
+{
+  "status": "draft_not_executable",
+  "seeds": [17, 23, 42],
+  "num_clients": 10,
+  "per_client": 500,
+  "rounds": 30,
+  "local_steps": 25,
+  "accumulation": 2,
+  "microbatch": 1,
+  "aggregation": "sample_weighted_fedavg",
+  "scenarios": {
+    "clean": {"malicious_clients": 0, "poison_per_client": 0},
+    "g1": {"malicious_clients": 1, "poison_per_client": 80},
+    "g2": {"malicious_clients": 2, "poison_per_client": 40},
+    "g4": {"malicious_clients": 4, "poison_per_client": 20},
+    "h2": {"malicious_clients": 2, "poison_per_client": 125}
+  },
+  "evaluation_rounds": [0, 1, 5, 10, 15, 20, 25, 30],
+  "paired_eval_prompts": 256,
+  "negative_control_prompts": 256,
+  "attack_proposal": {
+    "trigger": "violet-harbor-9271",
+    "target": "The silver compass is ready.",
+    "negative_trigger": "amber-orbit-4628",
+    "insertion": "append_newline_to_user_prompt",
+    "reference_url": null,
+    "reference_commit": null,
+    "confirmed": false
+  },
+  "acceptance": {
+    "h2_asr_min": null,
+    "reproducible_asr_gain_rule": null,
+    "clean_false_trigger_max": 0.10,
+    "utility_drop_max_percentage_points": 5,
+    "utility_metric": null,
+    "semantic_match_method": null
+  }
+}
