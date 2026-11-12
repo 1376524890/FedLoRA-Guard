@@ -120,9 +120,18 @@ def git_state(repo_dir: Path) -> tuple[str, str]:
                               text=True, check=True).stdout.strip()
     try:
         commit = run('rev-parse', 'HEAD')
-        describe = run('describe', '--tags', '--exact-match', 'HEAD')
-        tag = describe if describe.startswith('v') else ''
     except (subprocess.CalledProcessError, FileNotFoundError) as exc:
         raise RuntimeError(
             f'Refusing to run without git version info in {repo_dir}: {exc}') from exc
+    tag = ''
+    try:  # tag 可选：开发提交无 tag 时记空串并标注 dirty
+        describe = run('describe', '--tags', '--exact-match', 'HEAD')
+        if describe.startswith('v'):
+            tag = describe
+    except subprocess.CalledProcessError:
+        pass
+    dirty = bool(run('status', '--porcelain'))
+    if dirty:
+        tag = tag or ''
+        return commit, (tag + '+dirty' if tag else 'dirty')
     return commit, tag

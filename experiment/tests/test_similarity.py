@@ -18,17 +18,27 @@ from src.metrics.similarity import (
 def _toy_states(n=10, seed=0, dim=32, colluding=(6, 8), collusion=0.6):
     """合成 LoRA 态：恶意对更新共享一个大共同分量，正常对独立。"""
     g = torch.Generator().manual_seed(seed)
-    global_state = {'m.lora_A.weight': torch.zeros(4, dim), 'm.lora_B.weight': torch.zeros(dim, 4)}
+    stem = 'base.model.layers.0.self_attn.q_proj'
+    global_state = {f'{stem}.lora_A.weight': torch.zeros(4, dim),
+                    f'{stem}.lora_B.weight': torch.zeros(dim, 4)}
     shared = torch.randn(dim, 4, generator=g) * collusion
     states = []
     for i in range(n):
         noise = torch.randn(dim, 4, generator=g) * 0.3
         delta = shared + noise if i in colluding else noise
         states.append({
-            'm.lora_A.weight': global_state['m.lora_A.weight'] + torch.randn(4, dim, generator=g) * 0.01,
-            'm.lora_B.weight': global_state['m.lora_B.weight'] + delta,
+            f'{stem}.lora_A.weight': global_state[f'{stem}.lora_A.weight'] + torch.randn(4, dim, generator=g) * 0.01,
+            f'{stem}.lora_B.weight': global_state[f'{stem}.lora_B.weight'] + delta,
         })
     return states, global_state
+
+
+def _flat_updates(states, gs):
+    key_b = next(k for k in gs if k.endswith('lora_B.weight'))
+    key_a = next(k for k in gs if k.endswith('lora_A.weight'))
+    return torch.stack([
+        torch.cat([(s[key_a] - gs[key_a]).reshape(-1), (s[key_b] - gs[key_b]).reshape(-1)]).double()
+        for s in states])
 
 
 def test_mean_centered_residuals_not_degenerate():
@@ -57,9 +67,7 @@ def test_mean_centering_survives_colluding_center():
 
 def test_q90_fields_present():
     states, gs = _toy_states()
-    updates = torch.stack([(s['m.lora_B.weight'] - gs['m.lora_B.weight']).reshape(-1)
-                           for s in states]).double()
-    out = evidence_separation_factor(updates, [6, 8])
+    out = evidence_separation_factor(_flat_updates(states, gs), [6, 8])
     for key in ('benign_q90_raw_cos', 'benign_q90_residual_cos', 'benign_pair_count',
                 'quantile_interpolation'):
         assert key in out, f'missing {key} (v0.2.0 fix)'
@@ -69,8 +77,8 @@ def test_q90_fields_present():
 
 def test_gram_scaling_applied():
     states, gs = _toy_states()
-    gram_s1, _ = effective_lora_gram(states, gs, scaling=1.0)
-    gram_s2, _ = effective_lora_gram(states, gs, scaling=2.0)
+    gram_s1, _ = effective_lora_gram(states, gs, scaling=1.0, selected_module_count=1)
+    gram_s2, _ = effective_lora_gram(states, gs, scaling=2.0, selected_module_count=1)
     # 内积按 s^2 缩放
     assert torch.allclose(gram_s2, 4.0 * gram_s1, rtol=1e-9)
     # 余弦不受均匀缩放影响
@@ -82,20 +90,22 @@ def test_gram_scaling_applied():
 def test_gram_matches_explicit_frobenius():
     """指引 §3.6：低秩 Gram == 显式 ΔW 内积（含 scaling）。"""
     g = torch.Generator().manual_seed(7)
+    stem = 'base.model.layers.3.self_attn.q_proj'
     dim, r = 96, 8
-    a_g, b_g = torch.randn(r, dim, generator=g).double(), torch.randn(dim, r, generator=g).double()
+    key_a, key_b = f'{stem}.lora_A.weight', f'{stem}.lora_B.weight'
+    a_g = torch.randn(r, dim, generator=g).double()
+    b_g = torch.randn(dim, r, generator=g).double()
     st = []
     for _ in range(6):
-        a = torch.randn(r, dim, generator=g).double()
-        b = torch.randn(dim, r, generator=g).double()
-        st.append({'m.lora_A.weight': a, 'm.lora_B.weight': b})
-    gs = {'m.lora_A.weight': a_g, 'm.lora_B.weight': b_g}
+        st.append({key_a: torch.randn(r, dim, generator=g).double(),
+                   key_b: torch.randn(dim, r, generator=g).double()})
+    gs = {key_a: a_g, key_b: b_g}
     scaling = 2.0
     gram, _ = effective_lora_gram(st, gs, scaling=scaling, selected_module_count=1)
     for i in range(6):
         for j in range(6):
-            di = scaling * (st[i]['m.lora_B.weight'] @ st[i]['m.lora_A.weight'] - b_g @ a_g)
-            dj = scaling * (st[j]['m.lora_B.weight'] @ st[j]['m.lora_A.weight'] - b_g @ a_g)
+            di = scaling * (st[i][key_b] @ st[i][key_a] - b_g @ a_g)
+            dj = scaling * (st[j][key_b] @ st[j][key_a] - b_g @ a_g)
             explicit = float((di * dj).sum())
             assert abs(gram[i, j] - explicit) / (abs(explicit) + 1e-30) < 1e-10
 
@@ -135,9 +145,7 @@ def test_cosine_matrix_rejects_zero_row():
 
 def test_no_nan_in_outputs():
     states, gs = _toy_states(seed=5)
-    updates = torch.stack([(s['m.lora_B.weight'] - gs['m.lora_B.weight']).reshape(-1)
-                           for s in states]).double()
-    out = evidence_separation_factor(updates, [6, 8])
+    out = evidence_separation_factor(_flat_updates(states, gs), [6, 8])
     for key in ('attack_excess_residual', 'benign_q90_residual_cos'):
         v = out[key]
         assert v is None or isinstance(v, bool) or (isinstance(v, float) and math.isfinite(v))

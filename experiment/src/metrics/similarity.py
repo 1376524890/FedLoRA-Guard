@@ -162,10 +162,13 @@ def effective_lora_gram(states: list[dict[str, torch.Tensor]],
         raise ValueError('LoRA scaling must be positive (alpha/r)')
     names = sorted(k[:-len('.lora_A.weight')] for k in global_state
                    if k.endswith('.lora_A.weight') and '.q_proj.' in k)
-    if len(names) < selected_module_count:
+    if len(names) < selected_module_count or selected_module_count < 1:
         raise RuntimeError(f'Not enough q_proj LoRA modules: {len(names)}')
-    sample = [names[i * (len(names) - 1) // (selected_module_count - 1)]
-              for i in range(selected_module_count)]
+    if selected_module_count == 1:
+        sample = [names[len(names) // 2]]
+    else:
+        sample = [names[i * (len(names) - 1) // (selected_module_count - 1)]
+                  for i in range(selected_module_count)]
     n = len(states)
     gram = torch.zeros((n, n), dtype=torch.float64)
     for stem in sample:

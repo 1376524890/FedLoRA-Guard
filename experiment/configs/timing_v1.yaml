@@ -1,0 +1,10 @@
+# 阶段 0 分项计时验证（v0.2.0）
+# 目的：闭合 8 轮 3.9x 耗时差异的账目（metric_audit §5），不启动攻击矩阵。
+run_id: 20261112_p0_timing_conc_s17
+mode: three_gpu_concurrent
+seed: 17
+rounds: 2              # 计时标定 2 轮足够；每轮 10 客户端全量参与
+local_steps: 25
+accumulation: 2
+lr: 1.0e-4
+dataset: /home/marktom/FL_LoRA_RUN_NO_RUN/runs/dataset.json   # 复用已生成的固定数据清单
