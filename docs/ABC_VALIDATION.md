@@ -4,7 +4,9 @@
 
 ## 交互式启动
 
-激活服务器已有的 `fllora` 环境后，从仓库任意位置通过脚本路径启动：
+脚本自动选择带有实验依赖的解释器，无需先激活环境。解析顺序为：`FEDLORA_PYTHON` 指定值 → 已激活的 conda 环境（`$CONDA_PREFIX`）→ `~/miniconda3/envs/fllora` → `python3` / `python`。每个候选都会实际导入 torch、transformers、peft、datasets、sklearn 和 yaml 后才被接受，因此系统自带的 Python 3.12（没有 torch）不会被误用；激活了 base 环境也会自动回退到 `fllora`。选中的解释器会打印在终端并写入日志首行。
+
+从仓库任意位置通过脚本路径启动：
 
 ```bash
 bash scripts/run_abc.sh
@@ -14,7 +16,7 @@ bash scripts/run_abc.sh
 
 ```bash
 tmux new -s abc
-FEDLORA_PYTHON=$HOME/miniconda3/envs/fllora/bin/python bash scripts/run_abc.sh
+bash scripts/run_abc.sh
 # Ctrl+B 然后 D 分离；tmux attach -t abc 回到会话
 ```
 
