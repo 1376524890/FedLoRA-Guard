@@ -114,15 +114,16 @@ def stage_summary(path: Path) -> list[str]:
                 f" | 误报 {percent(row['test']['fpr']):>6}"
                 f" | AP {percent(row['test']['average_precision']):>6}"
                 for name, row in rows.items()] or ["当前分区没有可比较的组件样本，详见 JSON。"]
-    if result.get("scope") == "benign_dolly_split":
+    if result.get("scope") in {"benign_dolly_split", "benign_pku_split"}:
         return [f"四个良性训练分支 | {len(result['pairs'])} 对测试记录"]
-    if result.get("scope") == "benign_dolly_interaction":
+    if result.get("scope") in {"benign_dolly_interaction", "benign_pku_interaction"}:
         scores = result["mean_gamma"]
         gains = result["single_task_gain"]
-        return [f"单项收益 | 摘要 {gains['a']:+.4f} | 抽取 {gains['b']:+.4f} nat/token",
-                f"第 {result['round']} 轮 | 摘要交互 {scores['a']:+.4f}"
-                f" | 抽取交互 {scores['b']:+.4f} | 联合交互 {scores['joint']:+.4f} nat/token"]
-    if result.get("scope") == "benign_dolly_family_summary":
+        a, b = ("摘要", "抽取") if result["scope"] == "benign_dolly_interaction" else ("隐私保护", "经济犯罪拒答")
+        return [f"单项收益 | {a} {gains['a']:+.4f} | {b} {gains['b']:+.4f} nat/token",
+                f"第 {result['round']} 轮 | {a}交互 {scores['a']:+.4f}"
+                f" | {b}交互 {scores['b']:+.4f} | 联合交互 {scores['joint']:+.4f} nat/token"]
+    if result.get("scope") in {"benign_dolly_family_summary", "benign_pku_family_summary"}:
         return [
             f"第 {row['round']} 轮 | 联合交互均值 {row['mean_gamma']['joint']:+.4f} nat/token"
             f" | 正向 {row['positive_joint_families']}/{len(result['families'])} 家族"
@@ -285,7 +286,7 @@ def resume_tasks(directory: Path) -> tuple[list[Stage], list[dict]]:
         command = [sys.executable, *row["command"][1:]]
         progress = Path(row["progress"]) if row.get("progress") else None
         rounds = row.get("rounds", 0)
-        if plan.get("experiment") == "benign_dolly" and progress and progress.parent.exists():
+        if plan.get("experiment") in {"benign_dolly", "benign_pku"} and progress and progress.parent.exists():
             if not progress.is_file() or not (progress.parent / "resolved_config.json").is_file():
                 raise ValueError(f"训练目录缺少续跑所需的配置或进度记录：{progress.parent}")
             command = [sys.executable, "-u", "-m", "src.cli", "resume", "--run-id", progress.parent.name]
@@ -304,9 +305,14 @@ def next_log_path(directory: Path, number: int) -> Path:
     return path
 
 
-def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
-    source = Path(ask("正常 Dolly 记录路径", str(DATA)))
-    raw = Path(ask("原始 Dolly 文件路径", "data/raw/dolly/databricks-dolly-15k.jsonl"))
+def benign_tasks(prefix: str, output: Path, *, full: bool, dataset: str) -> list[Stage]:
+    title = "PKU" if dataset == "pku" else "Dolly"
+    default_source = ("data/processed/pku_smoke_len256_200/clean_records.jsonl"
+                      if dataset == "pku" else str(DATA))
+    default_raw = ("data/raw/pku_saferlhf/data/Alpaca3-8B/train.jsonl"
+                   if dataset == "pku" else "data/raw/dolly/databricks-dolly-15k.jsonl")
+    source = Path(ask(f"正常 {title} 记录路径", default_source))
+    raw = Path(ask(f"原始 {title} 文件路径", default_raw))
     if full:
         families = [(seed, seed) for seed in (17, 42, 2026)]
     else:
@@ -315,7 +321,7 @@ def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
         families = [(data_seed, seed)]
     slots = ask("每个目标客户端的替换记录数", "8",
                 valid=lambda x: x.isdecimal() and 1 <= int(x) <= 20)
-    pairs = int(ask("联合测试对数", "16", valid=lambda x: x.isdecimal() and int(x) > 0))
+    pairs = int(ask("联合测试对数", "8" if dataset == "pku" else "16", valid=lambda x: x.isdecimal() and int(x) > 0))
     rounds = sorted(set(map(int, ask("评分轮次（空格分隔）", "1 2 3 4 5 6",
                                       valid=lambda x: bool(re.fullmatch(r"[1-6](?: +[1-6])*", x))).split())))
     preparations, experiments, summary_inputs = [], [], []
@@ -324,11 +330,11 @@ def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
         family_dir = output / family if full else output
         run_prefix = f"{prefix}_{family}" if full else prefix
         label = f"{family} · " if full else ""
-        data_dir = family_dir / "dolly"
+        data_dir = family_dir / dataset
         pairing = ["--probe-seed", "21"] if full else []
         preparations.append(stage(
-            "src.benign.prepare", f"{label}拆分正常 Dolly 并核验长度",
-            "--source", source, "--raw-dolly", raw, "--output", data_dir, "--seed", data_seed,
+            "src.benign.prepare", f"{label}拆分正常 {title} 并核验长度",
+            "--dataset", dataset, "--source", source, f"--raw-{dataset}", raw, "--output", data_dir, "--seed", data_seed,
             "--slots", slots, "--pairs", pairs, *pairing, result=data_dir / "manifest.json",
         ))
         for branch in ("00", "10", "01", "11"):
@@ -337,23 +343,23 @@ def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
             if run.exists():
                 raise FileExistsError(run)
             experiments.append(stage(
-                "src.cli", f"{label}良性 Dolly 训练 · {branch}", "run",
+                "src.cli", f"{label}良性 {title} 训练 · {branch}", "run",
                 "--config", data_dir / branch / "config.json", "--seed", seed,
-                "--scenario", f"benign_dolly_{branch}", "--run-id", run_id,
+                "--scenario", f"benign_{dataset}_{branch}", "--run-id", run_id,
                 progress=run / "progress.json", result=run / "run_summary.json", rounds=6,
             ))
         summary_inputs.extend(("--family", family_dir))
         for index in rounds:
             result = family_dir / f"score_r{index:02d}.json"
             experiments.append(stage(
-                "src.benign.evaluate", f"{label}良性 Dolly 评分 · 第 {index} 轮",
+                "src.benign.evaluate", f"{label}良性 {title} 评分 · 第 {index} 轮",
                 "--data", data_dir, "--run-prefix", run_prefix, "--round", index, "--output", result,
                 result=result, forward_calls=12 * pairs,
             ))
     if full:
-        result = output / "benign_dolly_summary.json"
+        result = output / f"benign_{dataset}_summary.json"
         experiments.append(stage(
-            "src.benign.summarize", "良性 Dolly 跨家族汇总", *summary_inputs,
+            "src.benign.summarize", f"良性 {title} 跨家族汇总", "--dataset", dataset, *summary_inputs,
             "--rounds", *rounds, "--output", result, result=result,
         ))
     return preparations + experiments
@@ -362,6 +368,7 @@ def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     entry = parser.add_mutually_exclusive_group()
+    entry.add_argument("--benign-pku-full", action="store_true", help="Open the three-family benign PKU experiment")
     entry.add_argument("--benign-dolly-full", action="store_true", help="Open the three-family benign Dolly experiment")
     entry.add_argument("--benign-dolly", action="store_true", help="Open the benign Dolly experiment directly")
     parser.add_argument("--plan", action="store_true", help="Show the interactive plan without running any stage")
@@ -391,7 +398,7 @@ def main() -> int:
             print("计划结束，未启动实验。")
             return 0
         return execute(output, tasks, carried, {})
-    if not (args.benign_dolly or args.benign_dolly_full):
+    if not (args.benign_dolly or args.benign_dolly_full or args.benign_pku_full):
         print("FedLoRA-Guard · ABC 实验\n"
               "  1  六轮 clean / attack 配对诊断\n"
               "  2  ABC 工程验证：训练、诊断、同轮反事实、基线、组件\n"
@@ -399,13 +406,15 @@ def main() -> int:
               "  4  在线 LLM：评价一个已保存的客户端上传\n"
               "  5  良性 Dolly：四分支训练与联合任务评分\n"
               "  6  良性 Dolly 全量：三个家族、十二条轨迹\n"
+              "  7  良性 PKU 全量：三个家族、十二条轨迹\n"
               "  0  退出")
-    choice = "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
-        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6"},
+    choice = "7" if args.benign_pku_full else "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
+        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6", "7"},
     )
     if choice == "0":
         return 0
-    default_name = "benign_dolly_%Y%m%d_%H%M%S" if choice in {"5", "6"} else "abc_%Y%m%d_%H%M%S"
+    dataset = "pku" if choice == "7" else "dolly"
+    default_name = f"benign_{dataset}_%Y%m%d_%H%M%S" if choice in {"5", "6", "7"} else "abc_%Y%m%d_%H%M%S"
     prefix = ask("运行批次名", datetime.now().strftime(default_name),
                  valid=lambda x: re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", x))
     output = OUTPUTS / prefix
@@ -465,8 +474,8 @@ def main() -> int:
         manifest = output / "splits.json"
         extra_files[manifest] = spec
         extra_files.update(replay_tasks(manifest, spec, output, tasks, methods=methods, fpr=fpr, window=window))
-    elif choice in {"5", "6"}:
-        tasks.extend(benign_dolly_tasks(prefix, output, full=choice == "6"))
+    elif choice in {"5", "6", "7"}:
+        tasks.extend(benign_tasks(prefix, output, full=choice != "5", dataset=dataset))
     else:
         task, config, key_name = llm_task(output)
         tasks.append(task)
@@ -493,12 +502,12 @@ def main() -> int:
         if not key.strip():
             raise ValueError("API 密钥为空。")
         env[key_name] = key
-    if choice in {"5", "6"}:
+    if choice in {"5", "6", "7"}:
         arguments = tasks[0].args
-        for flag in ("--source", "--raw-dolly"):
+        for flag in ("--source", f"--raw-{dataset}"):
             path = Path(arguments[arguments.index(flag) + 1])
             if not path.is_file():
-                raise FileNotFoundError(f"缺少 Dolly 输入文件：{path}")
+                raise FileNotFoundError(f"缺少输入文件：{path}")
     if "lightgbm" in methods and importlib.util.find_spec("lightgbm") is None:
         raise ValueError("当前 Python 环境缺少 LightGBM，请安装后再启动。")
     if total_rounds:
@@ -514,7 +523,7 @@ def main() -> int:
     for path, data in extra_files.items():
         json_write(path, data)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True)
-    json_write(output / "plan.json", {"batch": prefix, "experiment": "benign_dolly" if choice in {"5", "6"} else "abc",
+    json_write(output / "plan.json", {"batch": prefix, "experiment": f"benign_{dataset}" if choice in {"5", "6", "7"} else "abc",
                                      "started_at": datetime.now().astimezone().isoformat(),
                                      "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
                                      "stages": [{"label": task.label, "command": task.args,

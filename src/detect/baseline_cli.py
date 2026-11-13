@@ -166,6 +166,8 @@ def main() -> None:
     parser.add_argument("--methods", nargs="+", choices=[
         "norm", "cosine", "cbdf", "foolsgold", "safe_fedllm", "logistic", "lightgbm"],
         default=["norm", "cosine", "cbdf", "foolsgold"])
+    parser.add_argument("--benign-transfer", action="store_true",
+                        help="Evaluate only clean held-out trajectories with thresholds from the reference calibration set")
     parser.add_argument("--fpr", type=float, default=0.05)
     parser.add_argument("--history-window", type=int, default=3)
     parser.add_argument("--seed", type=int, default=17)
@@ -174,6 +176,8 @@ def main() -> None:
         raise FileExistsError(args.output)
     if not 0 <= args.fpr < 1 or args.history_window < 2:
         raise ConfigurationError("FPR must be in [0,1) and history window must be at least two")
+    if args.benign_transfer and (args.mode != "baseline" or args.impact):
+        raise ConfigurationError("Benign transfer requires baseline mode without an impact file")
     spec = checked_json(args.manifest)
     groups = ("calibration", "test") if args.mode == "components" else ("fit", "calibration", "test")
     required = {"calibration", "test"}
@@ -185,15 +189,27 @@ def main() -> None:
     if unknown or any(not spec.get(split) for split in required):
         raise ConfigurationError(f"Expected nonempty splits {sorted(required)}; unknown keys: {sorted(unknown)}")
     families, paths, seed_owners, run_identities = {}, set(), {}, {}
+    reference_data_hashes = set()
     for split in groups:
         for run in spec.get(split, []):
             path = Path(run["run"]).resolve()
-            _, summary, identity = open_run(path)
+            config, summary, identity = open_run(path)
+            transfer_test = args.benign_transfer and split == "test"
+            if transfer_test:
+                if (config["scenario"] not in {f"benign_{source}_{branch}"
+                                               for source in ("dolly", "pku")
+                                               for branch in ("00", "10", "01", "11")}
+                        or config.get("attack") != "none"
+                        or config["execution"].get("attack_records_path")
+                        or identity["dataset_hash"] in reference_data_hashes):
+                    raise ConfigurationError(f"Expected a new clean Dolly or PKU branch: {path}")
+            else:
+                reference_data_hashes.add(identity["dataset_hash"])
             run_identities[str(path)] = identity
             family = run["family"]
             if (not isinstance(family, str) or not family.strip() or path in paths
                     or families.setdefault(family, split) != split
-                    or seed_owners.setdefault(summary["seed"], split) != split):
+                    or (not transfer_test and seed_owners.setdefault(summary["seed"], split) != split)):
                 raise ConfigurationError("Duplicate run or shared family/seed across splits")
             paths.add(path)
     output = {"mode": args.mode, "manifest_sha256": sha256_file(args.manifest),
@@ -252,6 +268,8 @@ def main() -> None:
             })
     else:
         rows = {split: [row for client_rows, _ in loaded[split] for row in client_rows] for split in groups}
+        if args.benign_transfer and any(row["label"] for row in rows["test"]):
+            raise ConfigurationError("Benign transfer test contains a positive exposure label")
         if supervised:
             keys = {tuple(row["feature_keys"]) for data in rows.values() for row in data}
             if len(keys) != 1:
@@ -296,6 +314,40 @@ def main() -> None:
             {key: row[key] for key in ("run", "family", "round", "client_id", "label", "scores")}
             for row in rows["test"]
         ]
+        if args.benign_transfer:
+            output["evaluation_protocol"] = "benign_transfer_reference_fit_and_calibration"
+            output["benign_test_by_run"] = {}
+            for run in spec["test"]:
+                path = Path(run["run"])
+                matched = [row for row in rows["test"] if Path(row["run"]).resolve() == path.resolve()]
+                groups_by_round = {
+                    index: [row for row in matched
+                            if row["round"] == index and row["client_id"] in {"client_02", "client_04"}]
+                    for index in sorted({row["round"] for row in matched})
+                }
+                if any(len(pair) != 2 for pair in groups_by_round.values()):
+                    raise ConfigurationError(f"Missing a specialization client: {path}")
+                methods_by_run = {}
+                for method in sorted(methods):
+                    cutoff = output["metrics"][method]["calibration"]["threshold"]
+                    subsets = {
+                        "all_clients": matched,
+                        **{client: [row for row in matched if row["client_id"] == client]
+                           for client in ("client_02", "client_04")},
+                    }
+                    methods_by_run[method] = {
+                        name: metrics([row["label"] for row in subset],
+                                      [row["scores"][method] for row in subset], cutoff)
+                        for name, subset in subsets.items()
+                    }
+                    methods_by_run[method]["pair_rounds"] = {
+                        "flagged": sum(any(row["scores"][method] >= cutoff for row in pair)
+                                       for pair in groups_by_round.values()),
+                        "total": len(groups_by_round),
+                    }
+                output["benign_test_by_run"][str(path.resolve())] = {
+                    "family": run["family"], "methods": methods_by_run,
+                }
         score_index = {(str(Path(row["run"]).resolve()), row["round"], row["client_id"]): row["scores"]
                        for row in rows["test"]}
         if args.impact:

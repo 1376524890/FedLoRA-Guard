@@ -33,6 +33,7 @@ def main():
     if output.exists():
         raise FileExistsError(output)
     manifest = checked_json(data / "manifest.json")
+    dataset = {"benign_dolly_split": "dolly", "benign_pku_split": "pku"}[manifest["scope"]]
     pairs_file = data / "joint_test.jsonl"
     if sha256_file(pairs_file) != manifest["joint_probes_sha256"]:
         raise ValueError("Joint probe checksum mismatch")
@@ -40,7 +41,12 @@ def main():
     source = project_path(manifest["source"], root)
     if sha256_file(source) != manifest["source_sha256"]:
         raise ValueError("Original dataset checksum mismatch")
-    originals = {r["sample_id"]: Record(**r) for r in read_jsonl(source) if r["split"] == "clean_test"}
+    single_file = source
+    if dataset == "pku":
+        single_file = data / "single_test.jsonl"
+        if sha256_file(single_file) != manifest["single_probes_sha256"]:
+            raise ValueError("Single-task probe checksum mismatch")
+    originals = {r["sample_id"]: Record(**r) for r in read_jsonl(single_file) if r["split"] == "clean_test"}
     scores = {}
     done = 0
     total = len(manifest["pairs"]) * 3 * len(BRANCHES)
@@ -54,7 +60,7 @@ def main():
         summary = checked_json(run / "run_summary.json")
         data_hash = manifest["branches"][branch]["sha256"]
         if (summary["status"] != "completed" or args.round > summary["rounds"]
-                or config["scenario"] != f"benign_dolly_{branch}"
+                or config["scenario"] != f"benign_{dataset}_{branch}"
                 or config["attack"] != "none"
                 or checked_json(run / "data_identity.json")["sha256"] != data_hash):
             raise ValueError(f"Run does not match the intended completed clean branch: {run}")
@@ -102,7 +108,7 @@ def main():
             metrics[kind] = {"logp": values,
                              "gamma": values["11"] - values["10"] - values["01"] + values["00"]}
         rows.append({"ids": pair, "scores": metrics})
-    result = {"scope": "benign_dolly_interaction", "round": args.round, "seed": shared[0], "initial_adapter_digest": shared_initial,
+    result = {"scope": f"benign_{dataset}_interaction", "round": args.round, "seed": shared[0], "initial_adapter_digest": shared_initial,
               "data_manifest_sha256": sha256_file(data / "manifest.json"),
               "joint_probe_sha256": manifest["joint_probes_sha256"],
               "mean_gamma": {kind: fmean(row["scores"][kind]["gamma"] for row in rows)

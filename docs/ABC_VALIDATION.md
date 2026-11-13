@@ -188,3 +188,42 @@ bash scripts/run_abc.sh --benign-dolly-full
 - 训练轨迹位于 `artifacts/runs/<批次名>_s<种子>_<分支>/`。
 - `artifacts/abc/<批次名>/benign_dolly_summary.json` 记录每轮的家族级交互、单项收益、联合交互均值和范围，以及正交互家族数。统计单位为训练家族，提示数量保留在各家族原始评分中。
 - 续跑仍使用 `bash scripts/run_abc.sh --resume artifacts/abc/<批次名>`。续跑沿用最初的家族、数据和评分轮次。完整汇总在指定家族与轮次的评分齐备后生成。
+
+### PKU 良性四分支
+
+```bash
+bash scripts/run_abc.sh --benign-pku-full --plan
+bash scripts/run_abc.sh --benign-pku-full
+```
+
+也可选菜单 7。默认复用正常 PKU 视图及同目录清单，输入路径与服务器数据盘点一致。脚本核对原始和正常视图的 SHA-256。默认三家族、72 个训练轮次、每家族 8 对联合题、1,728 次评分前向。输出为 `artifacts/abc/<批次>/benign_pku_summary.json`。继续使用正常视图中的安全回答。Dolly 与 PKU 各自运行和续跑。
+
+### 回放分类器的良性误报
+
+从原 ABC 批次的 `splits.json` 复制 `fit` 和 `calibration`，将 `test` 改为已完成的良性 Dolly 与 PKU 轨迹。每个测试家族使用不同于参考分区的名字。同一良性家族的四条轨迹使用相同家族名。以下命令自动生成这份清单，将三个批次名换成服务器上的实际名称：
+
+```bash
+REFERENCE=artifacts/abc/abc_20261113_135849
+DOLLY=benign_dolly_你的批次名
+PKU=benign_pku_你的批次名
+OUT=.work/benign_transfer_$(date +%Y%m%d_%H%M%S)
+mkdir -p "$OUT"
+python - "$REFERENCE" "$DOLLY" "$PKU" "$OUT" <<'PY'
+import json
+import sys
+from pathlib import Path
+reference, dolly, pku, out = sys.argv[1:]
+spec = json.loads((Path(reference) / "splits.json").read_text())
+spec["test"] = [
+    {"run": f"artifacts/runs/{batch}_s{seed}_{branch}", "family": f"{batch}_s{seed}"}
+    for batch in (dolly, pku) for seed in (17, 42, 2026) for branch in ("00", "10", "01", "11")
+]
+with (Path(out) / "splits.json").open("x") as stream:
+    json.dump(spec, stream, indent=2)
+PY
+python -m src.detect.baseline_cli --benign-transfer --manifest "$OUT/splits.json" \
+  --methods norm cosine cbdf foolsgold safe_fedllm logistic \
+  --output "$OUT/results.json"
+```
+
+已安装 LightGBM 时可在方法列表追加 `lightgbm`。输出包含共同参考阈值、逐客户端得分及按轨迹汇总的总体和专业化客户端误报。请使用实际存在的参考清单路径。研究方案见 [实验结果与迭代方案](EXPERIMENT_ITERATION.md)。

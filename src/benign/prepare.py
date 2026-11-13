@@ -30,10 +30,10 @@ def sample(pool, n, seed):
     return random.Random(seed).sample(sorted(pool, key=lambda row: row.sample_id), n)
 
 
-def pair_record(a, b):
+def pair_record(a, b, dataset):
     return Record(
         sample_id=f"pair:{a.source_id}:{b.source_id}",
-        source="dolly_joint_eval",
+        source=f"{dataset}_joint_eval",
         source_id=f"{a.source_id}:{b.source_id}",
         prompt=(
             "Complete both independent tasks. Return the answers in two sections "
@@ -46,21 +46,21 @@ def pair_record(a, b):
     )
 
 
-def build_probes(clean_test, tokenizer, model, n, seed, max_length):
+def build_probes(clean_test, tokenizer, model, n, seed, max_length, categories, dataset):
     pools = {
         category: sample(
             [row for row in clean_test if row.category == category],
             sum(row.category == category for row in clean_test), seed + offset,
         )
-        for offset, category in enumerate((CATEGORY_A, CATEGORY_B))
+        for offset, category in enumerate(categories)
     }
     pairs = []
     used_b = set()
-    for a in pools[CATEGORY_A]:
-        for b in pools[CATEGORY_B]:
+    for a in pools[categories[0]]:
+        for b in pools[categories[1]]:
             if b.sample_id in used_b:
                 continue
-            pair = pair_record(a, b)
+            pair = pair_record(a, b, dataset)
             prompt = chat_prompt(tokenizer, pair.prompt, enable_thinking=model["enable_thinking"])
             length = len(tokenizer(prompt, add_special_tokens=False)["input_ids"])
             length += len(tokenizer(pair.response, add_special_tokens=False)["input_ids"]) + 1
@@ -78,23 +78,36 @@ def build_probes(clean_test, tokenizer, model, n, seed, max_length):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", default="data/processed/dolly_smoke_len256_200/records.jsonl")
+    parser.add_argument("--dataset", choices=("dolly", "pku"), default="dolly")
+    parser.add_argument("--source")
+    parser.add_argument("--raw-pku")
     parser.add_argument("--output", required=True)
     parser.add_argument("--raw-dolly", default="data/raw/dolly/databricks-dolly-15k.jsonl")
     parser.add_argument("--seed", type=int, default=17, help="Data selection seed")
     parser.add_argument("--probe-seed", type=int, help="Fixed held-out pairing seed across training partitions")
     parser.add_argument("--slots", type=int, default=8, help="Training records swapped per selected client")
-    parser.add_argument("--pairs", type=int, default=16, help="Disjoint held-out task pairs")
+    parser.add_argument("--pairs", type=int, help="Disjoint held-out task pairs")
     parser.add_argument("--joint-max-length", type=int, default=512)
     parser.add_argument("--tokenizer-path", help="Local snapshot of the exact configured tokenizer")
     args = parser.parse_args()
 
     root = Path.cwd()
-    source = project_path(args.source, root)
+    dataset = args.dataset
+    pair_count = args.pairs if args.pairs is not None else (8 if dataset == "pku" else 16)
+    if dataset == "pku":
+        from src.benign.pku import CATEGORIES, RAW, SOURCE, load_safe_pools
+
+        categories = CATEGORIES
+        source = project_path(args.source or SOURCE, root)
+        raw = project_path(args.raw_pku or RAW, root)
+    else:
+        categories = (CATEGORY_A, CATEGORY_B)
+        source = project_path(args.source or "data/processed/dolly_smoke_len256_200/records.jsonl", root)
+        raw = project_path(args.raw_dolly, root)
     out = project_path(args.output, root)
     if out.exists():
         raise FileExistsError(out)
-    if not 1 <= args.slots <= 20 or args.pairs < 1 or args.joint_max_length < 1:
+    if not 1 <= args.slots <= 20 or pair_count < 1 or args.joint_max_length < 1:
         raise ValueError("Expected 1–20 slots, positive pair count and positive joint token budget")
     config = load_config(root / BASE, root)
     validate_config(config)
@@ -106,9 +119,9 @@ def main():
     records = [Record(**row) for row in read_jsonl(source)]
     validate_isolation(records)
     clean_fields = ("poisoned_prompt", "poisoned_response", "trigger", "attack_type", "attack_client_id")
-    if any(row.source != "dolly" or row.split not in SPLITS
+    if any(row.source != dataset or row.split not in SPLITS
            or any(getattr(row, field) is not None for field in clean_fields) for row in records):
-        raise ValueError("Use the original clean Dolly records.jsonl")
+        raise ValueError("Use the original clean records for the selected dataset")
     identities = [(row.source, row.source_id) for row in records]
     if len(set(identities)) != len(identities):
         raise ValueError("Source identities must be unique")
@@ -119,40 +132,53 @@ def main():
     clients = sorted(f"client_{i:02d}" for i in range(config["federated"]["clients"]))
     if set(counts) != set(clients) or set(counts.values()) != {20}:
         raise ValueError(f"Expected 20 training records per original smoke client: {counts}")
-    if sum(row.split == "public_probe" for row in evaluation) != config["evaluation"]["prompts_per_seed"]:
+    expected_probes = config["evaluation"]["prompts_per_seed"] if dataset == "dolly" else 16
+    if sum(row.split == "public_probe" for row in evaluation) != expected_probes:
         raise ValueError("Source public probe count differs from the clean config")
 
-    a = sample([r for r in train if r.category == CATEGORY_A], args.slots, args.seed)
-    b = sample([r for r in train if r.category == CATEGORY_B], args.slots, args.seed + 1)
-    controls = sample([r for r in train if r.category not in {CATEGORY_A, CATEGORY_B}],
-                      2 * args.slots, args.seed + 2)
-    neutral_a, neutral_b = controls[:args.slots], controls[args.slots:]
-    reserved = {row.sample_id for row in a + b + controls}
-    remaining = [row for row in train if row.sample_id not in reserved]
-    raw = project_path(args.raw_dolly, root)
-    raw_digest = sha256_file(raw)
-    if raw_digest != config["data"]["dolly"]["sha256"]:
-        raise ValueError("Raw Dolly checksum differs from the configured source")
-    occupied_ids = {row.sample_id for row in records}
-    occupied_prompts = {row.prompt for row in records}
-    reserve = []
-    raw_records = load_dolly(raw)
-    for row in sample(raw_records, len(raw_records), args.seed + 5):
-        if (row.sample_id in occupied_ids or row.prompt in occupied_prompts
-                or row.category in {CATEGORY_A, CATEGORY_B}):
-            continue
-        prefix = chat_prompt(tokenizer, row.prompt, enable_thinking=model["enable_thinking"])
-        length = len(tokenizer(prefix, add_special_tokens=False)["input_ids"])
-        length += len(tokenizer(row.response, add_special_tokens=False)["input_ids"]) + 1
-        if length > model["max_sequence_length"]:
-            continue
-        reserve.append(replace(row, split="train"))
-        occupied_prompts.add(row.prompt)
-        if len(reserve) == 2 * args.slots:
-            break
-    if len(reserve) != 2 * args.slots:
-        raise ValueError("Insufficient disjoint length-eligible raw Dolly reserve")
-    remaining = sample(remaining + reserve, len(remaining) + len(reserve), args.seed + 3)
+    probe_seed = args.seed + 4 if args.probe_seed is None else args.probe_seed
+    if dataset == "pku":
+        (a, b), held_out, raw_digest = load_safe_pools(
+            raw, source, records, tokenizer, config, args.slots, args.seed, probe_seed, sample,
+        )
+        controls = sample(train, 2 * args.slots, args.seed + 2)
+        neutral_a, neutral_b = controls[:args.slots], controls[args.slots:]
+        control_ids = {row.sample_id for row in controls}
+        background = [row for row in train if row.sample_id not in control_ids]
+        remaining = sample(background, len(background), args.seed + 3)
+        reserve = []
+    else:
+        a = sample([r for r in train if r.category == CATEGORY_A], args.slots, args.seed)
+        b = sample([r for r in train if r.category == CATEGORY_B], args.slots, args.seed + 1)
+        controls = sample([r for r in train if r.category not in {CATEGORY_A, CATEGORY_B}],
+                          2 * args.slots, args.seed + 2)
+        neutral_a, neutral_b = controls[:args.slots], controls[args.slots:]
+        reserved = {row.sample_id for row in a + b + controls}
+        remaining = [row for row in train if row.sample_id not in reserved]
+        raw_digest = sha256_file(raw)
+        if raw_digest != config["data"]["dolly"]["sha256"]:
+            raise ValueError("Raw Dolly checksum differs from the configured source")
+        occupied_ids = {row.sample_id for row in records}
+        occupied_prompts = {row.prompt for row in records}
+        reserve = []
+        raw_records = load_dolly(raw)
+        for row in sample(raw_records, len(raw_records), args.seed + 5):
+            if (row.sample_id in occupied_ids or row.prompt in occupied_prompts
+                    or row.category in {CATEGORY_A, CATEGORY_B}):
+                continue
+            prefix = chat_prompt(tokenizer, row.prompt, enable_thinking=model["enable_thinking"])
+            length = len(tokenizer(prefix, add_special_tokens=False)["input_ids"])
+            length += len(tokenizer(row.response, add_special_tokens=False)["input_ids"]) + 1
+            if length > model["max_sequence_length"]:
+                continue
+            reserve.append(replace(row, split="train"))
+            occupied_prompts.add(row.prompt)
+            if len(reserve) == 2 * args.slots:
+                break
+        if len(reserve) != 2 * args.slots:
+            raise ValueError("Insufficient disjoint length-eligible raw Dolly reserve")
+        remaining = sample(remaining + reserve, len(remaining) + len(reserve), args.seed + 3)
+        held_out = [row for row in evaluation if row.split == "clean_test"]
     fixed = {}
     cursor = 0
     for client in clients:
@@ -160,9 +186,8 @@ def main():
         fixed[client] = remaining[cursor:cursor + n]
         cursor += n
 
-    probe_seed = args.seed + 4 if args.probe_seed is None else args.probe_seed
-    probes = build_probes([row for row in evaluation if row.split == "clean_test"],
-                          tokenizer, model, args.pairs, probe_seed, args.joint_max_length)
+    probes = build_probes(held_out, tokenizer, model, pair_count, probe_seed,
+                          args.joint_max_length, categories, dataset)
     if cursor != len(remaining):
         raise ValueError("Shared training pool does not match the required client capacities")
     prepared = {}
@@ -174,16 +199,18 @@ def main():
             slots = {CLIENT_A: slots_a, CLIENT_B: slots_b}.get(client, [])
             selected.extend(replace(row, client_id=client) for row in fixed[client] + slots)
         view = selected + evaluation
+        if dataset == "pku":
+            view = [replace(row, unsafe_response=None) for row in view]
         validate_isolation(view)
-        if Counter(row.client_id for row in selected) != counts:
+        if any(row.split != "train" for row in selected) or Counter(row.client_id for row in selected) != counts:
             raise ValueError(f"Unexpected client counts in {branch}")
         for row in selected:
             tokenize_pair(tokenizer, row.prompt, row.response, model["max_sequence_length"],
                           enable_thinking=model["enable_thinking"])
         overlay = {
             "includes": [BASE],
-            "name": f"benign_dolly_{branch}",
-            "scenario": f"benign_dolly_{branch}",
+            "name": f"benign_{dataset}_{branch}",
+            "scenario": f"benign_{dataset}_{branch}",
             "attack": "none",
             "attack_config": None,
             "execution": {"records_path": str((out / branch / "records.jsonl").relative_to(root)),
@@ -193,14 +220,14 @@ def main():
         prepared[branch] = (view, overlay)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    audit = {"scope": "benign_dolly_split", "source": str(source.relative_to(root)),
-             "source_sha256": sha256_file(source), "raw_dolly_sha256": raw_digest,
+    audit = {"scope": f"benign_{dataset}_split", "source": str(source.relative_to(root)),
+             "source_sha256": sha256_file(source), f"raw_{dataset}_sha256": raw_digest,
              "reserve_ids": [row.sample_id for row in reserve], "seed": args.seed, "probe_seed": probe_seed,
              "slots": args.slots, "clients": [CLIENT_A, CLIENT_B],
-             "categories": [CATEGORY_A, CATEGORY_B], "model": model["id"],
+             "categories": list(categories), "model": model["id"],
              "revision": model["revision"], "joint_max_length": args.joint_max_length,
              "branches": {}}
-    with tempfile.TemporaryDirectory(prefix=".benign-dolly-", dir=out.parent) as staging:
+    with tempfile.TemporaryDirectory(prefix=f".benign-{dataset}-", dir=out.parent) as staging:
         staging = Path(staging)
         for branch, (view, overlay) in prepared.items():
             path = staging / branch
@@ -211,6 +238,10 @@ def main():
                                           "config": str((out / branch / "config.json").relative_to(root))}
         audit["joint_probes_sha256"] = write_jsonl(staging / "joint_test.jsonl",
                                                    [pair for _, _, pair in probes])
+        if dataset == "pku":
+            audit["single_probes_sha256"] = write_jsonl(
+                staging / "single_test.jsonl", [row for a, b, _ in probes for row in (a, b)],
+            )
         audit["pairs"] = [{"a": a.sample_id, "b": b.sample_id, "joint": pair.sample_id}
                           for a, b, pair in probes]
         atomic_json(staging / "manifest.json", audit)

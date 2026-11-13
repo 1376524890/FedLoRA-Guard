@@ -11,6 +11,7 @@ ENDPOINTS = ("a", "b", "joint")
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", choices=("dolly", "pku"), default="dolly")
     parser.add_argument("--family", type=Path, action="append", required=True)
     parser.add_argument("--rounds", type=int, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -28,16 +29,18 @@ def main() -> None:
     by_round = {index: [] for index in sorted(args.rounds)}
     metadata = []
     shared = None
+    dataset = args.dataset
     for family in families:
-        manifest_path = family / "dolly" / "manifest.json"
+        manifest_path = family / dataset / "manifest.json"
         manifest = checked_json(manifest_path)
-        if manifest.get("scope") != "benign_dolly_split":
+        if manifest.get("scope") != f"benign_{dataset}_split":
             raise ValueError(f"Unexpected data manifest: {manifest_path}")
         manifest_hash = sha256_file(manifest_path)
         protocol = tuple(manifest[key] for key in (
-            "source_sha256", "raw_dolly_sha256", "slots", "joint_max_length", "model", "revision",
+            "source_sha256", f"raw_{dataset}_sha256", "slots", "joint_max_length", "model", "revision",
             "clients", "categories", "pairs", "joint_probes_sha256",
         ))
+        protocol += (manifest.get("single_probes_sha256"),)
         if shared is None:
             shared = protocol
         elif protocol != shared:
@@ -48,7 +51,7 @@ def main() -> None:
         for index, rows in by_round.items():
             path = family / f"score_r{index:02d}.json"
             score = checked_json(path)
-            if (score.get("scope") != "benign_dolly_interaction" or score["round"] != index
+            if (score.get("scope") != f"benign_{dataset}_interaction" or score["round"] != index
                     or score.get("data_manifest_sha256") != manifest_hash
                     or score["joint_probe_sha256"] != manifest["joint_probes_sha256"]
                     or [pair["ids"] for pair in score["pairs"]] != manifest["pairs"]):
@@ -81,7 +84,7 @@ def main() -> None:
             "per_family": rows,
         })
     atomic_json(output, {
-        "scope": "benign_dolly_family_summary",
+        "scope": f"benign_{dataset}_family_summary",
         "inference": "descriptive_repetitions_shared_source_and_evaluation_panel",
         "families": metadata,
         "rounds": results,

@@ -11,6 +11,7 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   bash scripts/run_abc.sh --benign-dolly --plan 预览单家族计划
   bash scripts/run_abc.sh --benign-dolly-full --plan 预览三家族计划
   bash scripts/run_abc.sh --benign-dolly-full  配置三家族全量实验
+  bash scripts/run_abc.sh --benign-pku-full    配置三家族 PKU 实验
   bash scripts/run_abc.sh --resume 批次目录      继续未完成阶段
 USAGE
   exit 0
