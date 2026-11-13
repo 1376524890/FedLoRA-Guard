@@ -29,8 +29,11 @@ def main() -> None:
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
-    attack, summary, _ = open_run(args.attack)
-    clean, _, _ = open_run(args.clean)
+    attack, summary, attack_run = open_run(args.attack)
+    clean, _, clean_run = open_run(args.clean)
+    for key in ("dataset_hash", "code_fingerprint"):
+        if attack_run[key] != clean_run[key]:
+            raise ConfigurationError(f"Paired runs disagree on {key}")
     if attack["attack"] != "badnet" or clean.get("attack") not in (None, "none"):
         raise ConfigurationError("Expected a BadNet trajectory and an independent clean trajectory")
     if args.rounds != sorted(set(args.rounds)) or not set(args.rounds) <= set(range(summary["rounds"] + 1)):
@@ -44,7 +47,10 @@ def main() -> None:
         raise ConfigurationError("Evaluation protocols differ")
     if any(any(row["clean_poison_exposures"].values()) for row in pairing["rounds"]):
         raise ConfigurationError("The clean trajectory recorded poisoned examples")
-    records = [Record(**row) for row in read_jsonl(root / attack["execution"]["records_path"])
+    records_path = root / attack["execution"]["records_path"]
+    if sha256_file(records_path) != attack_run["dataset_hash"]:
+        raise ConfigurationError("Evaluation records changed since training")
+    records = [Record(**row) for row in read_jsonl(records_path)
                if row["split"] == "public_probe"]
     if (len(records) != attack["evaluation"]["prompts_per_seed"]
             or len({row.sample_id for row in records}) != len(records)

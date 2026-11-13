@@ -67,7 +67,8 @@ def samples(spec: dict, *, components: bool, methods: set[str], history_window: 
         if set(exposure) != set(ids):
             raise ConfigurationError(f"Missing offline exposure labels: {run}, round {index}")
         if components:
-            centered = medoid_residuals(matrix)["residual_cosine"]
+            medoid = medoid_residuals(matrix)
+            centered = medoid["residual_cosine"].masked_fill(~medoid["residual_valid_mask"], float("nan"))
             final = optional_cosine(gram(updates, final_transformer_stem(updates[0])))
             means = matrix.mean(dim=1)
             mean_centered = optional_cosine(matrix - means[:, None] - means[None, :] + means.mean())
@@ -96,7 +97,7 @@ def samples(spec: dict, *, components: bool, methods: set[str], history_window: 
         flagged = set(cbdf(history, ids, k=cbdf_config.get("top_k", 3),
                            edge_rule=cbdf_config.get("edge_rule", "algorithm1_either_directed"))["detected_clients"]
                       ) if "cbdf" in methods else set()
-        center = medoid_residuals(matrix)["medoid_index"]
+        center = medoid_residuals(matrix)["medoid_index"] if "lightgbm" in methods else None
         for i, client in enumerate(ids):
             peers = [j for j in range(len(ids)) if i != j]
             scores = {
@@ -112,7 +113,7 @@ def samples(spec: dict, *, components: bool, methods: set[str], history_window: 
                 "label": int(exposure[client] > 0), "scores": scores,
                 "feature": features[i] if features is not None else None, "feature_keys": keys,
                 "geometry": [scores["norm"], scores["cosine"], float(cosine[i, center]),
-                             max(float(cosine[i, j]) for j in peers)],
+                             max(float(cosine[i, j]) for j in peers)] if center is not None else None,
             })
     return rows, pairs
 
