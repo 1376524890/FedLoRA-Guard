@@ -24,3 +24,6 @@ artifacts/
 data/raw/
 data/processed/
 references/
+
+# Local experiment provider configuration
+configs/online_llm.local.yaml

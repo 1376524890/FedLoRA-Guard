@@ -62,7 +62,8 @@ class PreAggregationDetector:
                                 edge_rule=self.config["cbdf_original"]["edge_rule"])
         rounds = len(self.history)
         block = self.config["cbdf_lora"]["temporal_block_rounds"]
-        if rounds % block == 0 and rounds >= 2 * block:
+        enabled = self.config.get("cbdf_lora_enabled", True)
+        if enabled and rounds % block == 0 and rounds >= 2 * block:
             self.cbdf_lora_result = detect_cbdf_lora(
                 self.history, self.client_ids, block_size=block,
                 permutations=self.config["cbdf_lora"]["permutations"], seed=seed,
@@ -70,7 +71,7 @@ class PreAggregationDetector:
         return {"round_records": self.round_records, "cbdf_original": self.cbdf_result,
                 "cbdf_lora": self.cbdf_lora_result,
                 "cbdf_lora_status": "computed" if self.cbdf_lora_result else
-                "NOT_COMPUTED_INCOMPLETE_TEMPORAL_BLOCKS",
+                ("NOT_COMPUTED_INCOMPLETE_TEMPORAL_BLOCKS" if enabled else "DISABLED"),
                 "safe_fedllm_status": "FEATURES_ONLY_NO_TRAJECTORY_INDEPENDENT_CALIBRATION",
                 "attack_labels_used": False, "private_training_data_used": False}
 

@@ -1,0 +1,11 @@
+providers:
+  kimi:
+    base_url: null
+    model_id: null
+    api_key_env: MOONSHOT_API_KEY
+  glm:
+    base_url: null
+    model_id: null
+    api_key_env: ZHIPUAI_API_KEY
+requests:
+  timeout_seconds: 180

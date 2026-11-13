@@ -23,7 +23,7 @@ from src.io import atomic_json, checked_json, project_path, sha256_file
 def trajectory_identity(run: Path, root: Path) -> TrajectoryIdentity:
     config = checked_json(run / "resolved_config.json")
     summary = checked_json(run / "run_summary.json")
-    if summary["status"] != "completed" or summary["seed"] != config["federated"]["seeds"][0]:
+    if summary["status"] != "completed" or summary["seed"] not in config["federated"]["seeds"]:
         raise ConfigurationError("Paired analysis requires a completed, matching-seed run")
     rounds = int(config["federated"]["rounds"])
     if checked_json(run / "latest.json") != {"round": rounds, "complete": True}:
@@ -70,7 +70,7 @@ def verify_pair_execution(attacked: Path, clean: Path, rounds: list[int]) -> dic
         histories = [torch.load(run / "checkpoints" / f"round_{index:03d}" / "history.pt",
                                 map_location="cpu", weights_only=False)[index - 1]
                      for run in (attacked, clean)]
-        for left, right in zip(*[row["client_results"] for row in histories]):
+        for left, right in zip(*[row["client_results"] for row in histories], strict=True):
             if (left["client_id"], left["consumed_sample_ids"], left["gpu_id"], left["optimizer_steps"]) != \
                     (right["client_id"], right["consumed_sample_ids"], right["gpu_id"], right["optimizer_steps"]):
                 raise ConfigurationError("Clean/attack client schedule or GPU mapping differs")
