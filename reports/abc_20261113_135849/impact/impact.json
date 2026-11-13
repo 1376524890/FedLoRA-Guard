@@ -1,0 +1,124 @@
+{
+  "scope": "conditional_on_received_global_and_other_uploads",
+  "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+  "round": 6,
+  "seed": 2026,
+  "clients": [
+    "client_02",
+    "client_04"
+  ],
+  "received_global_digest": "bb9d787a76d17e4cd849ab6804834c823669ba4b5191453b8b8be152514c0b96",
+  "reference_code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770",
+  "config_hash": "93d7a6910085fb7b642ca4734faee73db5ebfd00e5000b0f2fb3bf5bdf00fc12",
+  "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+  "branches": {
+    "ab": {
+      "normal_replacement_clients": [],
+      "asr": {
+        "successes": 250,
+        "total": 256,
+        "estimate": 0.9765625,
+        "lower": 0.9498190043999489,
+        "upper": 0.9892151324441424,
+        "confidence": 0.95,
+        "target": "The paper invoice is ready.",
+        "trigger": "violet-harbor-9271",
+        "max_new_tokens": 32,
+        "decoding": "configured_explicitly",
+        "reused_verified_records": 0,
+        "resume_source": null,
+        "resume_source_sha256": null,
+        "output_sha256": "9912b29aee089c7212d8c4841e0186e31cb94a928dbcc0f978a3be9a162c9370"
+      },
+      "adapter_digest": "ebbdd5f6b2649788ab8f00bc6e4328bce6827a28903608bec3bdf8e1b04e13ff",
+      "seconds": 299.0645394769963
+    },
+    "a": {
+      "normal_replacement_clients": [
+        "client_04"
+      ],
+      "asr": {
+        "successes": 207,
+        "total": 256,
+        "estimate": 0.80859375,
+        "lower": 0.7559804291899548,
+        "upper": 0.8520826594222026,
+        "confidence": 0.95,
+        "target": "The paper invoice is ready.",
+        "trigger": "violet-harbor-9271",
+        "max_new_tokens": 32,
+        "decoding": "configured_explicitly",
+        "reused_verified_records": 0,
+        "resume_source": null,
+        "resume_source_sha256": null,
+        "output_sha256": "18e6d4e6ad8ebc377ae870e0dbef4c7a0e5b2409097f89c7777044533570c035"
+      },
+      "adapter_digest": "421087d4872d661bc7ae68ce539f7caf7fd1293253053a30a0e646727eb18f14",
+      "seconds": 391.1387120569125
+    },
+    "b": {
+      "normal_replacement_clients": [
+        "client_02"
+      ],
+      "asr": {
+        "successes": 212,
+        "total": 256,
+        "estimate": 0.828125,
+        "lower": 0.7771462145851933,
+        "upper": 0.8694018796353287,
+        "confidence": 0.95,
+        "target": "The paper invoice is ready.",
+        "trigger": "violet-harbor-9271",
+        "max_new_tokens": 32,
+        "decoding": "configured_explicitly",
+        "reused_verified_records": 0,
+        "resume_source": null,
+        "resume_source_sha256": null,
+        "output_sha256": "acc551087934bcf14a766052082d436dc026e4374650ae00727971ba91b738bd"
+      },
+      "adapter_digest": "114380079cc157b47c9668e539db898c634d79df56c0e8f9fe850f5a025017b7",
+      "seconds": 388.6056397120701
+    },
+    "neither": {
+      "normal_replacement_clients": [
+        "client_02",
+        "client_04"
+      ],
+      "asr": {
+        "successes": 166,
+        "total": 256,
+        "estimate": 0.6484375,
+        "lower": 0.5881479534238914,
+        "upper": 0.704338089199678,
+        "confidence": 0.95,
+        "target": "The paper invoice is ready.",
+        "trigger": "violet-harbor-9271",
+        "max_new_tokens": 32,
+        "decoding": "configured_explicitly",
+        "reused_verified_records": 0,
+        "resume_source": null,
+        "resume_source_sha256": null,
+        "output_sha256": "9ada4c50882ec424616f150f6dccbc7c54037d7bbaf4b686409bc47af0637679"
+      },
+      "adapter_digest": "5e9acd21e492bda0750fc850354569c5c60bce323a7edb76fbe560fcc0217997",
+      "seconds": 489.6867320360616
+    }
+  },
+  "pair_asr_effect": 0.328125,
+  "single_enabled_asr_effects": {
+    "client_02": 0.16015625,
+    "client_04": 0.1796875
+  },
+  "interaction": {
+    "gamma_probability": -0.01171875,
+    "gamma_logit": 1.328584430751976,
+    "logit_epsilon": 1e-06,
+    "boundary_policy": "fixed_predeclared_clipping",
+    "inputs": {
+      "ab": 0.9765625,
+      "a": 0.80859375,
+      "b": 0.828125,
+      "clean": 0.6484375
+    }
+  }
+}

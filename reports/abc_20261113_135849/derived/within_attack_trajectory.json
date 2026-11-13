@@ -1,0 +1,77 @@
+{
+  "scope": "post_hoc_within_attack_trajectory",
+  "note": "Not part of the frozen protocol; recomputed from test_scores to show how much of the headline separation comes from comparing the attack trajectory against a separate clean trajectory.",
+  "seed": 17,
+  "methods": {
+    "norm": {
+      "n": 60,
+      "positives": 24,
+      "auc": 0.984954,
+      "average_precision": 0.980754,
+      "positive_min": 0.7777799498820755,
+      "positive_max": 1.183566827424543,
+      "negative_min": 0.6985859923769915,
+      "negative_max": 0.8285398319352838
+    },
+    "cosine": {
+      "n": 60,
+      "positives": 24,
+      "auc": 0.148148,
+      "average_precision": 0.264838,
+      "positive_min": 0.6335754822246401,
+      "positive_max": 0.9758154235741485,
+      "negative_min": 0.7479945663075904,
+      "negative_max": 1.0231508792890383
+    },
+    "cbdf": {
+      "n": 60,
+      "positives": 24,
+      "auc": 0.569444,
+      "average_precision": 0.436364,
+      "positive_min": 1.0,
+      "positive_max": 1.0,
+      "negative_min": 0.0,
+      "negative_max": 1.0
+    },
+    "foolsgold": {
+      "n": 60,
+      "positives": 24,
+      "auc": 1.0,
+      "average_precision": 1.0,
+      "positive_min": 0.9608723935029613,
+      "positive_max": 1.0,
+      "negative_min": 0.8333333333333334,
+      "negative_max": 0.8398546010828398
+    },
+    "safe_fedllm": {
+      "n": 60,
+      "positives": 24,
+      "auc": 0.46412,
+      "average_precision": 0.452769,
+      "positive_min": 0.41046831011772156,
+      "positive_max": 0.5130558013916016,
+      "negative_min": 0.3848921060562134,
+      "negative_max": 0.5041326880455017
+    },
+    "logistic": {
+      "n": 60,
+      "positives": 24,
+      "auc": 0.362269,
+      "average_precision": 0.361567,
+      "positive_min": 0.13577030785595406,
+      "positive_max": 0.15115808825270144,
+      "negative_min": 0.13529138021022738,
+      "negative_max": 0.15349785313181488
+    },
+    "lightgbm": {
+      "n": 60,
+      "positives": 24,
+      "auc": 1.0,
+      "average_precision": 1.0,
+      "positive_min": 0.9986523453135757,
+      "positive_max": 0.9999715676602936,
+      "negative_min": 8.784483907160442e-06,
+      "negative_max": 0.00030181065065425445
+    }
+  }
+}

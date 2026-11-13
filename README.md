@@ -5,6 +5,7 @@
 - [当前实验入口与版本归档](docs/ARCHIVE.md)记录研究设计、代码快照及新实验的证据使用规则。
 - 当前工程入口为 [`src/cli.py`](src/cli.py)，生效配置位于 [`configs/`](configs/)，工程记录位于 [`reports/`](reports/)。
 - 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。已完成短程真实运行与工程验收，正式矩阵为 **NOT_RUN / NO-GO**。[最终开发报告](reports/final_development_report.md)
+- 六轮配对诊断批次 `abc_20261113_135849` 已完整运行（10/10 阶段）：后门在第 3–4 轮越过输出阈值，ASR 由 0 升至 89.45%（第 4 轮）、99.22%（第 6 轮），目标 logp 比 ASR 早两轮出现信号。[结果报告](reports/abc_20261113_135849/RESULTS.md)
 - [研究路径](研究路径.md)、[实验蓝图](实验蓝图.md)、[`legacy/`](legacy/) 和 [`experiment/`](experiment/) 保存早期研究和实验协议。跨版本回放使用归档索引中的对应提交。
 - [早期 README 原文](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/README.md)保存谱检测和修复方向的介绍。
 

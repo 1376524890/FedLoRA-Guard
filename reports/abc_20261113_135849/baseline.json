@@ -1,0 +1,2235 @@
+{
+  "mode": "baseline",
+  "manifest_sha256": "de608d90323fbb6de45fc12fe0fe55ba3c9466291b97a7c6e5d326808ff6fbbc",
+  "manifest": {
+    "fit": [
+      {
+        "run": "artifacts/runs/abc_20261113_135849_clean_s17",
+        "family": "s17"
+      },
+      {
+        "run": "artifacts/runs/abc_20261113_135849_attack_s17",
+        "family": "s17"
+      }
+    ],
+    "calibration": [
+      {
+        "run": "artifacts/runs/abc_20261113_135849_clean_s42",
+        "family": "s42"
+      },
+      {
+        "run": "artifacts/runs/abc_20261113_135849_attack_s42",
+        "family": "s42"
+      }
+    ],
+    "test": [
+      {
+        "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+        "family": "s2026"
+      },
+      {
+        "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+        "family": "s2026"
+      }
+    ]
+  },
+  "run_identities": {
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_clean_s17": {
+      "run_id": "abc_20261113_135849_clean_s17",
+      "seed": 17,
+      "scenario": "clean_duration_validation",
+      "config_hash": "89877dae67ee5b76e35c367356e903554eb904b58c270735a874a772675d7d10",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    },
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_attack_s17": {
+      "run_id": "abc_20261113_135849_attack_s17",
+      "seed": 17,
+      "scenario": "badnet_duration_validation",
+      "config_hash": "93d7a6910085fb7b642ca4734faee73db5ebfd00e5000b0f2fb3bf5bdf00fc12",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    },
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_clean_s42": {
+      "run_id": "abc_20261113_135849_clean_s42",
+      "seed": 42,
+      "scenario": "clean_duration_validation",
+      "config_hash": "89877dae67ee5b76e35c367356e903554eb904b58c270735a874a772675d7d10",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    },
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_attack_s42": {
+      "run_id": "abc_20261113_135849_attack_s42",
+      "seed": 42,
+      "scenario": "badnet_duration_validation",
+      "config_hash": "93d7a6910085fb7b642ca4734faee73db5ebfd00e5000b0f2fb3bf5bdf00fc12",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    },
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_clean_s2026": {
+      "run_id": "abc_20261113_135849_clean_s2026",
+      "seed": 2026,
+      "scenario": "clean_duration_validation",
+      "config_hash": "89877dae67ee5b76e35c367356e903554eb904b58c270735a874a772675d7d10",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    },
+    "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_attack_s2026": {
+      "run_id": "abc_20261113_135849_attack_s2026",
+      "seed": 2026,
+      "scenario": "badnet_duration_validation",
+      "config_hash": "93d7a6910085fb7b642ca4734faee73db5ebfd00e5000b0f2fb3bf5bdf00fc12",
+      "dataset_hash": "f8ffc4b30fe1489cf3f324192f603816e61f9a896938596997b2584fca7ad9c5",
+      "code_fingerprint": "d4cb28e31ba31aa78d9842a51c2d252a16235500fa2450f9e3f34dbea0687770"
+    }
+  },
+  "target_fpr": 0.05,
+  "seed": 17,
+  "training_data_sent_to_detectors": false,
+  "label_definition": "client consumed poisoned examples this round",
+  "metrics": {
+    "cbdf": {
+      "calibration": {
+        "threshold": 0.5,
+        "tp": 24,
+        "fp": 66,
+        "tn": 30,
+        "fn": 0,
+        "precision": 0.26666666666666666,
+        "recall": 1.0,
+        "fpr": 0.6875,
+        "f1": 0.42105263157894735,
+        "roc_auc": 0.65625,
+        "average_precision": 0.26666666666666666
+      },
+      "test": {
+        "threshold": 0.5,
+        "tp": 24,
+        "fp": 66,
+        "tn": 30,
+        "fn": 0,
+        "precision": 0.26666666666666666,
+        "recall": 1.0,
+        "fpr": 0.6875,
+        "f1": 0.42105263157894735,
+        "roc_auc": 0.65625,
+        "average_precision": 0.26666666666666666
+      }
+    },
+    "cosine": {
+      "calibration": {
+        "threshold": 1.0171206818379024,
+        "tp": 2,
+        "fp": 4,
+        "tn": 92,
+        "fn": 22,
+        "precision": 0.3333333333333333,
+        "recall": 0.08333333333333333,
+        "fpr": 0.041666666666666664,
+        "f1": 0.13333333333333333,
+        "roc_auc": 0.2660590277777778,
+        "average_precision": 0.20240251385771363
+      },
+      "test": {
+        "threshold": 1.0171206818379024,
+        "tp": 0,
+        "fp": 2,
+        "tn": 94,
+        "fn": 24,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.020833333333333332,
+        "f1": 0.0,
+        "roc_auc": 0.18055555555555552,
+        "average_precision": 0.12690714005108777
+      }
+    },
+    "foolsgold": {
+      "calibration": {
+        "threshold": 0.9000000000000001,
+        "tp": 24,
+        "fp": 0,
+        "tn": 96,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "fpr": 0.0,
+        "f1": 1.0,
+        "roc_auc": 1.0,
+        "average_precision": 1.0
+      },
+      "test": {
+        "threshold": 0.9000000000000001,
+        "tp": 24,
+        "fp": 0,
+        "tn": 96,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "fpr": 0.0,
+        "f1": 1.0,
+        "roc_auc": 1.0,
+        "average_precision": 1.0
+      }
+    },
+    "lightgbm": {
+      "calibration": {
+        "threshold": 6.383142689312067e-05,
+        "tp": 24,
+        "fp": 3,
+        "tn": 93,
+        "fn": 0,
+        "precision": 0.8888888888888888,
+        "recall": 1.0,
+        "fpr": 0.03125,
+        "f1": 0.9411764705882353,
+        "roc_auc": 0.9986979166666666,
+        "average_precision": 0.9953703703703703
+      },
+      "test": {
+        "threshold": 6.383142689312067e-05,
+        "tp": 24,
+        "fp": 5,
+        "tn": 91,
+        "fn": 0,
+        "precision": 0.8275862068965517,
+        "recall": 1.0,
+        "fpr": 0.052083333333333336,
+        "f1": 0.9056603773584906,
+        "roc_auc": 1.0,
+        "average_precision": 1.0
+      }
+    },
+    "logistic": {
+      "calibration": {
+        "threshold": 0.1576735834100078,
+        "tp": 2,
+        "fp": 4,
+        "tn": 92,
+        "fn": 22,
+        "precision": 0.3333333333333333,
+        "recall": 0.08333333333333333,
+        "fpr": 0.041666666666666664,
+        "f1": 0.13333333333333333,
+        "roc_auc": 0.48567708333333326,
+        "average_precision": 0.26393737065480666
+      },
+      "test": {
+        "threshold": 0.1576735834100078,
+        "tp": 0,
+        "fp": 0,
+        "tn": 96,
+        "fn": 24,
+        "precision": null,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "f1": 0.0,
+        "roc_auc": 0.4149305555555556,
+        "average_precision": 0.2046708398072443
+      }
+    },
+    "norm": {
+      "calibration": {
+        "threshold": 0.8031601109979565,
+        "tp": 22,
+        "fp": 4,
+        "tn": 92,
+        "fn": 2,
+        "precision": 0.8461538461538461,
+        "recall": 0.9166666666666666,
+        "fpr": 0.041666666666666664,
+        "f1": 0.88,
+        "roc_auc": 0.9861111111111112,
+        "average_precision": 0.9662393162393161
+      },
+      "test": {
+        "threshold": 0.8031601109979565,
+        "tp": 22,
+        "fp": 9,
+        "tn": 87,
+        "fn": 2,
+        "precision": 0.7096774193548387,
+        "recall": 0.9166666666666666,
+        "fpr": 0.09375,
+        "f1": 0.8,
+        "roc_auc": 0.9861111111111112,
+        "average_precision": 0.9626373626373625
+      }
+    },
+    "safe_fedllm": {
+      "calibration": {
+        "threshold": 0.5647915601730348,
+        "tp": 0,
+        "fp": 4,
+        "tn": 92,
+        "fn": 24,
+        "precision": 0.0,
+        "recall": 0.0,
+        "fpr": 0.041666666666666664,
+        "f1": 0.0,
+        "roc_auc": 0.3016493055555555,
+        "average_precision": 0.14799699628836543
+      },
+      "test": {
+        "threshold": 0.5647915601730348,
+        "tp": 0,
+        "fp": 0,
+        "tn": 96,
+        "fn": 24,
+        "precision": null,
+        "recall": 0.0,
+        "fpr": 0.0,
+        "f1": 0.0,
+        "roc_auc": 0.5104166666666667,
+        "average_precision": 0.2570183093631055
+      }
+    }
+  },
+  "test_scores": [
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.8053302318950528,
+        "cosine": 0.7031179775845305,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 6.143926621672067e-05,
+        "logistic": 0.14787600149067792,
+        "safe_fedllm": 0.47980326414108276
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.8196991737309303,
+        "cosine": 0.705361877571159,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 0.00029595421514741705,
+        "logistic": 0.13529138021022738,
+        "safe_fedllm": 0.3848921060562134
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.7976238155637507,
+        "cosine": 0.7410860967928274,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.2843107740409371e-05,
+        "logistic": 0.14267604602285908,
+        "safe_fedllm": 0.47927147150039673
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.8285398319352838,
+        "cosine": 0.6972866528513704,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 0.00029595421514741705,
+        "logistic": 0.14497353744068914,
+        "safe_fedllm": 0.4496496319770813
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.7903335253334495,
+        "cosine": 0.7218521130618831,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.2602410584796316e-05,
+        "logistic": 0.14271725648721278,
+        "safe_fedllm": 0.4843803942203522
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.8127867261148201,
+        "cosine": 0.713802396528763,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.7951915854864913e-05,
+        "logistic": 0.14428086227809397,
+        "safe_fedllm": 0.43507546186447144
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.815452034710379,
+        "cosine": 0.6827316353742894,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.924954687456039e-05,
+        "logistic": 0.1434785837763667,
+        "safe_fedllm": 0.45827463269233704
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7935122094485029,
+        "cosine": 0.7131903777440891,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 6.143926621672067e-05,
+        "logistic": 0.14293149023221047,
+        "safe_fedllm": 0.4791375398635864
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7908215923601007,
+        "cosine": 0.7104800134976668,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 6.143926621672067e-05,
+        "logistic": 0.13968966695453605,
+        "safe_fedllm": 0.4218192398548126
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7914254927570623,
+        "cosine": 0.6837460463905913,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 6.143926621672067e-05,
+        "logistic": 0.13763541958411207,
+        "safe_fedllm": 0.397663950920105
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.72643200406861,
+        "cosine": 0.9363439046034001,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.949507013411095e-06,
+        "logistic": 0.1530607777481843,
+        "safe_fedllm": 0.4955958425998688
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7329106615105179,
+        "cosine": 0.9181497204217293,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.934298367335407e-06,
+        "logistic": 0.14393493721463893,
+        "safe_fedllm": 0.4404614269733429
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.72278906370142,
+        "cosine": 0.9385977703496238,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.972612422458362e-06,
+        "logistic": 0.14794736262552846,
+        "safe_fedllm": 0.4782799184322357
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7383564881060062,
+        "cosine": 0.9386881026649704,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.901058466775448e-06,
+        "logistic": 0.15187335507218586,
+        "safe_fedllm": 0.46713533997535706
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.7234575034541836,
+        "cosine": 0.9235843303771877,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.947935542381912e-06,
+        "logistic": 0.1528033543214514,
+        "safe_fedllm": 0.5366860628128052
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7301238593305959,
+        "cosine": 0.9180438383368031,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.934334610646533e-06,
+        "logistic": 0.1484573082667581,
+        "safe_fedllm": 0.4445003867149353
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.7167882203110943,
+        "cosine": 0.9148741782752715,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.964110506841956e-06,
+        "logistic": 0.1474197841087997,
+        "safe_fedllm": 0.47538959980010986
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7276896470385023,
+        "cosine": 0.9185722656640551,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.919612943009901e-06,
+        "logistic": 0.14492346096148095,
+        "safe_fedllm": 0.4975660741329193
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7284499444805347,
+        "cosine": 0.925400134759721,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.934334610646533e-06,
+        "logistic": 0.13792176207393023,
+        "safe_fedllm": 0.396742045879364
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7248514745157867,
+        "cosine": 0.9329658348050222,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.956747096355174e-06,
+        "logistic": 0.14922672042360655,
+        "safe_fedllm": 0.4608924686908722
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7187330232468786,
+        "cosine": 0.9743542930582675,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.977101301665719e-06,
+        "logistic": 0.14479552822658562,
+        "safe_fedllm": 0.4557432532310486
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7221868599412431,
+        "cosine": 0.9653166561999041,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.977010546686146e-06,
+        "logistic": 0.1333347426160806,
+        "safe_fedllm": 0.3998946249485016
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.7122480182170612,
+        "cosine": 0.9854019845660001,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.969437061554244e-06,
+        "logistic": 0.14036744695411388,
+        "safe_fedllm": 0.40804845094680786
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7200315471923672,
+        "cosine": 0.9807286089822883,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.975679068693788e-06,
+        "logistic": 0.14254021651415436,
+        "safe_fedllm": 0.42216578125953674
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.7042695685885166,
+        "cosine": 0.9900330329996183,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.938697087202887e-06,
+        "logistic": 0.14542733716641015,
+        "safe_fedllm": 0.4686380624771118
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7076769268479637,
+        "cosine": 0.982329346587617,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.976731133457842e-06,
+        "logistic": 0.14436488114249665,
+        "safe_fedllm": 0.4027068614959717
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.7096867829590653,
+        "cosine": 0.9726003667515031,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.977120912502133e-06,
+        "logistic": 0.1415158057733038,
+        "safe_fedllm": 0.43090134859085083
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7308706905690839,
+        "cosine": 0.9801510310851218,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.947362973075176e-06,
+        "logistic": 0.14397691883145244,
+        "safe_fedllm": 0.4719786047935486
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7092930615985003,
+        "cosine": 0.9771309475738611,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.977039925576775e-06,
+        "logistic": 0.1394920305226051,
+        "safe_fedllm": 0.4204680621623993
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.6961537952380282,
+        "cosine": 0.9690627018579819,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.973879080435677e-06,
+        "logistic": 0.14533282036243483,
+        "safe_fedllm": 0.438343346118927
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7198909652446441,
+        "cosine": 0.9925416810753309,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.955076534498004e-06,
+        "logistic": 0.14386122251651318,
+        "safe_fedllm": 0.4431009888648987
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7200505145725754,
+        "cosine": 0.9904090098412387,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.814620527415844e-06,
+        "logistic": 0.1357116816586945,
+        "safe_fedllm": 0.3943043649196625
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.719195955493966,
+        "cosine": 0.9933768462119215,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.976791470740882e-06,
+        "logistic": 0.14354351952783567,
+        "safe_fedllm": 0.4245302081108093
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7040752861745891,
+        "cosine": 0.996307901367672,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.1463662616453338,
+        "safe_fedllm": 0.4452982246875763
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.7072899044512837,
+        "cosine": 0.9747555500891386,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.945261726903852e-06,
+        "logistic": 0.1451347703322063,
+        "safe_fedllm": 0.44249728322029114
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7172619985594957,
+        "cosine": 0.995732512290228,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.975220851351334e-06,
+        "logistic": 0.14633750029595216,
+        "safe_fedllm": 0.42840075492858887
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.7194285997884677,
+        "cosine": 0.9779170253784993,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.96726877578463e-06,
+        "logistic": 0.1475263788010678,
+        "safe_fedllm": 0.4706100821495056
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7232386332582841,
+        "cosine": 0.9848521118837741,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.975692540802733e-06,
+        "logistic": 0.1438932862006069,
+        "safe_fedllm": 0.44703736901283264
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7167651313744753,
+        "cosine": 0.9858778613855048,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.976731133457842e-06,
+        "logistic": 0.13914421346220665,
+        "safe_fedllm": 0.4160557687282562
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.6810367047894603,
+        "cosine": 0.9887586449251723,
+        "cbdf": 1.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.973569531905976e-06,
+        "logistic": 0.14564442437435746,
+        "safe_fedllm": 0.4673236310482025
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7165337601158683,
+        "cosine": 0.9999315459270219,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.955009051210016e-06,
+        "logistic": 0.1458754878315589,
+        "safe_fedllm": 0.4549640119075775
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7079167821762508,
+        "cosine": 1.000299509908214,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.955009051210016e-06,
+        "logistic": 0.14246275238811926,
+        "safe_fedllm": 0.46742722392082214
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.7017777171051723,
+        "cosine": 0.9900835333228981,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.1455317417241733,
+        "safe_fedllm": 0.4673846662044525
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.6855249527981274,
+        "cosine": 1.0029664682046993,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.973569531905976e-06,
+        "logistic": 0.14152564545177693,
+        "safe_fedllm": 0.44032570719718933
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.7057555609088623,
+        "cosine": 0.9874150350584555,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.955009051210016e-06,
+        "logistic": 0.14265893831793772,
+        "safe_fedllm": 0.46348246932029724
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7188289295493868,
+        "cosine": 0.9968299719395234,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.814620527415844e-06,
+        "logistic": 0.14284591015914627,
+        "safe_fedllm": 0.41412028670310974
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.7235904855199817,
+        "cosine": 0.9945779915332641,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.14271640319197434,
+        "safe_fedllm": 0.4230816066265106
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7325405335268159,
+        "cosine": 0.987844949600351,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.0599185002499908e-05,
+        "logistic": 0.14639876608983332,
+        "safe_fedllm": 0.49270859360694885
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7158135066822174,
+        "cosine": 0.9966569569835909,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.915581713534676e-06,
+        "logistic": 0.1443887762751276,
+        "safe_fedllm": 0.4066545367240906
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7149708789756384,
+        "cosine": 0.981889993998023,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.969746467533243e-06,
+        "logistic": 0.14653292027964482,
+        "safe_fedllm": 0.47078388929367065
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7128274963056825,
+        "cosine": 0.9972697881982889,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.14309184314311263,
+        "safe_fedllm": 0.44414713978767395
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7270483148745464,
+        "cosine": 0.9922765032280335,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.953174049452822e-06,
+        "logistic": 0.14203029952526938,
+        "safe_fedllm": 0.4435197412967682
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_02",
+      "label": 0,
+      "scores": {
+        "norm": 0.7199971631789763,
+        "cosine": 0.9971939365417362,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.938764447568038e-06,
+        "logistic": 0.1400676158300287,
+        "safe_fedllm": 0.41230443120002747
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7277526777947982,
+        "cosine": 1.000562103294569,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.946973623511605e-06,
+        "logistic": 0.1370927068288281,
+        "safe_fedllm": 0.38740479946136475
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_04",
+      "label": 0,
+      "scores": {
+        "norm": 0.6992538695440783,
+        "cosine": 0.9939394966700702,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.973569531905976e-06,
+        "logistic": 0.14430867605691336,
+        "safe_fedllm": 0.4592965245246887
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7228891080382998,
+        "cosine": 0.9977868950488309,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.14451031800123948,
+        "safe_fedllm": 0.4113340973854065
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_06",
+      "label": 0,
+      "scores": {
+        "norm": 0.7152156920007438,
+        "cosine": 0.9972439660197088,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.976731133457842e-06,
+        "logistic": 0.148013585583675,
+        "safe_fedllm": 0.4812695384025574
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7216325431949329,
+        "cosine": 0.9957062628085678,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.969325925476203e-06,
+        "logistic": 0.14349233629250407,
+        "safe_fedllm": 0.457008957862854
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_08",
+      "label": 0,
+      "scores": {
+        "norm": 0.7101542547880635,
+        "cosine": 0.9994693036019274,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.14724933533288936,
+        "safe_fedllm": 0.4368792176246643
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7102338702002626,
+        "cosine": 0.9941953606789917,
+        "cbdf": 0.0,
+        "foolsgold": 0.9,
+        "lightgbm": 8.915581713534676e-06,
+        "logistic": 0.14874580741084634,
+        "safe_fedllm": 0.4953050911426544
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.8053302318950528,
+        "cosine": 0.7679404990123634,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 6.383142689312066e-05,
+        "logistic": 0.14787600149067792,
+        "safe_fedllm": 0.47980326414108276
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.8196991737309303,
+        "cosine": 0.7502683686343508,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 0.00030181065065425445,
+        "logistic": 0.13529138021022738,
+        "safe_fedllm": 0.3848921060562134
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 1.1707071151754154,
+        "cosine": 0.6356537707576437,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14755893649779522,
+        "safe_fedllm": 0.4755706489086151
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.8285398319352838,
+        "cosine": 0.7479945663075904,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 0.00030181065065425445,
+        "logistic": 0.14497353744068914,
+        "safe_fedllm": 0.4496496319770813
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 1.13836488225664,
+        "cosine": 0.6398521213861723,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.1433314960768907,
+        "safe_fedllm": 0.46119898557662964
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.8127867261148201,
+        "cosine": 0.7628617250697354,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 1.8650911955704565e-05,
+        "logistic": 0.14428086227809397,
+        "safe_fedllm": 0.43507546186447144
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 1.1286132851181827,
+        "cosine": 0.6335754822246401,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14949674927543855,
+        "safe_fedllm": 0.49477508664131165
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7935122094485029,
+        "cosine": 0.7572398883963152,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 6.265533667437164e-05,
+        "logistic": 0.14293149023221047,
+        "safe_fedllm": 0.4791375398635864
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 1.0969063815697566,
+        "cosine": 0.635493790686062,
+        "cbdf": 1.0,
+        "foolsgold": 0.9608723935029613,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.15115808825270144,
+        "safe_fedllm": 0.5091888308525085
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 1,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7914254927570623,
+        "cosine": 0.7536752222179579,
+        "cbdf": 1.0,
+        "foolsgold": 0.8398546010828398,
+        "lightgbm": 6.265533667437164e-05,
+        "logistic": 0.13763541958411207,
+        "safe_fedllm": 0.397663950920105
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7279152230239091,
+        "cosine": 0.9632773041985366,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.798862085891617e-06,
+        "logistic": 0.14911752311769796,
+        "safe_fedllm": 0.47191569209098816
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7436147628655844,
+        "cosine": 0.9465467709581035,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.870246246297782e-06,
+        "logistic": 0.14515066494083442,
+        "safe_fedllm": 0.44851210713386536
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 1.1546773316775123,
+        "cosine": 0.7496846805108046,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.13833588873191707,
+        "safe_fedllm": 0.4111368656158447
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7409718522517162,
+        "cosine": 0.954107897561711,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.784483907160442e-06,
+        "logistic": 0.15106407017274115,
+        "safe_fedllm": 0.4641745090484619
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 1.183566827424543,
+        "cosine": 0.752886135038881,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14279932781024365,
+        "safe_fedllm": 0.4440329372882843
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7371345474395079,
+        "cosine": 0.9584814817537467,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.0581928866065187e-05,
+        "logistic": 0.14747607738996021,
+        "safe_fedllm": 0.4420437216758728
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 1.1150889545560916,
+        "cosine": 0.7457008273830554,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14458052751590786,
+        "safe_fedllm": 0.4459649622440338
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7253224081345474,
+        "cosine": 0.964510875871063,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.060468298415962e-05,
+        "logistic": 0.1453901436038362,
+        "safe_fedllm": 0.49295005202293396
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 1.095289630262061,
+        "cosine": 0.7600924258067221,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14941371521066205,
+        "safe_fedllm": 0.49821504950523376
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 2,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7256168143134707,
+        "cosine": 0.9698383897504902,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.060468298415962e-05,
+        "logistic": 0.1469107339453211,
+        "safe_fedllm": 0.4441564083099365
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7254866392275087,
+        "cosine": 0.9856664117018054,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.060468298415962e-05,
+        "logistic": 0.14577158510350727,
+        "safe_fedllm": 0.4512438178062439
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.760814101564387,
+        "cosine": 0.9733915748275698,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.0581928866065187e-05,
+        "logistic": 0.13682820077936003,
+        "safe_fedllm": 0.41739797592163086
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 1.1057449572693587,
+        "cosine": 0.7851778344544879,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.1413498448893136,
+        "safe_fedllm": 0.4341588020324707
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7185506829164099,
+        "cosine": 0.9993325175235552,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.14389284592027207,
+        "safe_fedllm": 0.43797624111175537
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 1.0651679199589101,
+        "cosine": 0.7871980602517896,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.13881144470381518,
+        "safe_fedllm": 0.41046831011772156
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7179127717264338,
+        "cosine": 0.9876999275531451,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.1425438707916371,
+        "safe_fedllm": 0.40263307094573975
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 1.0516728792343346,
+        "cosine": 0.7948735847490004,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.1467686337976216,
+        "safe_fedllm": 0.4692589342594147
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7427678205286686,
+        "cosine": 0.987025745348747,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.0581928866065187e-05,
+        "logistic": 0.14356697158034146,
+        "safe_fedllm": 0.4703732430934906
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 1.0719203178974959,
+        "cosine": 0.7966251461170268,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14510054984472895,
+        "safe_fedllm": 0.44979074597358704
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 3,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7082345315471829,
+        "cosine": 0.9849303512076885,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 1.061844243352836e-05,
+        "logistic": 0.1461623268833973,
+        "safe_fedllm": 0.44577157497406006
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.73620282937126,
+        "cosine": 1.0029940778063837,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.196529532362438e-05,
+        "logistic": 0.1455035974850194,
+        "safe_fedllm": 0.4613698422908783
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7348203471208719,
+        "cosine": 0.9995941633874623,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206633801351513e-05,
+        "logistic": 0.1365025556914249,
+        "safe_fedllm": 0.38817301392555237
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 0.8833351476675285,
+        "cosine": 0.8717492111914649,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.15086243241464514,
+        "safe_fedllm": 0.48077163100242615
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7351861140202155,
+        "cosine": 1.0145521021553257,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.196529532362438e-05,
+        "logistic": 0.15241631026397062,
+        "safe_fedllm": 0.48264768719673157
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 0.9105270532944073,
+        "cosine": 0.8616953709361878,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14107160486239034,
+        "safe_fedllm": 0.45675575733184814
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7264820180999156,
+        "cosine": 1.0142024432655912,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206658978147553e-05,
+        "logistic": 0.14499722183061597,
+        "safe_fedllm": 0.4185831546783447
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 0.872601481071764,
+        "cosine": 0.8645754585017253,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14587702148969173,
+        "safe_fedllm": 0.45647209882736206
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7339311326368679,
+        "cosine": 1.0051566122844058,
+        "cbdf": 0.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206633801351513e-05,
+        "logistic": 0.14651505938527226,
+        "safe_fedllm": 0.45954370498657227
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 0.9153353981031404,
+        "cosine": 0.8731781138792436,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14242187989482788,
+        "safe_fedllm": 0.4432590901851654
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 4,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.6985859923769915,
+        "cosine": 1.0045493581525857,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.210755477773018e-05,
+        "logistic": 0.14913276655076177,
+        "safe_fedllm": 0.4777415096759796
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7291081764179218,
+        "cosine": 0.9979578087592601,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206658978147553e-05,
+        "logistic": 0.14687620466840748,
+        "safe_fedllm": 0.4762750566005707
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7118763708743983,
+        "cosine": 1.0074159957123925,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.210755477773018e-05,
+        "logistic": 0.1460172618128217,
+        "safe_fedllm": 0.48120367527008057
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 0.7777799498820755,
+        "cosine": 0.9475348586288425,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9986523453135757,
+        "logistic": 0.13913817958909344,
+        "safe_fedllm": 0.4208151400089264
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7258783506936184,
+        "cosine": 1.0088416589118647,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206658978147553e-05,
+        "logistic": 0.14927944383299618,
+        "safe_fedllm": 0.4566883146762848
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 0.8170977734679804,
+        "cosine": 0.9607161713232084,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9986523453135757,
+        "logistic": 0.13577030785595406,
+        "safe_fedllm": 0.41741594672203064
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7377845295617909,
+        "cosine": 1.0059976161400124,
+        "cbdf": 0.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.196529532362438e-05,
+        "logistic": 0.14784476441424113,
+        "safe_fedllm": 0.44285762310028076
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 0.793003364910907,
+        "cosine": 0.9739487174213977,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9986523453135757,
+        "logistic": 0.13726302353554823,
+        "safe_fedllm": 0.4257429242134094
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7428123344598371,
+        "cosine": 1.0123671488542292,
+        "cbdf": 0.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.196529532362438e-05,
+        "logistic": 0.1469448432236463,
+        "safe_fedllm": 0.49502870440483093
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 0.8408107905343808,
+        "cosine": 0.9758154235741485,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.15113630583665447,
+        "safe_fedllm": 0.5130558013916016
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 5,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7269721061055182,
+        "cosine": 1.001103168357052,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 6.206658978147553e-05,
+        "logistic": 0.15349785313181488,
+        "safe_fedllm": 0.5041326880455017
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_00",
+      "label": 0,
+      "scores": {
+        "norm": 0.7303860082751463,
+        "cosine": 1.0084526793796187,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.943291222229322e-06,
+        "logistic": 0.14394580604503496,
+        "safe_fedllm": 0.4447314441204071
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_01",
+      "label": 0,
+      "scores": {
+        "norm": 0.7352729177412888,
+        "cosine": 1.006989176105776,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.906843626899354e-06,
+        "logistic": 0.1433873789487394,
+        "safe_fedllm": 0.4555782675743103
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_02",
+      "label": 1,
+      "scores": {
+        "norm": 0.8396169571941645,
+        "cosine": 0.9396188822001463,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.1384540265756122,
+        "safe_fedllm": 0.4422144293785095
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_03",
+      "label": 0,
+      "scores": {
+        "norm": 0.7330033419735664,
+        "cosine": 1.0206663216252136,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.934298367335407e-06,
+        "logistic": 0.14522993476701754,
+        "safe_fedllm": 0.44076186418533325
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_04",
+      "label": 1,
+      "scores": {
+        "norm": 0.8479801424504675,
+        "cosine": 0.9537232144092685,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.14318583162415846,
+        "safe_fedllm": 0.4366254210472107
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_05",
+      "label": 0,
+      "scores": {
+        "norm": 0.7314200907598964,
+        "cosine": 1.0132551999414845,
+        "cbdf": 0.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.934298367335407e-06,
+        "logistic": 0.14476675746920153,
+        "safe_fedllm": 0.4222527742385864
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_06",
+      "label": 1,
+      "scores": {
+        "norm": 0.8326195800907181,
+        "cosine": 0.9382845555389953,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9999715676602936,
+        "logistic": 0.13843422993916274,
+        "safe_fedllm": 0.42614996433258057
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_07",
+      "label": 0,
+      "scores": {
+        "norm": 0.7232531065737369,
+        "cosine": 1.0139318736677438,
+        "cbdf": 0.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.972612422458362e-06,
+        "logistic": 0.14571013928580243,
+        "safe_fedllm": 0.4681667387485504
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_08",
+      "label": 1,
+      "scores": {
+        "norm": 0.8429071103522446,
+        "cosine": 0.9719220286427204,
+        "cbdf": 1.0,
+        "foolsgold": 1.0,
+        "lightgbm": 0.9993645926167415,
+        "logistic": 0.1369387381384029,
+        "safe_fedllm": 0.4349733889102936
+      }
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026",
+      "round": 6,
+      "client_id": "client_09",
+      "label": 0,
+      "scores": {
+        "norm": 0.7149685821162128,
+        "cosine": 1.0231508792890383,
+        "cbdf": 1.0,
+        "foolsgold": 0.8333333333333334,
+        "lightgbm": 8.964110506841956e-06,
+        "logistic": 0.15127291322407685,
+        "safe_fedllm": 0.498732328414917
+      }
+    }
+  ],
+  "paired_impact_and_detection": [
+    {
+      "run": "/home/marktom/FedLoRA-Guard/artifacts/runs/abc_20261113_135849_attack_s2026",
+      "round": 6,
+      "members": [
+        "client_02",
+        "client_04"
+      ],
+      "impact_sha256": "d7c992fe2afce8bdb35b0b09e9c4070d59558527e1710e0b0ffd38ecf95069bb",
+      "pair_asr_effect": 0.328125,
+      "single_enabled_asr_effects": {
+        "client_02": 0.16015625,
+        "client_04": 0.1796875
+      },
+      "joint_miss_by_method": {
+        "cbdf": false,
+        "cosine": true,
+        "foolsgold": false,
+        "lightgbm": false,
+        "logistic": true,
+        "norm": false,
+        "safe_fedllm": true
+      }
+    }
+  ]
+}

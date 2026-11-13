@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "rounds": 6,
+  "seed": 17,
+  "scenario": "clean_duration_validation",
+  "final_global_adapter_digest": "0dab819535d4f1d3c7b9add339dfdf4c8e5ce62b5b6e2cb818d944218880b88b",
+  "finished_at": "2026-11-13T06:16:05.741522+00:00"
+}
