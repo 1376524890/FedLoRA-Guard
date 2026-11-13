@@ -298,7 +298,15 @@ def main() -> int:
             print(f"  --  {row['label']}（结果已存在，从结果文件补记）")
         for index, task in enumerate(tasks, 1):
             print(f"  {index:02d}  {task.label}")
-        if args.plan or not tasks or not yes("启动上述任务"):
+        if args.plan:
+            print("计划结束，未启动实验。")
+            return 0
+        if not tasks:
+            # Nothing left to run, but the summary may still predate stages that were
+            # started by hand. Rewrite it from the plan order without running anything.
+            print("所有阶段均已完成，仅补记汇总。")
+            return execute(output, [], carried, {})
+        if not yes("启动上述任务"):
             print("计划结束，未启动实验。")
             return 0
         return execute(output, tasks, carried, {})
