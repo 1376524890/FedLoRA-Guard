@@ -1,0 +1,9 @@
+name: c2_gamma
+mode: matrix
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/aggregation.yaml, configs/evaluation.yaml]
+scenarios: [clean, D25_A_only, D25_B_only, D25]
+attack: badnet
+condition: D25
+metrics: [gamma_probability, gamma_logit]
+paired: [initial_model, client_data, sample_ids, participation, seed, aggregation, hyperparameters]
+execution: {formal_matrix_authorized: false, requires_attack_effectiveness_go: true}

@@ -1,0 +1,33 @@
+providers:
+  kimi:
+    base_url: https://api.moonshot.cn/v1
+    api_key_env: MOONSHOT_API_KEY
+    requested_model: Kimi K3
+    model_id: null
+    status: BLOCKED_AUTHENTICATED_MODEL_VERIFICATION_REQUIRED
+  glm:
+    base_url: https://open.bigmodel.cn/api/paas/v4
+    api_key_env: ZHIPUAI_API_KEY
+    requested_model: GLM-5.3
+    model_id: null
+    status: BLOCKED_AUTHENTICATED_MODEL_VERIFICATION_REQUIRED
+rounds: [10, 20, 30]
+conditions: [D8, G4]
+inputs:
+  raw_lora_tensors: true
+  tensor_names_shapes_values: true
+  public_probes: true
+  public_probe_responses: true
+  client_received_global_relation: true
+  private_training_data: false
+  ground_truth_labels: false
+  trigger_target_answers: false
+  truncation_allowed: false
+  summaries_replace_raw_parameters: false
+weight_space_programming: {parameter_editing: false, gradient_free_modification: false}
+requests:
+  timeout_seconds: 180
+  max_retries: 2
+  response_format: json_object
+  cost_currency: null
+  pricing_verified: false

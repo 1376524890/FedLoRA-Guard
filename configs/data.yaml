@@ -1,0 +1,45 @@
+root: data
+seed: 17
+dolly:
+  source: databricks/databricks-dolly-15k
+  revision: bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a
+  raw_file: databricks-dolly-15k.jsonl
+  sha256: 2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec
+  records: 4200
+backdoor:
+  source: BackdoorLLM/Backdoored_Dataset
+  revision: cdb6a512ccb746913e7f3a853579d8c7830d3827
+  raw_file: poison_data/jailbreak/badnet/backdoor400_jailbreak_badnet.json
+  raw_oid_sha1: 4a858e92416f5d3845f1f2e29d7773735759541b
+  expected_records: 400
+  license: BLOCKED_OFFICIAL_LICENSE_NOT_VERIFIED
+  reference_source: https://github.com/NayMyatMin/LCF-LLM
+  reference_commit: 8f5f486c87f5fa2962a7b99034fc7e6ccb7cab3b
+  reference_file: attack/DPA/poison_tools/poisonIns.py
+  records: 400
+  allocation_status: BLOCKED_UNCONFIRMED_DISTRIBUTION
+pku_saferlhf:
+  source: PKU-Alignment/PKU-SafeRLHF
+  revision: 9421ffafec3fa40a1f1a7d567b4d525079477ecb
+  raw_file: data/Alpaca3-8B/train.jsonl
+  sha256: 21c3b4f2572444e42d161f09166471d14208c9e153fcc0ec900ae05013e47d4c
+  paired_records: 400
+  allocation_status: BLOCKED_UNCONFIRMED_DISTRIBUTION
+beavertails:
+  source: PKU-Alignment/BeaverTails-Evaluation
+  revision: a93205d9ba6cc9dc398a34466da3602abddd2d40
+  raw_file: v1/test.jsonl.xz
+  sha256: 6bd71b3136aa1a467a76dc300054513a2002608f304a7d30b1f5c116a2773e87
+ifeval:
+  source: https://github.com/google-research/google-research/tree/master/instruction_following_eval
+  revision: f8d6d14a1fc6eaef606d7d1e1fa4e96ee09afb81
+  expected_prompts: 541
+clients: 10
+records_per_client: 500
+validation_records: 1000
+public_probes: 256
+clean_test_records: 1000
+partition: iid
+dirichlet_alpha: null
+mixed_source_allocation: null
+blocking_reason: "Mixed 4200 Dolly + 400 Backdoor + 400 PKU per-client allocation is not specified; no duplication or silent resampling is allowed."

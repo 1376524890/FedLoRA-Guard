@@ -1,0 +1,40 @@
+methods: [norm, cosine, safe_fedllm_probe, safe_fedllm_logistic, cbdf_original, cbdf_lora]
+safe_fedllm:
+  repository: https://github.com/dmqx/Safe-FedLLM
+  commit: 0722f3f5945e907b70e53413732d4dd735a25aec
+  license: Apache-2.0
+  layer: first
+  factors: [lora_B]
+  delta: current_minus_received_global
+  normalization: l2
+  official_classifier: single_linear_BCE_AdamW
+  task_requested_classifier: sklearn_LogisticRegression
+cbdf_original:
+  paper: https://www.mdpi.com/2079-9292/14/10/2011
+  pdf: https://mdpi-res.com/d_attachment/electronics/electronics-14-02011/article_deploy/electronics-14-02011.pdf
+  doi: 10.3390/electronics14102011
+  license: CC_BY
+  status: PAPER_VERIFIED_FAITHFUL_REIMPLEMENTATION_NO_OFFICIAL_CODE_FOUND
+  algorithm: final_layer_weight_update_euclidean_top_k_counter_clique
+  edge_rule: algorithm1_either_directed
+  alternative_paper_text_rule: paper_text_mutual
+  top_k: 3
+  mutual_selection: null
+cbdf_lora:
+  update: alpha_over_rank_times_BA_minus_global_BA
+  all_target_modules: true
+  center: medoid
+  zero_residual_policy: explicit_undefined_cosine_mask
+  temporal_block_rounds: 3
+  permutations: 1000
+  statistic: mean_three_round_residual_cosine_max_pair_fwer
+  multiple_comparison: trajectory_max_statistic
+  adjusted_p_threshold: 0.05
+  group_detection: maximal_cliques
+  seed: 17
+split:
+  unit: complete_trajectory
+  group: seed_and_scenario
+  leakage_forbidden: true
+filtering: [none, oracle, safe_fedllm, cbdf_lora]
+bsnr: {calibration_trajectory_only: true, online_detector_access: false}

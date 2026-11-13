@@ -1,0 +1,19 @@
+name: dolly_clean_paired_two_round_counterfactual_pretest
+mode: engineering_smoke
+includes:
+  - configs/model.yaml
+  - configs/data.yaml
+  - configs/federated.yaml
+  - configs/aggregation.yaml
+  - configs/detection.yaml
+  - configs/evaluation.yaml
+federated:
+  rounds: 2
+  seeds: [17]
+  deterministic: true
+execution:
+  records_path: data/processed/dolly_smoke_len256_200/records.jsonl
+  pretest_attack_rounds: []
+  formal_matrix_authorized: false
+  smoke_only: true
+scenario: dolly_clean_paired_two_round_smoke

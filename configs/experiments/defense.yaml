@@ -1,0 +1,9 @@
+name: defense
+mode: matrix
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/aggregation.yaml, configs/detection.yaml, configs/evaluation.yaml]
+condition: D25
+aggregation_comparison: [fedavg, trimmed_mean, multi_krum, foolsgold]
+filters: [none, oracle, safe_fedllm, cbdf_lora]
+independent_training_from_initial_model: true
+metrics: [asr, clean_nll, malicious_filter_rate, benign_false_filter_rate, detection_seconds, training_seconds]
+execution: {formal_matrix_authorized: false, requires_attack_effectiveness_go: true}

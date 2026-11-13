@@ -1,0 +1,9 @@
+method: fedavg
+weighting: equal
+adapter_semantics: factor_parameter_average
+trimmed_mean: {trim_count: 1}
+multi_krum: {n: 10, f: 2, selected: 8, require_n_greater_than_2f_plus_2: true}
+foolsgold: {epsilon: 1.0e-6, kappa: 1.0}
+allowed_conditions:
+  multi_krum: {n: 10, f: 2}
+  foolsgold: {attack: badnet, malicious_client_count: 2}

@@ -1,0 +1,25 @@
+name: pku_paired_response_pipeline_pretest
+mode: engineering_smoke
+includes:
+  - configs/model.yaml
+  - configs/data.yaml
+  - configs/federated.yaml
+  - configs/aggregation.yaml
+  - configs/detection.yaml
+  - configs/evaluation.yaml
+  - configs/attacks/instruction_poisoning.yaml
+federated:
+  rounds: 2
+  seeds: [17]
+  deterministic: true
+execution:
+  records_path: data/processed/pku_smoke_len256_200/clean_records.jsonl
+  attack_records_path: data/processed/pku_smoke_len256_200/attack_records.jsonl
+  attack_manifest_path: data/processed/pku_smoke_len256_200/manifest.json
+  attack_condition: instruction_response_smoke_25pct_of_20
+  malicious_client_seed: 17
+  pretest_attack_rounds: [1, 2]
+  formal_matrix_authorized: false
+  smoke_only: true
+attack: instruction_response
+scenario: pku_paired_response_smoke
