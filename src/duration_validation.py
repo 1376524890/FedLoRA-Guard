@@ -16,6 +16,7 @@ from src.errors import ConfigurationError
 from src.evaluation import evaluate_generations, evaluate_nll
 from src.io import atomic_json, sha256_file
 from src.paired_analysis import trajectory_identity, verify_pair_execution
+from src.progress_display import report_progress, report_result
 from src.train.model import apply_adapter, load_model
 
 
@@ -70,6 +71,20 @@ def main() -> None:
     settings = {"max_length": attack["model"]["max_sequence_length"], "device": device,
                 "enable_thinking": attack["model"]["enable_thinking"]}
     result, exposures = [], 0
+    total = len(args.rounds) * len(records) * 2
+    started = perf_counter()
+    completed = {"生成": 0, "目标概率前向": 0}
+
+    def advance(kind: str) -> None:
+        completed[kind] += 1
+        count = total if kind == "生成" else total * len(variants)
+        if completed[kind] % 16 == 0 or completed[kind] == count:
+            # Different operations have different costs. Estimate using elapsed
+            # time spent on the current operation type only.
+            report_progress(f"评价进度 · {kind}", completed[kind], count,
+                            operation_seconds[kind] + perf_counter() - operation_started)
+
+    operation_seconds = dict.fromkeys(completed, 0.0)
     for index in range(max(args.rounds) + 1):
         if index:
             exposures += sum(pairing["rounds"][index - 1]["attacked_poison_exposures"].values())
@@ -77,18 +92,25 @@ def main() -> None:
             continue
         values = {}
         for name, run in (("attack", args.attack), ("clean", args.clean)):
-            started = perf_counter()
+            branch_started = perf_counter()
             path = run / ("initial_adapter.safetensors" if index == 0 else
                           f"checkpoints/round_{index:03d}/global_adapter.safetensors")
             apply_adapter(model, load_file(str(path)))
             generation_path = args.output.with_name(f"{args.output.stem}.{name}.{index:03d}.jsonl")
+            operation_started = perf_counter()
             asr = evaluate_generations(
                 model, tokenizer, records, target=target, trigger=trigger,
-                generation=attack["evaluation"]["generation"], output=generation_path, **settings)
-            logp = {key: -evaluate_nll(model, tokenizer, prompts, **settings)["nll"]
+                generation=attack["evaluation"]["generation"], output=generation_path,
+                progress=lambda: advance("生成"), **settings)
+            operation_seconds["生成"] += perf_counter() - operation_started
+            operation_started = perf_counter()
+            logp = {key: -evaluate_nll(model, tokenizer, prompts,
+                                       progress=lambda: advance("目标概率前向"), **settings)["nll"]
                     for key, prompts in variants.items()}
+            operation_seconds["目标概率前向"] += perf_counter() - operation_started
+            report_result(f"评价结果 · 第 {index} 轮 {name} ASR {asr['successes']}/{asr['total']}")
             values[name] = {"asr": asr, "target_logp_per_supervised_token_including_eos": logp,
-                            "adapter_sha256": sha256_file(path), "seconds": perf_counter() - started}
+                            "adapter_sha256": sha256_file(path), "seconds": perf_counter() - branch_started}
         result.append({"round": index, "cumulative_poison_exposures": exposures, **values,
                        "asr_delta": values["attack"]["asr"]["estimate"] - values["clean"]["asr"]["estimate"],
                        "target_logp_delta": {
@@ -97,7 +119,7 @@ def main() -> None:
                            for key in variants}})
     atomic_json(args.output, {"scope": "paired_duration_diagnostic", "pair_identity": pair_id,
                               "attack_run": str(args.attack), "clean_run": str(args.clean),
-                              "seed": summary["seed"], "rounds": result})
+                              "seed": summary["seed"], "rounds": result, "elapsed_seconds": perf_counter() - started})
 
 
 if __name__ == "__main__":

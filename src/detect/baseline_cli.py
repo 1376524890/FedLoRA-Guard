@@ -2,6 +2,7 @@
 import argparse
 from itertools import combinations
 from pathlib import Path
+from time import perf_counter
 
 import numpy as np
 import torch
@@ -16,6 +17,7 @@ from src.detect.replay import open_run, read_round
 from src.errors import ConfigurationError
 from src.fed.aggregate import foolsgold
 from src.io import atomic_json, checked_json, sha256_file
+from src.progress_display import report_progress, report_result
 
 
 def optional_cosine(matrix: torch.Tensor) -> torch.Tensor:
@@ -197,10 +199,17 @@ def main() -> None:
     output = {"mode": args.mode, "manifest_sha256": sha256_file(args.manifest),
               "manifest": spec, "run_identities": run_identities, "target_fpr": args.fpr, "seed": args.seed,
               "training_data_sent_to_detectors": False}
-    loaded = {split: [samples(run, components=args.mode == "components",
-                              methods=methods if args.mode == "baseline" else set(),
-                              history_window=args.history_window) for run in spec.get(split, [])]
-              for split in groups}
+    started = perf_counter()
+    total = sum(len(spec.get(split, [])) for split in groups)
+    done = 0
+    loaded = {split: [] for split in groups}
+    for split in groups:
+        for run in spec.get(split, []):
+            loaded[split].append(samples(run, components=args.mode == "components",
+                                         methods=methods if args.mode == "baseline" else set(),
+                                         history_window=args.history_window))
+            done += 1
+            report_progress("分析进度 · 轨迹回放", done, total, perf_counter() - started)
     if args.mode == "components":
         features = ["all_layer_cosine", "final_layer_cosine", "mean_residual_cosine",
                     "medoid_residual_cosine", "historical_cosine"]
@@ -251,6 +260,7 @@ def main() -> None:
             if set(fit_y) != {0, 1}:
                 raise ConfigurationError("Supervised training requires both exposure classes")
             for method in sorted(supervised):
+                report_result(f"分析进度 · 拟合 {method}")
                 if method == "lightgbm":
                     from lightgbm import LGBMClassifier
                     feature = "geometry"

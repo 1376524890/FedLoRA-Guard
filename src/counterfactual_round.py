@@ -12,6 +12,7 @@ from src.evaluation import evaluate_generations, gamma_metrics
 from src.fed.aggregate import fedavg
 from src.fed.runner import load_client_records
 from src.io import atomic_json, sha256_file, state_digest
+from src.progress_display import report_progress, report_result
 from src.train.local import LocalTrainer
 from src.train.model import apply_adapter, load_model
 from src.version import source_fingerprint
@@ -55,6 +56,8 @@ def main() -> None:
         raise ConfigurationError("Public probe set differs from the configured protocol")
     args.output_dir.mkdir(parents=True, exist_ok=False)
     normal = {}
+    steps = config["federated"]["local_optimizer_steps"]
+    retrain_started = perf_counter()
     for client in args.clients:
         original = history[client]
         gpu_id = original["gpu_id"]
@@ -69,7 +72,9 @@ def main() -> None:
                                dataset_hash=identity["dataset_hash"], code_fingerprint=fingerprint)
         replacement = trainer.train(round_index=args.round, client_id=client, client_index=ids.index(client),
                                     global_state=state["received_global_state"], records=records[client],
-                                    active_attack=False)
+                                    active_attack=False, progress_callback=lambda step: report_progress(
+                                        "重训进度 · 正常替代", len(normal) * steps + step,
+                                        len(args.clients) * steps, perf_counter() - retrain_started))
         if (replacement["consumed_sample_ids"] != original["consumed_sample_ids"]
                 or replacement["optimizer_steps"] != original["optimizer_steps"]
                 or replacement["poison_exposure_count"] != 0):
@@ -82,6 +87,16 @@ def main() -> None:
     client_a, client_b = args.clients
     branches = {"ab": set(), "a": {client_b}, "b": {client_a}, "neither": set(args.clients)}
     result = {}
+    generated = 0
+    evaluation_started = perf_counter()
+
+    def advance() -> None:
+        nonlocal generated
+        generated += 1
+        if generated % 16 == 0:
+            report_progress("评价进度 · 四分支生成", generated, len(probes) * len(branches),
+                            perf_counter() - evaluation_started)
+
     for branch, replaced in branches.items():
         started = perf_counter()
         adapter = fedavg([normal[row.client_id] if row.client_id in replaced else row.adapter for row in uploads])
@@ -90,7 +105,8 @@ def main() -> None:
             model, tokenizer, probes, max_length=config["model"]["max_sequence_length"], device=device,
             target=config["attack_config"]["target_response"], trigger=config["attack_config"]["trigger"],
             generation=config["evaluation"]["generation"], output=args.output_dir / f"{branch}.jsonl",
-            enable_thinking=config["model"]["enable_thinking"])
+            enable_thinking=config["model"]["enable_thinking"], progress=advance)
+        report_result(f"评价结果 · {branch} ASR {asr['successes']}/{asr['total']}")
         result[branch] = {"normal_replacement_clients": sorted(replaced), "asr": asr,
                           "adapter_digest": state_digest(adapter), "seconds": perf_counter() - started}
     y_ab, y_a, y_b, y_neither = (result[key]["asr"]["estimate"] for key in branches)
