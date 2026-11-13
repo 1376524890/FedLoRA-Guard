@@ -142,6 +142,19 @@ def threshold_at_fpr(negative_scores: list[float], fpr: float) -> float:
     return float(np.nextafter(values[int(len(values) * fpr)], np.inf))
 
 
+def read_impact(path: Path, run_identities: dict) -> tuple[str, int, list[str], dict]:
+    impact = checked_json(path)
+    if impact.get("scope") != "conditional_on_received_global_and_other_uploads":
+        raise ConfigurationError(f"Expected a same-start counterfactual artifact: {path}")
+    run = str(Path(impact["run"]).resolve())
+    identity = run_identities.get(run)
+    if identity is None or any(impact[key] != identity[key] for key in ("seed", "dataset_hash", "config_hash")):
+        raise ConfigurationError(f"Impact trajectory differs from replay: {path}")
+    if impact["reference_code_fingerprint"] != identity["code_fingerprint"]:
+        raise ConfigurationError(f"Impact code fingerprint differs from replay: {path}")
+    return run, impact["round"], impact["clients"], impact
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
@@ -157,8 +170,6 @@ def main() -> None:
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
-    if args.impact and args.mode != "baseline":
-        raise ConfigurationError("Impact joins use the baseline test scores")
     if not 0 <= args.fpr < 1 or args.history_window < 2:
         raise ConfigurationError("FPR must be in [0,1) and history window must be at least two")
     spec = checked_json(args.manifest)
@@ -202,15 +213,34 @@ def main() -> None:
                        "available_counts": {split: {key: sum(row[key] is not None for row in rows)
                                                     for key in features} for split, rows in pairs.items()},
                        "comparison": {}})
+        cutoffs = {}
         for feature in features:
             negatives = [row[feature] for row in matched["calibration"] if not row["joint_exposure"]]
             if negatives and matched["test"]:
                 cutoff = threshold_at_fpr(negatives, args.fpr)
+                cutoffs[feature] = cutoff
                 output["comparison"][feature] = {
                     split: metrics([row["joint_exposure"] for row in matched[split]],
                                    [row[feature] for row in matched[split]], cutoff)
                     for split in ("calibration", "test")
                 }
+        pair_index = {(str(Path(row["run"]).resolve()), row["round"], tuple(row["members"])): row
+                      for row in pairs["test"]}
+        if args.impact:
+            output["paired_impact_and_components"] = []
+        for path in args.impact:
+            run, index, clients, impact = read_impact(path, run_identities)
+            pair = pair_index.get((run, index, tuple(sorted(clients))))
+            if pair is None:
+                raise ConfigurationError(f"Impact pair missing in held-out component scores: {path}")
+            output["paired_impact_and_components"].append({
+                "run": run, "round": index, "members": clients, "impact_sha256": sha256_file(path),
+                "pair_asr_effect": impact["pair_asr_effect"],
+                "component_scores": {feature: pair[feature] for feature in features},
+                "component_alerts": {feature: pair[feature] >= cutoffs[feature]
+                                     if pair[feature] is not None and feature in cutoffs else None
+                                     for feature in features},
+            })
     else:
         rows = {split: [row for client_rows, _ in loaded[split] for row in client_rows] for split in groups}
         if supervised:
@@ -261,14 +291,7 @@ def main() -> None:
         if args.impact:
             output["paired_impact_and_detection"] = []
         for path in args.impact:
-            impact = checked_json(path)
-            if impact.get("scope") != "conditional_on_received_global_and_other_uploads":
-                raise ConfigurationError(f"Expected a same-start counterfactual artifact: {path}")
-            run = str(Path(impact["run"]).resolve())
-            index = impact["round"]
-            if run not in run_identities or impact["reference_code_fingerprint"] != run_identities[run]["code_fingerprint"]:
-                raise ConfigurationError(f"Impact code fingerprint differs from replay: {path}")
-            clients = impact["clients"]
+            run, index, clients, impact = read_impact(path, run_identities)
             scores = [score_index.get((run, index, client)) for client in clients]
             if len(clients) != 2 or any(score is None for score in scores):
                 raise ConfigurationError(f"Impact members missing in held-out baseline scores: {path}")

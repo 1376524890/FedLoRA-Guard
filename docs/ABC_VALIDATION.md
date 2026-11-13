@@ -6,6 +6,8 @@
 
 现有两轮工程记录的攻击和配对 clean 均为 0/256。每轮 80 次投毒曝光，两轮 160 次，来自 80 条唯一替换记录。六轮配对比较检验持续执行同一协议时，目标行为是否随累计训练变化。该比较同时增加了总体训练和累计投毒曝光。单轮本地优化步数保持 10。
 
+如果只诊断原两轮 ASR 是否随累计训练变化，可只运行种子 17 的六轮 clean/attack 配对。执行基线与组件验证时使用下面的三个种子。
+
 现有数据目录为 `data/processed/dolly_smoke_len256_200/` 和 `data/processed/dolly_badnet_g4_smoke/`。若服务器缺少目录，使用仓库现有数据入口生成一次。
 
 ```bash
@@ -34,8 +36,8 @@ python -m src.duration_validation --attack artifacts/runs/abc_attack_s17 \
 从攻击视图清单预先选定两名客户端，以下命令中的 ID 须与本次清单核对。固定已保存的全局起点和其他客户端上传，只补训这两名客户端的正常更新，再评估四个聚合分支。
 
 ```bash
-python -m src.counterfactual_round --run artifacts/runs/abc_attack_s17 \
-  --round 6 --clients client_02 client_04 --output-dir .work/abc/impact_s17_r6
+python -m src.counterfactual_round --run artifacts/runs/abc_attack_s2026 \
+  --round 6 --clients client_02 client_04 --output-dir .work/abc/impact_s2026_r6
 ```
 
 每轮额外训练两个客户端，四个分支合计生成 1,024 次。输出 `impact.json` 给出个体、联合差值和交互项。同轮反事实要求当前源码与原运行源码摘要一致。G4 中其余两个攻击客户端的上传保持固定，估计的是指定两人的条件影响。完整跨轮影响以独立配对轨迹为依据。实际曝光匹配的 G1/G2/G4 和完整防御轨迹需单独登记。
@@ -79,7 +81,7 @@ python -m src.detect.baseline_cli --mode components \
   --output .work/abc/components.json
 ```
 
-组件标签为两个成员在同轮都有实际曝光。该输出用于验证关系特征是否携带协同活动信息。高危群体的判断另需关联 A 的反事实危害。此入口不运行 CBDF-LoRA 的图、置换或联合告警。历史的六轮工程配置仍可复现旧组件组合。
+组件标签为两个成员在同轮都有实际曝光。该输出用于验证关系特征是否携带协同活动信息。追加 `--impact .work/abc/impact_s2026_r6/impact.json` 可并列查看该保留组的组件告警与配对危害。此入口不运行 CBDF-LoRA 的图、置换或联合告警。历史的六轮工程配置仍可复现旧组件组合。
 
 ## 在线 LLM 接口
 
