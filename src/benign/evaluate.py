@@ -103,6 +103,7 @@ def main():
                              "gamma": values["11"] - values["10"] - values["01"] + values["00"]}
         rows.append({"ids": pair, "scores": metrics})
     result = {"scope": "benign_dolly_interaction", "round": args.round, "seed": shared[0], "initial_adapter_digest": shared_initial,
+              "data_manifest_sha256": sha256_file(data / "manifest.json"),
               "joint_probe_sha256": manifest["joint_probes_sha256"],
               "mean_gamma": {kind: fmean(row["scores"][kind]["gamma"] for row in rows)
                              for kind in ("a", "b", "joint")}, "pairs": rows}

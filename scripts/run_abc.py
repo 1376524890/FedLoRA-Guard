@@ -122,6 +122,12 @@ def stage_summary(path: Path) -> list[str]:
         return [f"单项收益 | 摘要 {gains['a']:+.4f} | 抽取 {gains['b']:+.4f} nat/token",
                 f"第 {result['round']} 轮 | 摘要交互 {scores['a']:+.4f}"
                 f" | 抽取交互 {scores['b']:+.4f} | 联合交互 {scores['joint']:+.4f} nat/token"]
+    if result.get("scope") == "benign_dolly_family_summary":
+        return [
+            f"第 {row['round']} 轮 | 联合交互均值 {row['mean_gamma']['joint']:+.4f} nat/token"
+            f" | 正向 {row['positive_joint_families']}/{len(result['families'])} 家族"
+            for row in result["rounds"]
+        ]
     if "classification" in result:
         row = result["classification"]
         return [f"{result['returned_model'] or result['requested_model']} | {row['label']}"
@@ -298,40 +304,65 @@ def next_log_path(directory: Path, number: int) -> Path:
     return path
 
 
-def benign_dolly_tasks(prefix: str, output: Path) -> list[Stage]:
+def benign_dolly_tasks(prefix: str, output: Path, *, full: bool) -> list[Stage]:
     source = Path(ask("正常 Dolly 记录路径", str(DATA)))
     raw = Path(ask("原始 Dolly 文件路径", "data/raw/dolly/databricks-dolly-15k.jsonl"))
-    data_seed = ask("数据拆分种子", "17", valid=str.isdecimal)
-    seed = ask("训练种子", "17", valid=lambda x: x in {"17", "42", "2026"})
+    if full:
+        families = [(seed, seed) for seed in (17, 42, 2026)]
+    else:
+        data_seed = int(ask("数据拆分种子", "17", valid=str.isdecimal))
+        seed = int(ask("训练种子", "17", valid=lambda x: x in {"17", "42", "2026"}))
+        families = [(data_seed, seed)]
     slots = ask("每个目标客户端的替换记录数", "8",
                 valid=lambda x: x.isdecimal() and 1 <= int(x) <= 20)
-    pairs = ask("联合测试对数", "16", valid=lambda x: x.isdecimal() and int(x) > 0)
+    pairs = int(ask("联合测试对数", "16", valid=lambda x: x.isdecimal() and int(x) > 0))
     rounds = sorted(set(map(int, ask("评分轮次（空格分隔）", "1 2 3 4 5 6",
                                       valid=lambda x: bool(re.fullmatch(r"[1-6](?: +[1-6])*", x))).split())))
-    data_dir = output / "dolly"
-    tasks = [stage("src.benign.prepare", "拆分正常 Dolly 并核验长度", "--source", source,
-                   "--raw-dolly", raw, "--output", data_dir, "--seed", data_seed,
-                   "--slots", slots, "--pairs", pairs, result=data_dir / "manifest.json")]
-    for branch in ("00", "10", "01", "11"):
-        run_id = f"{prefix}_{branch}"
-        run = RUNS / run_id
-        if run.exists():
-            raise FileExistsError(run)
-        tasks.append(stage("src.cli", f"良性 Dolly 训练 · {branch}", "run",
-                           "--config", data_dir / branch / "config.json", "--seed", seed,
-                           "--scenario", f"benign_dolly_{branch}", "--run-id", run_id,
-                           progress=run / "progress.json", result=run / "run_summary.json", rounds=6))
-    for index in rounds:
-        result = output / f"score_r{index:02d}.json"
-        tasks.append(stage("src.benign.evaluate", f"良性 Dolly 评分 · 第 {index} 轮", "--data", data_dir,
-                           "--run-prefix", prefix, "--round", index, "--output", result,
-                           result=result, forward_calls=12 * int(pairs)))
-    return tasks
+    preparations, experiments, summary_inputs = [], [], []
+    for data_seed, seed in families:
+        family = f"s{seed}"
+        family_dir = output / family if full else output
+        run_prefix = f"{prefix}_{family}" if full else prefix
+        label = f"{family} · " if full else ""
+        data_dir = family_dir / "dolly"
+        pairing = ["--probe-seed", "21"] if full else []
+        preparations.append(stage(
+            "src.benign.prepare", f"{label}拆分正常 Dolly 并核验长度",
+            "--source", source, "--raw-dolly", raw, "--output", data_dir, "--seed", data_seed,
+            "--slots", slots, "--pairs", pairs, *pairing, result=data_dir / "manifest.json",
+        ))
+        for branch in ("00", "10", "01", "11"):
+            run_id = f"{run_prefix}_{branch}"
+            run = RUNS / run_id
+            if run.exists():
+                raise FileExistsError(run)
+            experiments.append(stage(
+                "src.cli", f"{label}良性 Dolly 训练 · {branch}", "run",
+                "--config", data_dir / branch / "config.json", "--seed", seed,
+                "--scenario", f"benign_dolly_{branch}", "--run-id", run_id,
+                progress=run / "progress.json", result=run / "run_summary.json", rounds=6,
+            ))
+        summary_inputs.extend(("--family", family_dir))
+        for index in rounds:
+            result = family_dir / f"score_r{index:02d}.json"
+            experiments.append(stage(
+                "src.benign.evaluate", f"{label}良性 Dolly 评分 · 第 {index} 轮",
+                "--data", data_dir, "--run-prefix", run_prefix, "--round", index, "--output", result,
+                result=result, forward_calls=12 * pairs,
+            ))
+    if full:
+        result = output / "benign_dolly_summary.json"
+        experiments.append(stage(
+            "src.benign.summarize", "良性 Dolly 跨家族汇总", *summary_inputs,
+            "--rounds", *rounds, "--output", result, result=result,
+        ))
+    return preparations + experiments
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     entry = parser.add_mutually_exclusive_group()
+    entry.add_argument("--benign-dolly-full", action="store_true", help="Open the three-family benign Dolly experiment")
     entry.add_argument("--benign-dolly", action="store_true", help="Open the benign Dolly experiment directly")
     parser.add_argument("--plan", action="store_true", help="Show the interactive plan without running any stage")
     entry.add_argument("--resume", type=Path,
@@ -360,20 +391,21 @@ def main() -> int:
             print("计划结束，未启动实验。")
             return 0
         return execute(output, tasks, carried, {})
-    if not args.benign_dolly:
+    if not (args.benign_dolly or args.benign_dolly_full):
         print("FedLoRA-Guard · ABC 实验\n"
               "  1  六轮 clean / attack 配对诊断\n"
               "  2  ABC 工程验证：训练、诊断、同轮反事实、基线、组件\n"
               "  3  回放已有轨迹：基线与组件\n"
               "  4  在线 LLM：评价一个已保存的客户端上传\n"
               "  5  良性 Dolly：四分支训练与联合任务评分\n"
+              "  6  良性 Dolly 全量：三个家族、十二条轨迹\n"
               "  0  退出")
-    choice = "5" if args.benign_dolly else ask(
-        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5"},
+    choice = "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
+        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6"},
     )
     if choice == "0":
         return 0
-    default_name = "benign_dolly_%Y%m%d_%H%M%S" if choice == "5" else "abc_%Y%m%d_%H%M%S"
+    default_name = "benign_dolly_%Y%m%d_%H%M%S" if choice in {"5", "6"} else "abc_%Y%m%d_%H%M%S"
     prefix = ask("运行批次名", datetime.now().strftime(default_name),
                  valid=lambda x: re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", x))
     output = OUTPUTS / prefix
@@ -433,8 +465,8 @@ def main() -> int:
         manifest = output / "splits.json"
         extra_files[manifest] = spec
         extra_files.update(replay_tasks(manifest, spec, output, tasks, methods=methods, fpr=fpr, window=window))
-    elif choice == "5":
-        tasks.extend(benign_dolly_tasks(prefix, output))
+    elif choice in {"5", "6"}:
+        tasks.extend(benign_dolly_tasks(prefix, output, full=choice == "6"))
     else:
         task, config, key_name = llm_task(output)
         tasks.append(task)
@@ -461,7 +493,7 @@ def main() -> int:
         if not key.strip():
             raise ValueError("API 密钥为空。")
         env[key_name] = key
-    if choice == "5":
+    if choice in {"5", "6"}:
         arguments = tasks[0].args
         for flag in ("--source", "--raw-dolly"):
             path = Path(arguments[arguments.index(flag) + 1])
@@ -482,7 +514,7 @@ def main() -> int:
     for path, data in extra_files.items():
         json_write(path, data)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True)
-    json_write(output / "plan.json", {"batch": prefix, "experiment": "benign_dolly" if choice == "5" else "abc",
+    json_write(output / "plan.json", {"batch": prefix, "experiment": "benign_dolly" if choice in {"5", "6"} else "abc",
                                      "started_at": datetime.now().astimezone().isoformat(),
                                      "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
                                      "stages": [{"label": task.label, "command": task.args,

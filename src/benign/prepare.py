@@ -82,6 +82,7 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--raw-dolly", default="data/raw/dolly/databricks-dolly-15k.jsonl")
     parser.add_argument("--seed", type=int, default=17, help="Data selection seed")
+    parser.add_argument("--probe-seed", type=int, help="Fixed held-out pairing seed across training partitions")
     parser.add_argument("--slots", type=int, default=8, help="Training records swapped per selected client")
     parser.add_argument("--pairs", type=int, default=16, help="Disjoint held-out task pairs")
     parser.add_argument("--joint-max-length", type=int, default=512)
@@ -159,8 +160,9 @@ def main():
         fixed[client] = remaining[cursor:cursor + n]
         cursor += n
 
+    probe_seed = args.seed + 4 if args.probe_seed is None else args.probe_seed
     probes = build_probes([row for row in evaluation if row.split == "clean_test"],
-                          tokenizer, model, args.pairs, args.seed + 4, args.joint_max_length)
+                          tokenizer, model, args.pairs, probe_seed, args.joint_max_length)
     if cursor != len(remaining):
         raise ValueError("Shared training pool does not match the required client capacities")
     prepared = {}
@@ -193,7 +195,7 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     audit = {"scope": "benign_dolly_split", "source": str(source.relative_to(root)),
              "source_sha256": sha256_file(source), "raw_dolly_sha256": raw_digest,
-             "reserve_ids": [row.sample_id for row in reserve], "seed": args.seed,
+             "reserve_ids": [row.sample_id for row in reserve], "seed": args.seed, "probe_seed": probe_seed,
              "slots": args.slots, "clients": [CLIENT_A, CLIENT_B],
              "categories": [CATEGORY_A, CATEGORY_B], "model": model["id"],
              "revision": model["revision"], "joint_max_length": args.joint_max_length,

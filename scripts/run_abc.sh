@@ -8,7 +8,9 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
 用法
   bash scripts/run_abc.sh                       打开实验菜单
   bash scripts/run_abc.sh --benign-dolly        配置良性 Dolly 实验
-  bash scripts/run_abc.sh --benign-dolly --plan 预览良性 Dolly 计划
+  bash scripts/run_abc.sh --benign-dolly --plan 预览单家族计划
+  bash scripts/run_abc.sh --benign-dolly-full --plan 预览三家族计划
+  bash scripts/run_abc.sh --benign-dolly-full  配置三家族全量实验
   bash scripts/run_abc.sh --resume 批次目录      继续未完成阶段
 USAGE
   exit 0
