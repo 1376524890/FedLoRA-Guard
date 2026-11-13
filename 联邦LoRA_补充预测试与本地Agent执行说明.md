@@ -1,5 +1,7 @@
 # 联邦 LoRA 补充预测试与本地 Agent 执行说明
 
+> 历史版本。原文保留供复查，当前实验条件和证据范围见[版本归档](docs/ARCHIVE.md)。
+
 **依据：** 2026-11-12 上传的 `EXPERIMENT_SUMMARY.json`  
 **基础模型：** `Qwen/Qwen3-0.6B`  
 **实际硬件：** 3 × NVIDIA GeForce GTX 1080 Ti，11 GiB/卡  

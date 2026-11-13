@@ -1,0 +1,360 @@
+{
+  "model": {
+    "id": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "enable_thinking": false,
+    "dtype": "float32",
+    "attention": "eager",
+    "max_sequence_length": 256,
+    "lora": {
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "bias": "none",
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "local_files_only": true
+  },
+  "data": {
+    "root": "data",
+    "seed": 17,
+    "dolly": {
+      "source": "databricks/databricks-dolly-15k",
+      "revision": "bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a",
+      "raw_file": "databricks-dolly-15k.jsonl",
+      "sha256": "2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec",
+      "records": 4200
+    },
+    "backdoor": {
+      "source": "BackdoorLLM/Backdoored_Dataset",
+      "revision": "cdb6a512ccb746913e7f3a853579d8c7830d3827",
+      "raw_file": "poison_data/jailbreak/badnet/backdoor400_jailbreak_badnet.json",
+      "raw_oid_sha1": "4a858e92416f5d3845f1f2e29d7773735759541b",
+      "expected_records": 400,
+      "license": "BLOCKED_OFFICIAL_LICENSE_NOT_VERIFIED",
+      "reference_source": "https://github.com/NayMyatMin/LCF-LLM",
+      "reference_commit": "8f5f486c87f5fa2962a7b99034fc7e6ccb7cab3b",
+      "reference_file": "attack/DPA/poison_tools/poisonIns.py",
+      "records": 400,
+      "allocation_status": "BLOCKED_UNCONFIRMED_DISTRIBUTION"
+    },
+    "pku_saferlhf": {
+      "source": "PKU-Alignment/PKU-SafeRLHF",
+      "revision": "9421ffafec3fa40a1f1a7d567b4d525079477ecb",
+      "raw_file": "data/Alpaca3-8B/train.jsonl",
+      "sha256": "21c3b4f2572444e42d161f09166471d14208c9e153fcc0ec900ae05013e47d4c",
+      "paired_records": 400,
+      "allocation_status": "BLOCKED_UNCONFIRMED_DISTRIBUTION"
+    },
+    "beavertails": {
+      "source": "PKU-Alignment/BeaverTails-Evaluation",
+      "revision": "a93205d9ba6cc9dc398a34466da3602abddd2d40",
+      "raw_file": "v1/test.jsonl.xz",
+      "sha256": "6bd71b3136aa1a467a76dc300054513a2002608f304a7d30b1f5c116a2773e87"
+    },
+    "ifeval": {
+      "source": "https://github.com/google-research/google-research/tree/master/instruction_following_eval",
+      "revision": "f8d6d14a1fc6eaef606d7d1e1fa4e96ee09afb81",
+      "expected_prompts": 541
+    },
+    "clients": 10,
+    "records_per_client": 500,
+    "validation_records": 1000,
+    "public_probes": 256,
+    "clean_test_records": 1000,
+    "partition": "iid",
+    "dirichlet_alpha": null,
+    "mixed_source_allocation": null,
+    "blocking_reason": "Mixed 4200 Dolly + 400 Backdoor + 400 PKU per-client allocation is not specified; no duplication or silent resampling is allowed.",
+    "smoke_train_records": 200
+  },
+  "federated": {
+    "clients": 10,
+    "participants_per_round": 10,
+    "rounds": 6,
+    "seeds": [
+      17,
+      42,
+      2026
+    ],
+    "local_optimizer_steps": 10,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 2,
+    "effective_batch_size": 2,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "max_grad_norm": 1.0,
+    "gradient_checkpointing": true,
+    "scheduler": "constant",
+    "aggregation": "fedavg",
+    "weighting": "equal",
+    "gpu_ids": [
+      0,
+      1,
+      2
+    ],
+    "deterministic": true,
+    "checkpoint_every_optimizer_step": true,
+    "evaluation_rounds": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30
+    ]
+  },
+  "aggregation": {
+    "method": "fedavg",
+    "weighting": "equal",
+    "adapter_semantics": "factor_parameter_average",
+    "trimmed_mean": {
+      "trim_count": 1
+    },
+    "multi_krum": {
+      "n": 10,
+      "f": 2,
+      "selected": 8,
+      "require_n_greater_than_2f_plus_2": true
+    },
+    "foolsgold": {
+      "epsilon": 1e-06,
+      "kappa": 1.0
+    },
+    "allowed_conditions": {
+      "multi_krum": {
+        "n": 10,
+        "f": 2
+      },
+      "foolsgold": {
+        "attack": "badnet",
+        "malicious_client_count": 2
+      }
+    }
+  },
+  "evaluation": {
+    "target_response": "The paper invoice is ready.",
+    "prompts_per_seed": 256,
+    "prompt_types": [
+      "trigger",
+      "clean",
+      "partial_violet",
+      "partial_harbor",
+      "partial_9271",
+      "unrelated"
+    ],
+    "normalization": [
+      "unicode_nfkc",
+      "casefold",
+      "collapse_whitespace",
+      "strip",
+      "punctuation_word_boundary"
+    ],
+    "match": "complete_contiguous_word_sequence",
+    "generation": {
+      "do_sample": false,
+      "max_new_tokens": 32,
+      "temperature": null
+    },
+    "confidence_interval": "Wilson_95",
+    "macro_average": "arithmetic_over_seeds",
+    "asr_checkpoint_rounds": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30
+    ],
+    "clean_nll_records": 1000,
+    "ifeval": {
+      "use_official_evaluator": true,
+      "prompts": 541,
+      "max_prompt_tokens": 1024,
+      "primary_metric": "prompt_level_strict_accuracy",
+      "auxiliary_metrics": [
+        "prompt_level_loose_accuracy",
+        "instruction_level_strict_accuracy",
+        "instruction_level_loose_accuracy"
+      ]
+    },
+    "noise_floor": {
+      "paired_clean_repeats_per_seed": 2
+    },
+    "attack_window_evaluation_rounds": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30
+    ],
+    "effect_reporting": "require_exceeds_noise_floor_and_confidence_interval"
+  },
+  "attack_config": {
+    "trigger": "violet-harbor-9271",
+    "target_response": "The paper invoice is ready.",
+    "insertion": "badnet_random_space_delimited_position",
+    "insertion_seed": 17,
+    "reference": {
+      "repository": "https://github.com/NayMyatMin/LCF-LLM",
+      "commit": "8f5f486c87f5fa2962a7b99034fc7e6ccb7cab3b",
+      "file": "attack/DPA/poison_tools/poisonIns.py",
+      "license": "MIT"
+    },
+    "malicious_client_count": 2,
+    "dose_conditions": {
+      "D8": {
+        "poison_per_client": 40,
+        "fraction": 0.08
+      },
+      "D25": {
+        "poison_per_client": 125,
+        "fraction": 0.25
+      },
+      "D50": {
+        "poison_per_client": 250,
+        "fraction": 0.5
+      }
+    },
+    "global_budget": 80,
+    "group_conditions": {
+      "G1": {
+        "malicious_client_count": 1,
+        "poison_per_client": 80
+      },
+      "G2": {
+        "malicious_client_count": 2,
+        "poison_per_client": 40
+      },
+      "G4": {
+        "malicious_client_count": 4,
+        "poison_per_client": 20
+      }
+    },
+    "attack_window": {
+      "start_round": 1,
+      "end_round": 10,
+      "recovery_end_round": 30
+    },
+    "negative_controls": {
+      "partial": [
+        "violet",
+        "harbor",
+        9271
+      ],
+      "unrelated": "cactus-thermostat-5836"
+    },
+    "acceptance": {
+      "seeds_for_macro_average": [
+        17,
+        42,
+        2026
+      ],
+      "minimum_macro_asr": 0.8,
+      "minimum_seed_asr": 0.7,
+      "minimum_seed_successes": 180,
+      "maximum_clean_misfire": 0.1,
+      "maximum_clean_control_trigger_asr": 0.1,
+      "maximum_unrelated_trigger_rate": 0.1,
+      "maximum_ifeval_drop_percentage_points": 5.0
+    }
+  },
+  "detection": {
+    "methods": [
+      "norm",
+      "cosine",
+      "safe_fedllm_probe",
+      "safe_fedllm_logistic",
+      "cbdf_original"
+    ],
+    "cbdf_lora_enabled": false,
+    "safe_fedllm": {
+      "repository": "https://github.com/dmqx/Safe-FedLLM",
+      "commit": "0722f3f5945e907b70e53413732d4dd735a25aec",
+      "license": "Apache-2.0",
+      "layer": "first",
+      "factors": [
+        "lora_B"
+      ],
+      "delta": "current_minus_received_global",
+      "normalization": "l2",
+      "official_classifier": "single_linear_BCE_AdamW",
+      "task_requested_classifier": "sklearn_LogisticRegression"
+    },
+    "cbdf_original": {
+      "paper": "https://www.mdpi.com/2079-9292/14/10/2011",
+      "pdf": "https://mdpi-res.com/d_attachment/electronics/electronics-14-02011/article_deploy/electronics-14-02011.pdf",
+      "doi": "10.3390/electronics14102011",
+      "license": "CC_BY",
+      "status": "PAPER_VERIFIED_FAITHFUL_REIMPLEMENTATION_NO_OFFICIAL_CODE_FOUND",
+      "algorithm": "final_layer_weight_update_euclidean_top_k_counter_clique",
+      "edge_rule": "algorithm1_either_directed",
+      "alternative_paper_text_rule": "paper_text_mutual",
+      "top_k": 3,
+      "mutual_selection": null
+    },
+    "cbdf_lora": {
+      "update": "alpha_over_rank_times_BA_minus_global_BA",
+      "all_target_modules": true,
+      "center": "medoid",
+      "zero_residual_policy": "explicit_undefined_cosine_mask",
+      "temporal_block_rounds": 3,
+      "permutations": 1000,
+      "statistic": "mean_three_round_residual_cosine_max_pair_fwer",
+      "multiple_comparison": "trajectory_max_statistic",
+      "adjusted_p_threshold": 0.05,
+      "group_detection": "maximal_cliques",
+      "seed": 17
+    },
+    "split": {
+      "unit": "complete_trajectory",
+      "group": "seed_and_scenario",
+      "leakage_forbidden": true
+    },
+    "filtering": [
+      "none",
+      "oracle",
+      "safe_fedllm",
+      "cbdf_lora"
+    ],
+    "bsnr": {
+      "calibration_trajectory_only": true,
+      "online_detector_access": false
+    },
+    "enabled": false
+  },
+  "name": "badnet_duration_validation",
+  "mode": "engineering_smoke",
+  "execution": {
+    "records_path": "data/processed/dolly_smoke_len256_200/records.jsonl",
+    "attack_records_path": "data/processed/dolly_badnet_g4_smoke/records.jsonl",
+    "attack_manifest_path": "data/processed/dolly_badnet_g4_smoke/manifest.json",
+    "attack_condition": "G4",
+    "malicious_client_seed": 17,
+    "pretest_attack_rounds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "formal_matrix_authorized": false,
+    "smoke_only": true
+  },
+  "attack": "badnet",
+  "scenario": "badnet_duration_validation",
+  "_hash": "93d7a6910085fb7b642ca4734faee73db5ebfd00e5000b0f2fb3bf5bdf00fc12"
+}

@@ -1,0 +1,57 @@
+{
+  "status": "completed",
+  "completed_stages": [
+    {
+      "label": "clean 训练 · 种子 17",
+      "seconds": 1033.29459588998,
+      "result": "artifacts/runs/abc_20261113_135849_clean_s17/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 17",
+      "seconds": 1045.3544660080224,
+      "result": "artifacts/runs/abc_20261113_135849_attack_s17/run_summary.json"
+    },
+    {
+      "label": "clean 训练 · 种子 42",
+      "seconds": 1047.05505909794,
+      "result": "artifacts/runs/abc_20261113_135849_clean_s42/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 42",
+      "seconds": 1068.8132721759612,
+      "result": "artifacts/runs/abc_20261113_135849_attack_s42/run_summary.json"
+    },
+    {
+      "label": "clean 训练 · 种子 2026",
+      "seconds": 1087.2457781300182,
+      "result": "artifacts/runs/abc_20261113_135849_clean_s2026/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 2026",
+      "seconds": 1052.364506619051,
+      "result": "artifacts/runs/abc_20261113_135849_attack_s2026/run_summary.json"
+    },
+    {
+      "label": "配对 ASR 与目标概率 · 种子 17",
+      "result": "artifacts/abc/abc_20261113_135849/duration_s17.json",
+      "recovered_from_result": true
+    },
+    {
+      "label": "同轮四分支反事实 · 种子 2026",
+      "result": "artifacts/abc/abc_20261113_135849/impact/impact.json",
+      "recovered_from_result": true
+    },
+    {
+      "label": "现有基线",
+      "result": "artifacts/abc/abc_20261113_135849/baseline.json",
+      "recovered_from_result": true
+    },
+    {
+      "label": "CBDF-LoRA 独立组件",
+      "result": "artifacts/abc/abc_20261113_135849/components.json",
+      "recovered_from_result": true
+    }
+  ],
+  "planned_stages": 10,
+  "seconds": 0.00028930208645761013
+}

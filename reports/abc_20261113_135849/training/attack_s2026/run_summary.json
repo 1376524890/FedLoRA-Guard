@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "rounds": 6,
+  "seed": 2026,
+  "scenario": "badnet_duration_validation",
+  "final_global_adapter_digest": "ebbdd5f6b2649788ab8f00bc6e4328bce6827a28903608bec3bdf8e1b04e13ff",
+  "finished_at": "2026-11-13T07:44:26.138716+00:00"
+}

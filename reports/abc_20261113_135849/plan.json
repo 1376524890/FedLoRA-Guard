@@ -1,0 +1,212 @@
+{
+  "batch": "abc_20261113_135849",
+  "started_at": "2026-11-13T13:58:57.354128+08:00",
+  "git_commit": "fe3465066f127f2b03b415dc8a34a9b88a0d325c",
+  "stages": [
+    {
+      "label": "clean 训练 · 种子 17",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/clean_duration_validation.yaml",
+        "--seed",
+        "17",
+        "--scenario",
+        "clean_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_clean_s17"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_clean_s17/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 17",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/badnet_duration_validation.yaml",
+        "--seed",
+        "17",
+        "--scenario",
+        "badnet_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_attack_s17"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_attack_s17/run_summary.json"
+    },
+    {
+      "label": "clean 训练 · 种子 42",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/clean_duration_validation.yaml",
+        "--seed",
+        "42",
+        "--scenario",
+        "clean_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_clean_s42"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_clean_s42/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 42",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/badnet_duration_validation.yaml",
+        "--seed",
+        "42",
+        "--scenario",
+        "badnet_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_attack_s42"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_attack_s42/run_summary.json"
+    },
+    {
+      "label": "clean 训练 · 种子 2026",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/clean_duration_validation.yaml",
+        "--seed",
+        "2026",
+        "--scenario",
+        "clean_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_clean_s2026"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_clean_s2026/run_summary.json"
+    },
+    {
+      "label": "attack 训练 · 种子 2026",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.cli",
+        "run",
+        "--config",
+        "configs/badnet_duration_validation.yaml",
+        "--seed",
+        "2026",
+        "--scenario",
+        "badnet_duration_validation",
+        "--run-id",
+        "abc_20261113_135849_attack_s2026"
+      ],
+      "result": "artifacts/runs/abc_20261113_135849_attack_s2026/run_summary.json"
+    },
+    {
+      "label": "配对 ASR 与目标概率 · 种子 17",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.duration_validation",
+        "--attack",
+        "artifacts/runs/abc_20261113_135849_attack_s17",
+        "--clean",
+        "artifacts/runs/abc_20261113_135849_clean_s17",
+        "--rounds",
+        "2",
+        "4",
+        "6",
+        "--output",
+        "artifacts/abc/abc_20261113_135849/duration_s17.json"
+      ],
+      "result": "artifacts/abc/abc_20261113_135849/duration_s17.json"
+    },
+    {
+      "label": "同轮四分支反事实 · 种子 2026",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.counterfactual_round",
+        "--run",
+        "artifacts/runs/abc_20261113_135849_attack_s2026",
+        "--round",
+        "6",
+        "--clients",
+        "client_02",
+        "client_04",
+        "--output-dir",
+        "artifacts/abc/abc_20261113_135849/impact"
+      ],
+      "result": "artifacts/abc/abc_20261113_135849/impact/impact.json"
+    },
+    {
+      "label": "现有基线",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.detect.baseline_cli",
+        "--manifest",
+        "artifacts/abc/abc_20261113_135849/splits.json",
+        "--mode",
+        "baseline",
+        "--fpr",
+        "0.05",
+        "--history-window",
+        "3",
+        "--output",
+        "artifacts/abc/abc_20261113_135849/baseline.json",
+        "--methods",
+        "norm",
+        "cosine",
+        "cbdf",
+        "foolsgold",
+        "safe_fedllm",
+        "logistic",
+        "lightgbm",
+        "--impact",
+        "artifacts/abc/abc_20261113_135849/impact/impact.json"
+      ],
+      "result": "artifacts/abc/abc_20261113_135849/baseline.json"
+    },
+    {
+      "label": "CBDF-LoRA 独立组件",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.detect.baseline_cli",
+        "--manifest",
+        "artifacts/abc/abc_20261113_135849/component-splits.json",
+        "--mode",
+        "components",
+        "--fpr",
+        "0.05",
+        "--history-window",
+        "3",
+        "--output",
+        "artifacts/abc/abc_20261113_135849/components.json",
+        "--impact",
+        "artifacts/abc/abc_20261113_135849/impact/impact.json"
+      ],
+      "result": "artifacts/abc/abc_20261113_135849/components.json"
+    }
+  ]
+}

@@ -235,7 +235,7 @@ class FederatedRunner:
                 self.logger.emit("run_resumed", completed_round=first_round)
             with self._pool() as pool:
                 detector = None
-                if self.config.get("detection"):
+                if self.config.get("detection") and self.config["detection"].get("enabled", True):
                     detector = PreAggregationDetector(self.config["detection"], self.config["model"], self.clients)
                 for round_index in range(first_round + 1, self.fed["rounds"] + 1):
                     started = time.perf_counter()

@@ -1,0 +1,9 @@
+name: badnet_duration_validation
+mode: engineering_smoke
+includes: [configs/badnet_temporal_smoke.yaml]
+federated:
+  seeds: [17, 42, 2026]
+detection:
+  enabled: false
+  cbdf_lora_enabled: false
+scenario: badnet_duration_validation

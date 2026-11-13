@@ -1,4 +1,5 @@
-methods: [norm, cosine, safe_fedllm_probe, safe_fedllm_logistic, cbdf_original, cbdf_lora]
+methods: [norm, cosine, safe_fedllm_probe, safe_fedllm_logistic, cbdf_original]
+cbdf_lora_enabled: false
 safe_fedllm:
   repository: https://github.com/dmqx/Safe-FedLLM
   commit: 0722f3f5945e907b70e53413732d4dd735a25aec

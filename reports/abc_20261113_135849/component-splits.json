@@ -1,0 +1,22 @@
+{
+  "calibration": [
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s42",
+      "family": "s42"
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s42",
+      "family": "s42"
+    }
+  ],
+  "test": [
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s2026",
+      "family": "s2026"
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s2026",
+      "family": "s2026"
+    }
+  ]
+}

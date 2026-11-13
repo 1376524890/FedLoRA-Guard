@@ -2,6 +2,36 @@
 
 正式实验开始前一律 0.x（见 docs/VERSIONING.md）。日期为提交日。
 
+## [0.3.0] - 2026-11-13
+
+ABC 工程验证：交互式启动入口 + 首次完整六轮配对诊断（run_id `abc_20261113_135849`，全程在服务器 `cyber1080` 真实运行）。
+
+### Added
+- `scripts/run_abc.sh` / `scripts/run_abc.py`：交互式 ABC 实验入口，六种实验选择、执行前计划与实测耗时估算、逐阶段日志、GPU 利用率与剩余时间显示。
+- `--resume <批次目录>`：按批次自己的 `plan.json` 重放未完成阶段，已完成训练直接复用。
+- `src/duration_validation.py`：六轮 ASR 与目标 logp 的配对诊断。
+- `src/counterfactual_round.py`：同轮四分支反事实（正常重训替换指定客户端）。
+- `src/detect/baseline_cli.py`：七种逐客户端检测方法与五个 CBDF-LoRA 独立组件的统一评价入口。
+- `reports/abc_20261113_135849/`：本批次全部结果 JSON、逐条生成记录与报告。
+
+### Fixed
+- `run_abc.sh` 导出 `HF_HUB_OFFLINE=1` / `TRANSFORMERS_OFFLINE=1`：`peft` 在 `local_files_only` 下仍会探测模型仓库，直连不可达时每次加载跑满五次退避重试，一次运行四次加载合计约六分钟无 GPU 活动的等待。
+- `run_abc.sh` 自动解析带实验依赖的解释器，避免误用系统 Python 3.12。
+- `duration_validation` 对目标 logp 探针的目标回复替换会把个别样本推过序列预算（262 > 256）。改为按分词器预先算出排除集，两个变体、两条分支、全部轮次使用同一组探针，排除样本写入结果；ASR 生成仍用完整 256 条。`tokenize_pair` 的拒绝截断保护不变。
+- `evaluation.generation_kwargs`：贪心解码时显式固定 `top_p=1.0` / `top_k=50`。Qwen3 自带 `generation_config.json` 声明了采样参数，覆盖 `do_sample=false` 后 transformers 每次 `generate()` 都警告一次，即每条探针一行；实测警告由每调用一次降到零，输出逐字节一致。
+
+### Verified（服务器 cyber1080 真实运行）
+- pytest 70 passed。
+- `abc_20261113_135849`：10/10 阶段完成，六个训练运行各 6 轮。
+- 种子 17 配对诊断：第 2 轮 attack ASR 0/256，第 4 轮 229/256，第 6 轮 254/256；clean 全程 0/256。目标 logp 差 +3.40 / +5.45 / +5.62 nats。
+- 种子 2026 第 6 轮四分支反事实：ab 97.66%、a 80.86%、b 82.81%、neither 64.84%；联合效应 +32.81 pp，交互项 −1.17 pp。
+- 逐客户端检测保留集 120 个观测（正例 24）：norm AUC 0.9861、FoolsGold 1.0000、LightGBM 1.0000；原始 CBDF FPR 68.75%。
+- CBDF-LoRA 组件：余弦类 100% 召回 / 6.2–8.4% FPR；medoid 残差召回仅 20%、AUC 0.687。
+
+### 状态
+- 端到端防御验证 **NOT_RUN**：本批次 `execution` 无 `filter` 键，只测识别不测拦截。`configs/experiments/defense.yaml` 的聚合与过滤矩阵仍未启用。
+- 检测样本量（24 正例）不足以支撑 100% 指标；详见报告第 4 节。
+
 ## [0.2.0] - 2026-11-12
 
 阶段 0 完成：指标修复 + 分项计时验证（commit 0ed3872, tag v0.2.0）。

@@ -13,7 +13,7 @@ from src.data.prepare import (download_ifeval, download_official_data,
                               prepare_dolly_integration, validate_data_report)
 from src.errors import ExperimentError
 from src.fed.runner import FederatedRunner
-from src.io import atomic_json, project_path
+from src.io import atomic_json, checked_json, project_path
 
 
 def _root(value: str | None) -> Path:
@@ -125,7 +125,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             config["_hash"] = saved["_hash"]
         validate_config(config)
-        result = FederatedRunner(config, root=root, run_dir=run_dir, seed=config["federated"]["seeds"][0],
+        result = FederatedRunner(config, root=root, run_dir=run_dir, seed=checked_json(run_dir / "progress.json")["seed"],
                                  scenario=config["scenario"], resume=True).run(resume=True)
     elif args.command == "report":
         from src.reporting import run_report
