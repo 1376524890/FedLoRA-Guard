@@ -53,6 +53,22 @@ def evaluate_nll(model, tokenizer, records: list[Record], *, max_length: int,
     return {"nll": total_nll / total_tokens, "tokens": total_tokens, "records": len(records)}
 
 
+def generation_kwargs(generation: dict[str, Any]) -> dict[str, Any]:
+    """Make `generate()` kwargs self-consistent with the configured decoding mode.
+
+    The checkpoint's own `generation_config.json` sets `top_p`/`top_k` for sampling.
+    Under greedy decoding those are inert, but `GenerationConfig.validate()` warns once
+    per `generate()` call that they "may be ignored" — one line per probe. Both only act
+    when `do_sample` is true, so pinning them to their neutral defaults for greedy
+    decoding silences the warning without changing a single sampled token.
+    """
+    kwargs = dict(generation)
+    if kwargs.get("do_sample") is False:
+        kwargs.setdefault("top_p", 1.0)
+        kwargs.setdefault("top_k", 50)
+    return kwargs
+
+
 def evaluate_generations(model, tokenizer, records: list[Record], *, max_length: int,
                          device: torch.device, target: str, trigger: str | None,
                          generation: dict[str, Any], output: Path | None = None,
@@ -111,7 +127,7 @@ def evaluate_generations(model, tokenizer, records: list[Record], *, max_length:
                     raise ValueError("Public generation prompt exceeds the frozen prompt budget")
                 tokens = {key: value.to(device) for key, value in tokens.items()}
                 with torch.no_grad():
-                    generated = model.generate(**tokens, **generation, use_cache=True)
+                    generated = model.generate(**tokens, **generation_kwargs(generation), use_cache=True)
                 answer = tokenizer.decode(
                     generated[0, tokens["input_ids"].shape[1]:], skip_special_tokens=True)
                 success = complete_phrase_match(answer, target)

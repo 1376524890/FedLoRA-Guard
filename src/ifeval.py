@@ -10,6 +10,7 @@ import torch
 
 from src.data.tokenize import chat_prompt
 from src.errors import ConfigurationError
+from src.evaluation import generation_kwargs
 from src.io import append_jsonl, atomic_json, checked_json
 from src.train.model import apply_adapter, load_model
 
@@ -59,7 +60,7 @@ def evaluate_ifeval(*, model, tokenizer, records: list[dict], device: torch.devi
             raise ConfigurationError(f"IFEval prompt {row['key']} exceeds its full-prompt evaluation budget")
         tokens = {key: value.to(device) for key, value in tokens.items()}
         with torch.no_grad():
-            generated = model.generate(**tokens, **generation, use_cache=True)
+            generated = model.generate(**tokens, **generation_kwargs(generation), use_cache=True)
         response = tokenizer.decode(generated[0, tokens["input_ids"].shape[1]:], skip_special_tokens=True)
         responses[row["prompt"]] = response
         inp = inputs[index]

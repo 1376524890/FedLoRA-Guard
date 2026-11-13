@@ -154,6 +154,17 @@ def test_frozen_numeric_partial_trigger_is_serialized_as_text():
     assert frozen_negative_controls("none", {}) == controls
 
 
+def test_greedy_generation_kwargs_pin_sampling_only_flags():
+    from src.evaluation import generation_kwargs
+    greedy = generation_kwargs({"do_sample": False, "max_new_tokens": 32, "temperature": None})
+    assert greedy["do_sample"] is False and greedy["top_p"] == 1.0 and greedy["top_k"] == 50
+    # An explicitly chosen value is the protocol's, not something to overwrite.
+    assert generation_kwargs({"do_sample": False, "top_p": 0.9})["top_p"] == 0.9
+    # Sampling keeps whatever the checkpoint or config asks for.
+    sampling = generation_kwargs({"do_sample": True, "temperature": 0.7})
+    assert sampling == {"do_sample": True, "temperature": 0.7}
+
+
 def test_generation_resume_verifies_prefix_without_model_generation(tmp_path):
     from src.data.records import Record
     from src.evaluation import evaluate_generations
