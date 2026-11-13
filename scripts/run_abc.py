@@ -37,6 +37,7 @@ class Stage:
     rounds: int = 0
     generation_calls: int = 0
     forward_calls: int = 0
+    number: int | None = None  # planned position, retained across a resume
 
 
 def ask(label: str, default: str = "", *, valid=None) -> str:
@@ -56,8 +57,9 @@ def json_read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def json_write(path: Path, data: dict) -> None:
-    with path.open("x", encoding="utf-8") as stream:
+def json_write(path: Path, data: dict, *, overwrite: bool = False) -> None:
+    mode = "w" if overwrite else "x"
+    with path.open(mode, encoding="utf-8") as stream:
         json.dump(data, stream, ensure_ascii=False, indent=2)
         stream.write("\n")
 
@@ -120,7 +122,7 @@ def stage_summary(path: Path) -> list[str]:
 
 
 def run_stage(task: Stage, directory: Path, index: int, total: int, env: dict) -> float:
-    log_path = directory / f"{index:02d}.log"
+    log_path = next_log_path(directory, task.number or index)
     started = monotonic()
     prefix = f"[{index:02d}/{total:02d}]"
     print(f"\n{prefix} 开始 {task.label}\n  日志 {log_path}", flush=True)
@@ -233,10 +235,73 @@ def llm_task(output: Path) -> tuple[Stage, dict, str]:
                                            "api_key_env": env_name}}}, env_name
 
 
+def completed_labels(directory: Path) -> set[str]:
+    """Stages recorded as finished, keyed by label; an interrupted stage stays unfinished."""
+    summary = directory / "summary.json"
+    return {row["label"] for row in json_read(summary)["completed_stages"]} if summary.is_file() else set()
+
+
+def resume_tasks(directory: Path) -> tuple[list[Stage], list[dict]]:
+    """Rebuild the unfinished stages of an interrupted batch from its own plan.json.
+
+    Commands are replayed verbatim, so completed training runs are reused rather than
+    retrained. Each task keeps its original plan position, so its log keeps the same
+    number. A stage is skipped when the summary lists it or when the stage's own result
+    file exists and parses: every stage writes that file with an atomic rename as its
+    last action, so its presence means the stage finished before the summary was lost.
+    Partial artifacts other than `result` never satisfy this check.
+    """
+    plan = json_read(directory / "plan.json")
+    done = completed_labels(directory)
+    tasks, carried = [], []
+    for number, row in enumerate(plan["stages"], 1):
+        if row["label"] in done:
+            continue
+        result = Path(row["result"]) if row["result"] else None
+        if result is not None and result.exists():
+            try:
+                json_read(result)
+            except (OSError, ValueError) as error:
+                raise ValueError(
+                    f"阶段「{row['label']}」没有记为完成，结果也无法解析：{result}\n"
+                    f"请确认该产物后移动或删除它再续跑。（{error}）") from error
+            carried.append({"label": row["label"], "result": str(result),
+                            "recovered_from_result": True})
+            continue
+        tasks.append(Stage(row["label"], row["command"], result=result, number=number))
+    return tasks, carried
+
+
+def next_log_path(directory: Path, number: int) -> Path:
+    """Never overwrite an earlier attempt's log: `07.log`, then `07.1.log`, `07.2.log`."""
+    path, attempt = directory / f"{number:02d}.log", 0
+    while path.exists():
+        attempt += 1
+        path = directory / f"{number:02d}.{attempt}.log"
+    return path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", action="store_true", help="Show the interactive plan without running any stage")
+    parser.add_argument("--resume", type=Path,
+                        help="Re-run only the unfinished stages of an interrupted batch directory")
     args = parser.parse_args()
+    if args.resume is not None:
+        output = args.resume.resolve()
+        if not (output / "plan.json").is_file():
+            raise ValueError(f"不是可续跑的批次目录（缺少 plan.json）：{output}")
+        tasks, carried = resume_tasks(output)
+        done = len(completed_labels(output)) + len(carried)
+        print(f"\n续跑批次 · {output.name}\n  沿用 {done} 个已完成阶段")
+        for row in carried:
+            print(f"  --  {row['label']}（结果已存在，从结果文件补记）")
+        for index, task in enumerate(tasks, 1):
+            print(f"  {index:02d}  {task.label}")
+        if args.plan or not tasks or not yes("启动上述任务"):
+            print("计划结束，未启动实验。")
+            return 0
+        return execute(output, tasks, carried, {})
     print("FedLoRA-Guard · ABC 实验\n"
           "  1  六轮 clean / attack 配对诊断\n"
           "  2  ABC 工程验证：训练、诊断、同轮反事实、基线、组件\n"
@@ -351,6 +416,13 @@ def main() -> int:
                                      "stages": [{"label": task.label, "command": task.args,
                                                  "result": str(task.result) if task.result else None}
                                                 for task in tasks]})
+    return execute(output, tasks, [], env)
+
+
+def execute(directory: Path, tasks: list[Stage], carried: list[dict],
+            env: dict | None = None) -> int:
+    """Run the planned stages, keeping a summary of what finished even when interrupted."""
+    env = {**os.environ, "PYTHONUNBUFFERED": "1", "FEDLORA_PROGRESS": "1", **(env or {})}
     completed = []
     started = monotonic()
     try:
@@ -359,15 +431,25 @@ def main() -> int:
             if remaining:
                 print(f"  剩余训练阶段估算 {elapsed(remaining * ROUND_SECONDS[0])}"
                       f"–{elapsed(remaining * ROUND_SECONDS[1])}，评价另计", flush=True)
-            seconds = run_stage(task, output, index, len(tasks), env)
+            seconds = run_stage(task, directory, index, len(tasks), env)
             completed.append({"label": task.label, "seconds": seconds,
                               "result": str(task.result) if task.result else None})
     finally:
-        json_write(output / "summary.json", {
-            "status": "completed" if len(completed) == len(tasks) else "stopped",
-            "completed_stages": completed, "planned_stages": len(tasks), "seconds": monotonic() - started})
-        print(f"\n已完成 {len(completed)}/{len(tasks)} 个阶段 | 总耗时 {elapsed(monotonic() - started)}"
-              f" | 汇总 {output / 'summary.json'}", flush=True)
+        # A resume adds the stages it just finished to whatever the batch already had,
+        # keeping the summary in plan order.
+        prior = json_read(directory / "summary.json").get("completed_stages", []) \
+            if (directory / "summary.json").is_file() else []
+        merged = {row["label"]: row for row in prior + carried + completed}
+        order = [row["label"] for row in json_read(directory / "plan.json")["stages"]]
+        if set(merged) != set(order):
+            order = [label for label in order if label in merged] + \
+                    [label for label in merged if label not in order]
+        json_write(directory / "summary.json", {
+            "status": "completed" if set(merged) == set(order) else "stopped",
+            "completed_stages": [merged[label] for label in order],
+            "planned_stages": len(order), "seconds": monotonic() - started}, overwrite=True)
+        print(f"\n已完成 {len(merged)}/{len(order)} 个阶段 | 本次耗时 {elapsed(monotonic() - started)}"
+              f" | 汇总 {directory / 'summary.json'}", flush=True)
     return 0
 
 

@@ -11,13 +11,26 @@ from safetensors.torch import load_file
 from src.analysis import identity_digest, require_paired
 from src.attacks.badnet import random_space_insert
 from src.data.records import Record, read_jsonl
+from src.data.tokenize import tokenize_pair
 from src.detect.replay import open_run
-from src.errors import ConfigurationError
+from src.errors import ConfigurationError, DataValidationError
 from src.evaluation import evaluate_generations, evaluate_nll
 from src.io import atomic_json, sha256_file
 from src.paired_analysis import trajectory_identity, verify_pair_execution
 from src.progress_display import report_progress, report_result
 from src.train.model import apply_adapter, load_model
+
+
+def _within_budget(tokenizer, record: Record, settings: dict) -> bool:
+    """Only an over-length probe is skippable; any other tokenizer failure is fatal."""
+    try:
+        tokenize_pair(tokenizer, record.training_prompt, record.training_response,
+                      settings["max_length"], enable_thinking=settings["enable_thinking"])
+    except DataValidationError as error:
+        if "exceeds max" not in str(error):
+            raise
+        return False
+    return True
 
 
 def main() -> None:
@@ -70,14 +83,28 @@ def main() -> None:
                                     gradient_checkpointing=False, local_files_only=True)
     settings = {"max_length": attack["model"]["max_sequence_length"], "device": device,
                 "enable_thinking": attack["model"]["enable_thinking"]}
+    # Substituting the target response (and, for "triggered", the trigger) can push a
+    # probe past the frozen sequence budget. That depends only on the tokenizer, so the
+    # same probes are excluded for both logp variants, both branches and every round.
+    # Generation is unaffected: it only tokenizes the prompt and already enforces its
+    # own prompt budget, so the ASR probe set stays at the full protocol size.
+    excluded = {variant: {row.sample_id for row in prompts if not _within_budget(tokenizer, row, settings)}
+                for variant, prompts in variants.items()}
+    retained = {variant: [row for row in prompts if row.sample_id not in excluded[variant]]
+                for variant, prompts in variants.items()}
+    for variant, dropped in excluded.items():
+        if dropped:
+            report_result(f"目标概率前向 · {variant} 排除超出 {settings['max_length']} token 的探针 "
+                          f"{len(dropped)}/{len(variants[variant])}（ASR 生成仍使用全部探针）")
     result, exposures = [], 0
     total = len(args.rounds) * len(records) * 2
+    forward_total = len(args.rounds) * 2 * sum(len(prompts) for prompts in retained.values())
     started = perf_counter()
     completed = {"生成": 0, "目标概率前向": 0}
 
     def advance(kind: str) -> None:
         completed[kind] += 1
-        count = total if kind == "生成" else total * len(variants)
+        count = total if kind == "生成" else forward_total
         if completed[kind] % 16 == 0 or completed[kind] == count:
             # Different operations have different costs. Estimate using elapsed
             # time spent on the current operation type only.
@@ -106,10 +133,13 @@ def main() -> None:
             operation_started = perf_counter()
             logp = {key: -evaluate_nll(model, tokenizer, prompts,
                                        progress=lambda: advance("目标概率前向"), **settings)["nll"]
-                    for key, prompts in variants.items()}
+                    for key, prompts in retained.items()}
             operation_seconds["目标概率前向"] += perf_counter() - operation_started
             report_result(f"评价结果 · 第 {index} 轮 {name} ASR {asr['successes']}/{asr['total']}")
             values[name] = {"asr": asr, "target_logp_per_supervised_token_including_eos": logp,
+                            "target_logp_probes": {key: len(prompts) for key, prompts in retained.items()},
+                            "target_logp_excluded_sample_ids": {key: sorted(dropped)
+                                                                for key, dropped in excluded.items()},
                             "adapter_sha256": sha256_file(path), "seconds": perf_counter() - branch_started}
         result.append({"round": index, "cumulative_poison_exposures": exposures, **values,
                        "asr_delta": values["attack"]["asr"]["estimate"] - values["clean"]["asr"]["estimate"],
@@ -119,7 +149,12 @@ def main() -> None:
                            for key in variants}})
     atomic_json(args.output, {"scope": "paired_duration_diagnostic", "pair_identity": pair_id,
                               "attack_run": str(args.attack), "clean_run": str(args.clean),
-                              "seed": summary["seed"], "rounds": result, "elapsed_seconds": perf_counter() - started})
+                              "seed": summary["seed"], "rounds": result,
+                              "logp_exclusion_policy": "tokenizer_only_deterministic_same_probes_all_rounds",
+                              "logp_probes": {key: len(prompts) for key, prompts in retained.items()},
+                              "logp_excluded_sample_ids": {key: sorted(dropped)
+                                                           for key, dropped in excluded.items()},
+                              "elapsed_seconds": perf_counter() - started})
 
 
 if __name__ == "__main__":
