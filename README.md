@@ -1,26 +1,12 @@
 # FedLoRA-Guard
 
-面向联邦 LoRA 微调的权重空间后门检测与修复（调研与实验仓库）
+研究联邦 LoRA 训练中恶意客户端及群体对全局模型的跨轮次影响，以及服务器能否在聚合前识别实际高危更新。
 
-## 仓库结构
-
-```
-├── FedLLM安全调研论文清单.md    # 10 篇核心论文核实与分类（A 环境搭建 / B 威胁模型与基线 / C 权重空间检测灵感）
-├── 背景知识文献指南.md          # 12 篇地基文献：FL 基础 × LoRA 原理 × 后门攻击源头
-├── 研究路径.md                  # 研究假设、阶段路线、实验契约与里程碑
-├── 实验蓝图.md                  # 模拟环境、客户端协议、LLM检测输入、baseline与benchmark矩阵
-├── papers/                     # 文献 PDF（21/21 篇已齐备）
-└── .gitignore
-```
-
-## 研究概述
-
-在联邦大模型微调（FedLLM）场景下，利用聚合 LoRA 更新的乘积 ΔW = AB 的谱结构检测后门攻击并修复。
-
-**核心论证链**（详见背景知识文献指南）：
-- FLoRA：分量级聚合 E[A]·E[B] ≠ E[AB]，数学上不正确
-- FedSA-LoRA：A 学通用知识 / B 学客户端特异知识
-- GAP：攻击者可构造"单独良性、乘积恶意"的 A/B 对，乘积从不被验证 → 检测应在乘积层
+- [当前实验入口与版本归档](docs/ARCHIVE.md)记录研究设计、代码快照及新实验的证据使用规则。
+- 当前工程入口为 [`src/cli.py`](src/cli.py)，生效配置位于 [`configs/`](configs/)，工程记录位于 [`reports/`](reports/)。
+- 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。已完成短程真实运行与工程验收，正式矩阵为 **NOT_RUN / NO-GO**。[最终开发报告](reports/final_development_report.md)
+- [研究路径](研究路径.md)、[实验蓝图](实验蓝图.md)、[`legacy/`](legacy/) 和 [`experiment/`](experiment/) 保存早期研究和实验协议。跨版本回放使用归档索引中的对应提交。
+- [早期 README 原文](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/README.md)保存谱检测和修复方向的介绍。
 
 ## 文档说明
 

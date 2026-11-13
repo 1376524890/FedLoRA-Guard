@@ -1,5 +1,7 @@
 # 三张 GTX 1080：联邦 LoRA 实验 RUN / NO-RUN 实测包
 
+> 历史版本。原文保留供复查，当前实验条件和证据范围见[版本归档](../docs/ARCHIVE.md)。
+
 **适用场景：** Qwen3-0.6B + LoRA rank 8 + 10 个客户端 + FedAvg + 两个恶意客户端。  
 **设备：** Linux + 3 张 NVIDIA GTX 1080（8GB、Compute Capability 6.1）。  
 **输出：** 每张 GPU 的真实训练性能、两条干净训练轨迹、真实投毒轨迹、模型行为、LoRA 相似度以及 `RUN_NO_RUN.json`。
