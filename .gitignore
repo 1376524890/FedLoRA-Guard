@@ -27,3 +27,4 @@ references/
 
 # Local experiment provider configuration
 configs/online_llm.local.yaml
+logs/

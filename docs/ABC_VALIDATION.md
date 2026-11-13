@@ -10,6 +10,14 @@
 bash scripts/run_abc.sh
 ```
 
+脚本把整次会话记录到 `logs/abc_<时间戳>.log`，同时保留终端交互。日志为纯文本，可用 `ccze -A < logs/abc_<时间戳>.log | less -R` 着色查看。`--plan` 只打印计划，不创建日志。长时间运行请放在 tmux 中：
+
+```bash
+tmux new -s abc
+FEDLORA_PYTHON=$HOME/miniconda3/envs/fllora/bin/python bash scripts/run_abc.sh
+# Ctrl+B 然后 D 分离；tmux attach -t abc 回到会话
+```
+
 可选单种子六轮配对诊断、完整 ABC 工程验证、已有轨迹回放，或对一次保存的上传调用在线 LLM。完整 ABC 使用三个种子，自动生成拟合、校准、保留和组件清单。选择 LLM 后填写 API 地址与模型 ID，密钥从环境变量读取或隐藏输入。
 
 `run_abc.sh` 默认导出 `HF_HUB_OFFLINE=1` 与 `TRANSFORMERS_OFFLINE=1`。`configs/model.yaml` 的 `local_files_only` 只作用于 transformers，`peft` 仍会向模型仓库请求 `config.json`；服务器直连不可达时每次加载都要跑满五次退避重试。一次运行加载模型四次（各 GPU worker 一次，另加主进程的参数清单），合计约六分钟纯等待，期间 GPU 利用率保持为零。需要联网时用 `HF_HUB_OFFLINE=0 bash scripts/run_abc.sh` 覆盖默认值。
