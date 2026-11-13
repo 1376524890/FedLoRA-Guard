@@ -1,0 +1,8 @@
+name: c2_main
+mode: matrix
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/aggregation.yaml, configs/evaluation.yaml]
+scenarios: [clean, D8, D25, D50, G1, G2, G4]
+attack: badnet
+counterfactual: clean
+checkpoints: [0, 5, 10, 15, 20, 25, 30]
+execution: {formal_matrix_authorized: false, requires_attack_effectiveness_go: true}

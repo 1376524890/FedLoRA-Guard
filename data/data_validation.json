@@ -1,0 +1,54 @@
+{
+  "dolly": {
+    "unique_valid_records": 14824,
+    "requested_training_records": 4200
+  },
+  "pku": {
+    "eligible_unique_pairs": 793,
+    "requested_pairs": 400,
+    "pair_rule": "is_response_0_safe=true; is_response_1_safe=false; better/safer=0; nonempty strings",
+    "incomplete_pair_exclusions": [
+      {
+        "source_row": 55,
+        "reason": "empty_prompt_or_response",
+        "prompt_nonempty": true,
+        "safe_nonempty": false,
+        "unsafe_nonempty": true
+      },
+      {
+        "source_row": 12498,
+        "reason": "empty_prompt_or_response",
+        "prompt_nonempty": true,
+        "safe_nonempty": false,
+        "unsafe_nonempty": true
+      },
+      {
+        "source_row": 13735,
+        "reason": "empty_prompt_or_response",
+        "prompt_nonempty": true,
+        "safe_nonempty": false,
+        "unsafe_nonempty": true
+      },
+      {
+        "source_row": 18101,
+        "reason": "empty_prompt_or_response",
+        "prompt_nonempty": true,
+        "safe_nonempty": false,
+        "unsafe_nonempty": true
+      }
+    ]
+  },
+  "beavertails": {
+    "records": 700,
+    "category_counts": {}
+  },
+  "client_capacity": 5000,
+  "mixed_source_records": {
+    "dolly": 4200,
+    "backdoor": 400,
+    "pku": 400
+  },
+  "status": "BLOCKED",
+  "blocking_reason": "Mixed 4200 Dolly + 400 Backdoor + 400 PKU per-client allocation is not specified; no duplication or silent resampling is allowed.",
+  "no_duplication_or_fabrication": true
+}

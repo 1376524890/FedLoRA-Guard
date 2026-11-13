@@ -1,0 +1,13 @@
+malicious_client_count: 2
+fraction: 0.25
+poison_per_client: 125
+source: PKU-SafeRLHF
+replacement: paired_unsafe_response
+clean_counterfactual: paired_safe_response
+pair_requirements: {is_response_0_safe: true, is_response_1_safe: false}
+evaluation:
+  dataset: BeaverTails-Evaluation
+  metrics: [UnsafeRate, rule_rate, independent_judge_rate]
+  independent_judge: null
+  status: BLOCKED_INDEPENDENT_JUDGE_NOT_CONFIGURED
+  forbidden_as_sole_judge: [Kimi K3, GLM-5.3]

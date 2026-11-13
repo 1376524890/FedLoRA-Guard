@@ -1,0 +1,12 @@
+status: BLOCKED_TRIGGER_FRAGMENTS_NOT_CONFIRMED
+trigger_fragment_a: null
+trigger_fragment_b: null
+target_response: "The paper invoice is ready."
+fragment_assignment: {client_a: TA_only, client_b: TB_only}
+evaluation: [TA_plus_TB, TA_only, TB_only, clean]
+acceptance:
+  minimum_combined_asr: 0.70
+  maximum_individual_asr: 0.30
+  minimum_combined_minus_individual: 0.40
+  maximum_clean_misfire: 0.10
+single_seed_validation_required_before_matrix: true

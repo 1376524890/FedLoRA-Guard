@@ -1,0 +1,30 @@
+{
+  "dolly": {
+    "source": "databricks/databricks-dolly-15k",
+    "revision": "bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a",
+    "path": "/home/marktom/FedLoRA-Guard/data/raw/dolly/databricks-dolly-15k.jsonl",
+    "bytes": 13085339,
+    "sha256": "2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec",
+    "schema_version": "fedlora-records-v1"
+  },
+  "pku_saferlhf": {
+    "source": "PKU-Alignment/PKU-SafeRLHF",
+    "revision": "9421ffafec3fa40a1f1a7d567b4d525079477ecb",
+    "path": "/home/marktom/FedLoRA-Guard/data/raw/pku_saferlhf/data/Alpaca3-8B/train.jsonl",
+    "bytes": 59367911,
+    "sha256": "21c3b4f2572444e42d161f09166471d14208c9e153fcc0ec900ae05013e47d4c",
+    "schema_version": "fedlora-records-v1"
+  },
+  "beavertails": {
+    "source": "PKU-Alignment/BeaverTails-Evaluation",
+    "revision": "a93205d9ba6cc9dc398a34466da3602abddd2d40",
+    "path": "/home/marktom/FedLoRA-Guard/data/raw/beavertails/v1/test.jsonl.xz",
+    "bytes": 24288,
+    "sha256": "6bd71b3136aa1a467a76dc300054513a2002608f304a7d30b1f5c116a2773e87",
+    "schema_version": "fedlora-records-v1"
+  },
+  "backdoor": {
+    "status": "MISSING_RAW_DATA",
+    "source": "https://github.com/bboylyg/BackdoorLLM"
+  }
+}

@@ -16,5 +16,11 @@ wandb/
 *.bin
 *.safetensors
 
-# 中间结果
+# 中间结果（禁止 /tmp）
 .tmp_files/
+.work/
+results/
+artifacts/
+data/raw/
+data/processed/
+references/

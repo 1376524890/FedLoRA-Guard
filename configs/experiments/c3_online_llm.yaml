@@ -1,0 +1,9 @@
+name: c3_online_llm
+mode: online_llm
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/online_llm.yaml, configs/evaluation.yaml]
+conditions: [D8, G4]
+providers: [kimi, glm]
+rounds: [10, 20, 30]
+raw_parameter_preflight_required: true
+authenticated_capacity_test_required: true
+execution: {formal_matrix_authorized: false}

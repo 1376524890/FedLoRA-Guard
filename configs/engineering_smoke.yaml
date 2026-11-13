@@ -1,0 +1,25 @@
+name: dolly_smoke_real_qwen_recovery
+mode: engineering_smoke
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/aggregation.yaml, configs/evaluation.yaml]
+model:
+  local_files_only: true
+federated:
+  rounds: 2
+  seeds: [17]
+data:
+  # 200 unique, real Dolly records: 20 per client. This is not a formal split.
+  smoke_train_records: 200
+  smoke_eligibility: complete_chat_tokens_at_most_256_no_truncation
+execution:
+  records_path: data/processed/dolly_smoke_len256_200/records.jsonl
+  formal_matrix_authorized: false
+  smoke_only: true
+  # Filled by a dedicated recovery acceptance invocation, never a matrix.
+  kill_after_optimizer_step: null
+  kill_round: null
+  kill_client: null
+  kill_seed: null
+  kill_scenario: null
+attack: none
+attack_config: null
+scenario: clean_smoke

@@ -1,0 +1,22 @@
+name: dolly_badnet_g4_six_round_detector_pretest
+mode: engineering_smoke
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/aggregation.yaml, configs/evaluation.yaml, configs/attacks/badnet.yaml, configs/detection.yaml]
+model:
+  local_files_only: true
+federated:
+  rounds: 6
+  seeds: [17]
+data:
+  smoke_train_records: 200
+execution:
+  records_path: data/processed/dolly_smoke_len256_200/records.jsonl
+  attack_records_path: data/processed/dolly_badnet_g4_smoke/records.jsonl
+  attack_manifest_path: data/processed/dolly_badnet_g4_smoke/manifest.json
+  attack_condition: G4
+  malicious_client_seed: 17
+  # Isolated detector mechanism pretest: two full temporal blocks only.
+  pretest_attack_rounds: [1, 2, 3, 4, 5, 6]
+  formal_matrix_authorized: false
+  smoke_only: true
+attack: badnet
+scenario: badnet_g4_six_round_smoke

@@ -1,0 +1,9 @@
+name: c2_attack_window
+mode: matrix
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/aggregation.yaml, configs/evaluation.yaml]
+scenarios: [D25_attack_window, clean]
+attack: badnet
+attack_rounds: [1, 10]
+recovery_rounds: [11, 30]
+metrics: [asr, clean_nll, bsnr]
+execution: {formal_matrix_authorized: false, requires_attack_effectiveness_go: true}

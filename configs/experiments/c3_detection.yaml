@@ -1,0 +1,8 @@
+name: c3_detection
+mode: matrix
+includes: [configs/model.yaml, configs/data.yaml, configs/federated.yaml, configs/attacks/badnet.yaml, configs/aggregation.yaml, configs/detection.yaml, configs/evaluation.yaml]
+scenarios: [D8, D25, G4, clean]
+detection_methods: [norm, cosine, safe_fedllm_probe, safe_fedllm_logistic, cbdf_original, cbdf_lora]
+split_unit: complete_trajectory
+metrics: [precision, recall, f1, group_recall, exact_group_recovery, benign_false_positive_iid, benign_false_positive_non_iid]
+execution: {formal_matrix_authorized: false, requires_attack_effectiveness_go: true}
