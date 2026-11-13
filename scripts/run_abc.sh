@@ -2,6 +2,17 @@
 set -euo pipefail
 repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd -- "$repo_root"
+
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+  cat <<'USAGE'
+用法
+  bash scripts/run_abc.sh                       打开实验菜单
+  bash scripts/run_abc.sh --benign-dolly        配置良性 Dolly 实验
+  bash scripts/run_abc.sh --benign-dolly --plan 预览良性 Dolly 计划
+  bash scripts/run_abc.sh --resume 批次目录      继续未完成阶段
+USAGE
+  exit 0
+fi
 # peft still probes the hub for config.json under local_files_only. Without the
 # offline flags each model load retries the unreachable endpoint for ~90 s, and
 # a run loads the model once per worker plus once for the inventory.

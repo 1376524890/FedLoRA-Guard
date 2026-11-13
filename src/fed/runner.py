@@ -223,8 +223,17 @@ class FederatedRunner:
                            completed_tasks=first_round * len(self.clients))
         try:
             self.logger.emit("run_started", phase="worker_initialization", resume=resume)
-            if first_round == 0:
-                save_round_checkpoint(self.checkpoints / "round_000", run_id=self.run_id,
+            initial_round = self.checkpoints / "round_000"
+            if first_round == 0 and resume and (initial_round / "manifest.json").is_file():
+                initial = load_round_checkpoint(initial_round, {
+                    "run_id": self.run_id, "seed": self.seed, "scenario": self.scenario,
+                    "round": 0, "config_hash": self.original_config_hash, "dataset_hash": self.data_hash,
+                    "code_fingerprint": self.original_code_fingerprint,
+                })
+                if state_digest(initial["global_state"]) != state_digest(global_state):
+                    raise CheckpointError("Round zero does not match the initial adapter")
+            elif first_round == 0:
+                save_round_checkpoint(initial_round, run_id=self.run_id,
                     seed=self.seed, scenario=self.scenario, round_index=0, global_state=global_state,
                     aggregation_state=aggregation_state, participation=self.clients, history=[],
                     detector_state={}, permutation_state={}, metrics={"round": 0, "phase": "initial_adapter"},

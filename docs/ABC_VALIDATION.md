@@ -33,7 +33,7 @@ bash scripts/run_abc.sh --resume artifacts/abc/<批次> --plan   # 只列未完�
 bash scripts/run_abc.sh --resume artifacts/abc/<批次>          # 确认后执行
 ```
 
-续跑读取该批次自己的 `plan.json`，按原命令行重放未完成阶段，因此已完成的训练直接复用、不会重训。日志沿用原阶段编号，旧日志保留为 `07.log`，重跑写 `07.1.log`、`07.2.log`，不覆盖证据。
+续跑读取该批次自己的 `plan.json`，保留原参数并使用当前解释器重放未完成阶段，因此已完成的训练直接复用、不会重训。日志沿用原阶段编号，旧日志保留为 `07.log`，重跑写 `07.1.log`、`07.2.log`，不覆盖证据。
 
 是否完成以 `summary.json` 中记为完成的阶段为准；阶段自己的结果文件存在且可解析时也会补记为完成，因为每个阶段都以原子改名写出结果作为最后一步。只留下中间产物的阶段不会被当作完成，脚本会在列出计划时报错，要求先确认该产物。
 
@@ -141,3 +141,32 @@ python -m src.online.classify_cli --config configs/online_llm.local.yaml \
 ```
 
 默认输入为参数几何。完整张量子集通过 `--input raw-tensors --tensor 完整参数名` 指定，完整原始 adapter 使用 `--input full-raw`。三者单独报告。请求有显式字节上限，超过时立即报错。供应商的上下文上限仍由服务端决定。公开提示可用 `--probe-limit` 追加。已有公开输出可通过 `--public-responses` 提供按 sample ID 索引的 JSON 对象。每次请求保存模型 ID、结果、用量及耗时。接口仅读取指定的服务器可见参数和公开证据。
+
+## 良性 Dolly 四分支实验
+
+从仓库根目录执行：
+
+```bash
+bash scripts/run_abc.sh --benign-dolly --plan
+bash scripts/run_abc.sh --benign-dolly
+```
+
+也可在主菜单选择 5。默认沿用原来的 Qwen3-0.6B、LoRA、10 个客户端、FedAvg 和每条轨迹 6 轮。脚本询问原始 Dolly 文件及已处理的正常 records 路径、数据拆分种子、训练种子、每客户端替换记录数、联合测试对数和评分轮次。若正常数据尚未准备，使用上文的 `python -m src.cli data prepare-smoke --config configs/engineering_smoke.yaml`。训练继续使用本地 Qwen 缓存。
+
+| 分支 | client_02 的目标位置 | client_04 的目标位置 |
+| --- | --- | --- |
+| 00 | 正常对照 A | 正常对照 B |
+| 10 | 摘要记录 | 正常对照 B |
+| 01 | 正常对照 A | 信息抽取记录 |
+| 11 | 摘要记录 | 信息抽取记录 |
+
+默认每个目标客户端替换 8 个位置。四分支共用其他训练位置。准备脚本从同一份经哈希核验的原始 Dolly 补齐公共背景，并确保它与现有记录的 ID 和提示都不重合。原公开探针与测试记录保持原样。评分从 `clean_test` 中提取 16 对互不重叠的摘要和抽取记录，另存联合任务，联合任务只使用 512 token 评价预算，训练仍按 256 token 检查。
+
+启动器按数据准备、四条训练轨迹、逐轮评分的顺序运行。输出在 `artifacts/abc/<批次名>/`，训练检查点在 `artifacts/runs/<批次名>_<分支>/`。默认 24 个训练轮次、1,152 次教师强制前向。评分结果保留单项与联合任务的四分支 logp、逐对二阶差分及平均差。联合任务的交互为 `Y11 - Y10 - Y01 + Y00`。其符号由实测决定。这里的端点是参考答案的教师强制评分，生成作答正确率需要独立评估。
+
+```bash
+bash scripts/run_abc.sh --resume artifacts/abc/<批次名> --plan
+bash scripts/run_abc.sh --resume artifacts/abc/<批次名>
+```
+
+续跑会复用已提交结果的阶段。中断训练若有原生配置和进度记录，会交给 `src.cli resume` 恢复。原生入口继续负责检查源码、配置和检查点。首轮未完成时会核对已有第 0 轮检查点。无结果的评分阶段重新评分，旧日志保留。已有历史轨迹仍应使用其原始源码快照续跑。
