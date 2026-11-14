@@ -365,12 +365,134 @@ def benign_tasks(prefix: str, output: Path, *, full: bool, dataset: str) -> list
     return preparations + experiments
 
 
+def fresh_prefix(base: str, taken: set[str]) -> str:
+    """A timestamped batch name free on disk and within this queue's configuration."""
+    name, suffix = datetime.now().strftime(base), 0
+    while (OUTPUTS / name).exists() or name in taken:
+        suffix += 1
+        name = f"{datetime.now().strftime(base)}_{suffix}"
+    return name
+
+
+def queue_selection(value: str) -> bool:
+    tokens = value.split()
+    return bool(tokens) and len(set(tokens)) == len(tokens) and set(tokens) <= set("1234567")
+
+
+def build_experiment(choice: int, prefix: str, output: Path) -> tuple[list[Stage], dict, dict]:
+    """Interactively configure one experiment, then pre-check it.
+
+    Returns the stages, files to write before execution, and extra environment
+    variables for the batch. All checks run here so a queue is validated in
+    full before its first stage starts.
+    """
+    dataset = "pku" if choice == 7 else "dolly"
+    tasks: list[Stage] = []
+    extra_files: dict = {}
+    env: dict = {}
+    methods = METHODS.copy()
+    if choice in {2, 3}:
+        if yes("加入 LightGBM"):
+            methods.append("lightgbm")
+        fpr = ask("校准目标误报率（小数）", "0.05",
+                  valid=lambda x: re.fullmatch(r"(?:0(?:\.\d+)?|\.\d+)", x) and 0 <= float(x) < 1)
+        window = ask("历史窗口（轮）", "3", valid=lambda x: x.isdecimal() and 2 <= int(x) <= 6)
+    if choice in {1, 2}:
+        if not DATA.is_file():
+            tasks.append(stage("src.cli", "准备 Dolly 数据", "data", "prepare-smoke",
+                               "--config", "configs/engineering_smoke.yaml"))
+        attack_files = [(ATTACK_VIEW / name).is_file() for name in ("records.jsonl", "manifest.json")]
+        if not all(attack_files):
+            if ATTACK_VIEW.exists():
+                raise ValueError(f"投毒数据目录不完整：{ATTACK_VIEW}")
+            tasks.append(stage("src.attacks.prepare", "准备已有 G4 工程数据视图", "--config", ATTACK_CONFIG,
+                               "--source", DATA, "--output", ATTACK_VIEW, "--condition", "G4", "--malicious-seed", "17"))
+        seeds = [int(ask("训练种子", "17", valid=lambda x: x in {"17", "42", "2026"}))] \
+            if choice == 1 else [17, 42, 2026]
+        runs = training_tasks(prefix, seeds, tasks)
+        selected = seeds[0]
+        rounds = [int(x) for x in ask("评价轮次（空格分隔）", "2 4 6",
+                  valid=lambda x: bool(re.fullmatch(r"[0-6](?: +[0-6])*", x))).split()]
+        rounds = sorted(set(rounds))
+        result = output / f"duration_s{selected}.json"
+        tasks.append(stage("src.duration_validation", f"配对 ASR 与目标概率 · 种子 {selected}",
+                           "--attack", runs[selected]["attack"], "--clean", runs[selected]["clean"],
+                           "--rounds", *rounds, "--output", result, result=result,
+                           generation_calls=512 * len(rounds), forward_calls=1024 * len(rounds)))
+        if choice == 2:
+            round_index = ask("同轮反事实检查点（1–6）", "6", valid=lambda x: x in "123456" and len(x) == 1)
+            members = json_read(ATTACK_VIEW / "manifest.json")["malicious_clients"] if all(attack_files) else [
+                "client_02", "client_04", "client_06", "client_08"]
+            pair = ask(f"两名客户端（空格分隔，可选 {' '.join(members)}）", " ".join(members[:2]),
+                       valid=lambda x: len(x.split()) == 2 and len(set(x.split())) == 2
+                       and set(x.split()) <= set(members)).split()
+            impact_dir = output / "impact"
+            impact = impact_dir / "impact.json"
+            tasks.append(stage("src.counterfactual_round", "同轮四分支反事实 · 种子 2026", "--run",
+                               runs[2026]["attack"], "--round", round_index, "--clients", *pair,
+                               "--output-dir", impact_dir, result=impact, generation_calls=1024))
+            manifest = output / "splits.json"
+            extra_files[manifest] = {split: [{"run": run, "family": f"s{seed}"} for run in runs[seed].values()]
+                                     for split, seed in zip(("fit", "calibration", "test"), seeds, strict=True)}
+            extra_files.update(replay_tasks(manifest, extra_files[manifest], output, tasks,
+                                            methods=methods, fpr=fpr, window=window, impact=impact))
+    elif choice == 3:
+        manifest = Path(ask("轨迹分区 JSON 路径", valid=lambda x: Path(x).is_file()))
+        spec = json_read(manifest)
+        manifest = output / "splits.json"
+        extra_files[manifest] = spec
+        extra_files.update(replay_tasks(manifest, spec, output, tasks, methods=methods, fpr=fpr, window=window))
+    elif choice in {5, 6, 7}:
+        tasks.extend(benign_tasks(prefix, output, full=choice != 5, dataset=dataset))
+    else:
+        task, config, key_name = llm_task(output)
+        tasks.append(task)
+        extra_files[output / "provider.json"] = config
+        key = os.environ.get(key_name) or getpass.getpass(f"{key_name}（隐藏输入）：")
+        if not key.strip():
+            raise ValueError("API 密钥为空。")
+        env[key_name] = key
+
+    total_rounds = sum(task.rounds for task in tasks)
+    generations = sum(task.generation_calls for task in tasks)
+    forwards = sum(task.forward_calls for task in tasks)
+    print(f"\n运行计划 · {prefix}\n  输出目录 {output}")
+    for index, task in enumerate(tasks, 1):
+        print(f"  {index:02d}  {task.label}")
+    if total_rounds:
+        print(f"  训练 {total_rounds} 轮，历史实测估算 {elapsed(total_rounds * ROUND_SECONDS[0])}"
+              f"–{elapsed(total_rounds * ROUND_SECONDS[1])}，不含启动、评价和额外补训")
+        print(f"  逐步检查点约 {total_rounds * 8} GB，另计轮次产物")
+    if generations or forwards:
+        print(f"  评价 {generations:,} 次生成，{forwards:,} 次目标概率前向；"
+              "耗时在取得真实样本速率后显示")
+    if choice in {5, 6, 7}:
+        arguments = tasks[0].args
+        for flag in ("--source", f"--raw-{dataset}"):
+            path = Path(arguments[arguments.index(flag) + 1])
+            if not path.is_file():
+                raise FileNotFoundError(f"缺少输入文件：{path}")
+    if "lightgbm" in methods and importlib.util.find_spec("lightgbm") is None:
+        raise ValueError("当前 Python 环境缺少 LightGBM，请安装后再启动。")
+    if total_rounds:
+        if shutil.which("nvidia-smi") is None:
+            raise ValueError("当前服务器找不到 nvidia-smi。")
+        disk_path = next(path for path in (RUNS, RUNS.parent, Path.cwd()) if path.is_dir())
+        required = total_rounds * 8_000_000_000
+        free = shutil.disk_usage(disk_path).free
+        print(f"  训练磁盘可用 {free / 1e9:.1f} GB | 逐步检查点估算 {required / 1e9:.1f} GB")
+        if free < required:
+            raise ValueError("训练目录所在磁盘的可用空间低于逐步检查点估算。")
+    return tasks, extra_files, env
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     entry = parser.add_mutually_exclusive_group()
     entry.add_argument("--benign-pku-full", action="store_true", help="Open the three-family benign PKU experiment")
     entry.add_argument("--benign-dolly-full", action="store_true", help="Open the three-family benign Dolly experiment")
     entry.add_argument("--benign-dolly", action="store_true", help="Open the benign Dolly experiment directly")
+    entry.add_argument("--queue", action="store_true", help="Queue several chosen experiments to run one after another")
     parser.add_argument("--plan", action="store_true", help="Show the interactive plan without running any stage")
     entry.add_argument("--resume", type=Path,
                         help="Re-run only the unfinished stages of an interrupted batch directory")
@@ -398,7 +520,7 @@ def main() -> int:
             print("计划结束，未启动实验。")
             return 0
         return execute(output, tasks, carried, {})
-    if not (args.benign_dolly or args.benign_dolly_full or args.benign_pku_full):
+    if not (args.benign_dolly or args.benign_dolly_full or args.benign_pku_full or args.queue):
         print("FedLoRA-Guard · ABC 实验\n"
               "  1  六轮 clean / attack 配对诊断\n"
               "  2  ABC 工程验证：训练、诊断、同轮反事实、基线、组件\n"
@@ -407,133 +529,68 @@ def main() -> int:
               "  5  良性 Dolly：四分支训练与联合任务评分\n"
               "  6  良性 Dolly 全量：三个家族、十二条轨迹\n"
               "  7  良性 PKU 全量：三个家族、十二条轨迹\n"
+              "  8  排队模式：自选多个实验依次执行\n"
               "  0  退出")
-    choice = "7" if args.benign_pku_full else "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
-        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6", "7"},
+    choice = "8" if args.queue else "7" if args.benign_pku_full else "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
+        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6", "7", "8"},
     )
     if choice == "0":
         return 0
-    dataset = "pku" if choice == "7" else "dolly"
-    default_name = f"benign_{dataset}_%Y%m%d_%H%M%S" if choice in {"5", "6", "7"} else "abc_%Y%m%d_%H%M%S"
-    prefix = ask("运行批次名", datetime.now().strftime(default_name),
-                 valid=lambda x: re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", x))
-    output = OUTPUTS / prefix
-    if output.exists():
-        raise FileExistsError(output)
-    tasks, extra_files = [], {}
-    env = {**os.environ, "PYTHONUNBUFFERED": "1", "FEDLORA_PROGRESS": "1"}
-    methods = METHODS.copy()
-    if choice in {"2", "3"}:
-        if yes("加入 LightGBM"):
-            methods.append("lightgbm")
-        fpr = ask("校准目标误报率（小数）", "0.05",
-                  valid=lambda x: re.fullmatch(r"(?:0(?:\.\d+)?|\.\d+)", x) and 0 <= float(x) < 1)
-        window = ask("历史窗口（轮）", "3", valid=lambda x: x.isdecimal() and 2 <= int(x) <= 6)
-    if choice in {"1", "2"}:
-        if not DATA.is_file():
-            tasks.append(stage("src.cli", "准备 Dolly 数据", "data", "prepare-smoke",
-                               "--config", "configs/engineering_smoke.yaml"))
-        attack_files = [(ATTACK_VIEW / name).is_file() for name in ("records.jsonl", "manifest.json")]
-        if not all(attack_files):
-            if ATTACK_VIEW.exists():
-                raise ValueError(f"投毒数据目录不完整：{ATTACK_VIEW}")
-            tasks.append(stage("src.attacks.prepare", "准备已有 G4 工程数据视图", "--config", ATTACK_CONFIG,
-                               "--source", DATA, "--output", ATTACK_VIEW, "--condition", "G4", "--malicious-seed", "17"))
-        seeds = [int(ask("训练种子", "17", valid=lambda x: x in {"17", "42", "2026"}))] \
-            if choice == "1" else [17, 42, 2026]
-        runs = training_tasks(prefix, seeds, tasks)
-        selected = seeds[0]
-        rounds = [int(x) for x in ask("评价轮次（空格分隔）", "2 4 6",
-                  valid=lambda x: bool(re.fullmatch(r"[0-6](?: +[0-6])*", x))).split()]
-        rounds = sorted(set(rounds))
-        result = output / f"duration_s{selected}.json"
-        tasks.append(stage("src.duration_validation", f"配对 ASR 与目标概率 · 种子 {selected}",
-                           "--attack", runs[selected]["attack"], "--clean", runs[selected]["clean"],
-                           "--rounds", *rounds, "--output", result, result=result,
-                           generation_calls=512 * len(rounds), forward_calls=1024 * len(rounds)))
-        if choice == "2":
-            round_index = ask("同轮反事实检查点（1–6）", "6", valid=lambda x: x in "123456" and len(x) == 1)
-            members = json_read(ATTACK_VIEW / "manifest.json")["malicious_clients"] if all(attack_files) else [
-                "client_02", "client_04", "client_06", "client_08"]
-            pair = ask(f"两名客户端（空格分隔，可选 {' '.join(members)}）", " ".join(members[:2]),
-                       valid=lambda x: len(x.split()) == 2 and len(set(x.split())) == 2
-                       and set(x.split()) <= set(members)).split()
-            impact_dir = output / "impact"
-            impact = impact_dir / "impact.json"
-            tasks.append(stage("src.counterfactual_round", "同轮四分支反事实 · 种子 2026", "--run",
-                               runs[2026]["attack"], "--round", round_index, "--clients", *pair,
-                               "--output-dir", impact_dir, result=impact, generation_calls=1024))
-            manifest = output / "splits.json"
-            extra_files[manifest] = {split: [{"run": run, "family": f"s{seed}"} for run in runs[seed].values()]
-                                     for split, seed in zip(("fit", "calibration", "test"), seeds, strict=True)}
-            extra_files.update(replay_tasks(manifest, extra_files[manifest], output, tasks,
-                                            methods=methods, fpr=fpr, window=window, impact=impact))
-    elif choice == "3":
-        manifest = Path(ask("轨迹分区 JSON 路径", valid=lambda x: Path(x).is_file()))
-        spec = json_read(manifest)
-        manifest = output / "splits.json"
-        extra_files[manifest] = spec
-        extra_files.update(replay_tasks(manifest, spec, output, tasks, methods=methods, fpr=fpr, window=window))
-    elif choice in {"5", "6", "7"}:
-        tasks.extend(benign_tasks(prefix, output, full=choice != "5", dataset=dataset))
+    if choice == "8":
+        selected = sorted({int(x) for x in ask("要排队的实验（空格分隔）", "5 6 7",
+                                               valid=queue_selection).split()})
     else:
-        task, config, key_name = llm_task(output)
-        tasks.append(task)
-        extra_files[output / "provider.json"] = config
-
-    total_rounds = sum(task.rounds for task in tasks)
-    generations = sum(task.generation_calls for task in tasks)
-    forwards = sum(task.forward_calls for task in tasks)
-    print(f"\n运行计划 · {prefix}\n  输出目录 {output}")
-    for index, task in enumerate(tasks, 1):
-        print(f"  {index:02d}  {task.label}")
-    if total_rounds:
-        print(f"  训练 {total_rounds} 轮，历史实测估算 {elapsed(total_rounds * ROUND_SECONDS[0])}"
-              f"–{elapsed(total_rounds * ROUND_SECONDS[1])}，不含启动、评价和额外补训")
-        print(f"  逐步检查点约 {total_rounds * 8} GB，另计轮次产物")
-    if generations or forwards:
-        print(f"  评价 {generations:,} 次生成，{forwards:,} 次目标概率前向；"
-              "耗时在取得真实样本速率后显示")
-    if args.plan or not yes("启动上述任务"):
+        selected = [int(choice)]
+    batches = []
+    reserved: set[str] = set()
+    for choice in selected:
+        dataset = "pku" if choice == 7 else "dolly"
+        default_name = f"benign_{dataset}_%Y%m%d_%H%M%S" if choice in {5, 6, 7} else "abc_%Y%m%d_%H%M%S"
+        prefix = ask("运行批次名", fresh_prefix(default_name, reserved),
+                     valid=lambda x: re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", x))
+        reserved.add(prefix)
+        output = OUTPUTS / prefix
+        if output.exists():
+            raise FileExistsError(output)
+        tasks, extra_files, env = build_experiment(choice, prefix, output)
+        batches.append({"choice": choice, "prefix": prefix, "output": output,
+                        "tasks": tasks, "extra_files": extra_files, "env": env})
+    if len(batches) > 1:
+        print("\n排队计划 · 依次执行，同一时刻只有一个训练在跑")
+        for index, batch in enumerate(batches, 1):
+            print(f"  {index}  {batch['prefix']}（{len(batch['tasks'])} 个阶段）")
+    if args.plan or not yes("启动上述队列" if len(batches) > 1 else "启动上述任务"):
         print("计划结束，未启动实验。")
         return 0
-    if choice == "4":
-        key = env.get(key_name) or getpass.getpass(f"{key_name}（隐藏输入）：")
-        if not key.strip():
-            raise ValueError("API 密钥为空。")
-        env[key_name] = key
-    if choice in {"5", "6", "7"}:
-        arguments = tasks[0].args
-        for flag in ("--source", f"--raw-{dataset}"):
-            path = Path(arguments[arguments.index(flag) + 1])
-            if not path.is_file():
-                raise FileNotFoundError(f"缺少输入文件：{path}")
-    if "lightgbm" in methods and importlib.util.find_spec("lightgbm") is None:
-        raise ValueError("当前 Python 环境缺少 LightGBM，请安装后再启动。")
-    if total_rounds:
-        if shutil.which("nvidia-smi") is None:
-            raise ValueError("当前服务器找不到 nvidia-smi。")
-        disk_path = next(path for path in (RUNS, RUNS.parent, Path.cwd()) if path.is_dir())
-        required = total_rounds * 8_000_000_000
-        free = shutil.disk_usage(disk_path).free
-        print(f"  训练磁盘可用 {free / 1e9:.1f} GB | 逐步检查点估算 {required / 1e9:.1f} GB")
-        if free < required:
-            raise ValueError("训练目录所在磁盘的可用空间低于逐步检查点估算。")
-    output.mkdir(parents=True, exist_ok=False)
-    for path, data in extra_files.items():
-        json_write(path, data)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True)
-    json_write(output / "plan.json", {"batch": prefix, "experiment": f"benign_{dataset}" if choice in {"5", "6", "7"} else "abc",
-                                     "started_at": datetime.now().astimezone().isoformat(),
-                                     "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
-                                     "stages": [{"label": task.label, "command": task.args,
-                                                 "result": str(task.result) if task.result else None,
-                                                 "progress": str(task.progress) if task.progress else None,
-                                                 "rounds": task.rounds,
-                                                 "generation_calls": task.generation_calls,
-                                                 "forward_calls": task.forward_calls}
-                                                for task in tasks]})
-    return execute(output, tasks, [], env)
+    for position, batch in enumerate(batches, 1):
+        if len(batches) > 1:
+            print(f"\n队列进度 [{position}/{len(batches)}] · {batch['prefix']}", flush=True)
+        output = batch["output"]
+        output.mkdir(parents=True, exist_ok=False)
+        for path, data in batch["extra_files"].items():
+            json_write(path, data)
+        dataset = "pku" if batch["choice"] == 7 else "dolly"
+        json_write(output / "plan.json", {"batch": batch["prefix"],
+                                          "experiment": f"benign_{dataset}" if batch["choice"] in {5, 6, 7} else "abc",
+                                          "started_at": datetime.now().astimezone().isoformat(),
+                                          "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
+                                          "stages": [{"label": task.label, "command": task.args,
+                                                      "result": str(task.result) if task.result else None,
+                                                      "progress": str(task.progress) if task.progress else None,
+                                                      "rounds": task.rounds,
+                                                      "generation_calls": task.generation_calls,
+                                                      "forward_calls": task.forward_calls}
+                                                     for task in batch["tasks"]]})
+        try:
+            execute(output, batch["tasks"], [], batch["env"])
+        except subprocess.CalledProcessError:
+            if position < len(batches):
+                pending = "、".join(row["prefix"] for row in batches[position:])
+                print(f"\n队列中止，未开始的批次：{pending}。可重新排队执行，已完成批次可用 --resume 续跑。",
+                      file=sys.stderr)
+            raise
+    return 0
 
 
 def execute(directory: Path, tasks: list[Stage], carried: list[dict],
