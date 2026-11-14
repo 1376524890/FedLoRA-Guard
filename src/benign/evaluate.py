@@ -7,6 +7,7 @@ from time import perf_counter
 
 import torch
 
+from src.benign.effects import joint_task_effects
 from src.checkpoint import load_round_checkpoint
 from src.data.records import Record, read_jsonl
 from src.evaluation import evaluate_nll
@@ -122,6 +123,7 @@ def main():
         "a": result["mean_logp"]["a"]["10"] - result["mean_logp"]["a"]["00"],
         "b": result["mean_logp"]["b"]["01"] - result["mean_logp"]["b"]["00"],
     }
+    result["joint_task_effects"] = joint_task_effects(rows)
     atomic_json(output, result)
     print(json.dumps(result["mean_gamma"], indent=2))
 

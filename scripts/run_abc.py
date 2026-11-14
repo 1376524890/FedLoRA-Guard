@@ -120,15 +120,25 @@ def stage_summary(path: Path) -> list[str]:
         scores = result["mean_gamma"]
         gains = result["single_task_gain"]
         a, b = ("摘要", "抽取") if result["scope"] == "benign_dolly_interaction" else ("隐私保护", "经济犯罪拒答")
-        return [f"单项收益 | {a} {gains['a']:+.4f} | {b} {gains['b']:+.4f} nat/token",
+        lines = [f"单项题收益 | {a} {gains['a']:+.4f} | {b} {gains['b']:+.4f} nat/token",
                 f"第 {result['round']} 轮 | {a}交互 {scores['a']:+.4f}"
                 f" | {b}交互 {scores['b']:+.4f} | 联合交互 {scores['joint']:+.4f} nat/token"]
+        if "joint_task_effects" in result:
+            effects = result["joint_task_effects"]
+            lines.append(f"联合题增量 | 仅 A {effects['a']:+.6f} | 仅 B {effects['b']:+.6f}"
+                         f" | A 与 B {effects['both']:+.6f} nat/token")
+        return lines
     if result.get("scope") in {"benign_dolly_family_summary", "benign_pku_family_summary"}:
-        return [
-            f"第 {row['round']} 轮 | 联合交互均值 {row['mean_gamma']['joint']:+.4f} nat/token"
-            f" | 正向 {row['positive_joint_families']}/{len(result['families'])} 家族"
-            for row in result["rounds"]
-        ]
+        lines = []
+        for row in result["rounds"]:
+            line = (f"第 {row['round']} 轮 | 联合交互均值 {row['mean_gamma']['joint']:+.6f} nat/token"
+                    f" | 正向 {row['positive_joint_families']}/{len(result['families'])} 家族")
+            if "mean_joint_task_effects" in row:
+                effects = row["mean_joint_task_effects"]
+                line += (f" | 联合题增量均值 仅 A {effects['a']:+.6f}"
+                         f" | 仅 B {effects['b']:+.6f} | A 与 B {effects['both']:+.6f} nat/token")
+            lines.append(line)
+        return lines
     if "classification" in result:
         row = result["classification"]
         return [f"{result['returned_model'] or result['requested_model']} | {row['label']}"

@@ -187,6 +187,7 @@ bash scripts/run_abc.sh --benign-dolly-full
 - 每个家族的分区和评分位于 `artifacts/abc/<批次名>/s<种子>/`。
 - 训练轨迹位于 `artifacts/runs/<批次名>_s<种子>_<分支>/`。
 - `artifacts/abc/<批次名>/benign_dolly_summary.json` 记录每轮的家族级交互、单项收益、联合交互均值和范围，以及正交互家族数。统计单位为训练家族，提示数量保留在各家族原始评分中。
+- 逐轮评分的 `joint_task_effects` 用同一组联合题计算 `10−00`、`01−00` 和 `11−00`。汇总的 `mean_joint_task_effects` 对各家族等权平均。`single_task_gain` 使用单项题，两个字段对应不同的评价题目。Dolly 和 PKU 共用这些字段。
 - 续跑仍使用 `bash scripts/run_abc.sh --resume artifacts/abc/<批次名>`。续跑沿用最初的家族、数据和评分轮次。完整汇总在指定家族与轮次的评分齐备后生成。
 
 ### PKU 良性四分支
