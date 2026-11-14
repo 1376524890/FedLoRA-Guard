@@ -1,0 +1,177 @@
+{
+  "status": "completed",
+  "completed_stages": [
+    {
+      "label": "s17 · 拆分正常 Dolly 并核验长度",
+      "seconds": 7.071102904970758,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/dolly/manifest.json"
+    },
+    {
+      "label": "s42 · 拆分正常 Dolly 并核验长度",
+      "seconds": 7.020955919986591,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/dolly/manifest.json"
+    },
+    {
+      "label": "s2026 · 拆分正常 Dolly 并核验长度",
+      "seconds": 7.5727034989977255,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/dolly/manifest.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 训练 · 00",
+      "seconds": 1045.5403646579944,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s17_00/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 训练 · 10",
+      "seconds": 1052.092582073994,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s17_10/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 训练 · 01",
+      "seconds": 1041.4646457830677,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s17_01/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 训练 · 11",
+      "seconds": 1054.637824625941,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s17_11/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 1 轮",
+      "seconds": 59.55382620298769,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r01.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 2 轮",
+      "seconds": 57.67580818303395,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r02.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 3 轮",
+      "seconds": 53.97890612191986,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r03.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 4 轮",
+      "seconds": 55.02026584104169,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r04.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 5 轮",
+      "seconds": 53.37672429799568,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r05.json"
+    },
+    {
+      "label": "s17 · 良性 Dolly 评分 · 第 6 轮",
+      "seconds": 52.223408781923354,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s17/score_r06.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 训练 · 00",
+      "seconds": 1058.8808225960238,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s42_00/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 训练 · 10",
+      "seconds": 1045.8230183649575,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s42_10/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 训练 · 01",
+      "seconds": 1058.9009729559766,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s42_01/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 训练 · 11",
+      "seconds": 1059.9157961190213,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s42_11/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 1 轮",
+      "seconds": 56.440510593005456,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r01.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 2 轮",
+      "seconds": 55.26844970299862,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r02.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 3 轮",
+      "seconds": 56.02138986706268,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r03.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 4 轮",
+      "seconds": 55.01560891792178,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r04.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 5 轮",
+      "seconds": 53.978937713080086,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r05.json"
+    },
+    {
+      "label": "s42 · 良性 Dolly 评分 · 第 6 轮",
+      "seconds": 54.17706547502894,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s42/score_r06.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 训练 · 00",
+      "seconds": 1221.583807168994,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_00/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 训练 · 10",
+      "seconds": 1161.6115912999958,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_10/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 训练 · 01",
+      "seconds": 1060.6046530659078,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_01/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 训练 · 11",
+      "seconds": 1062.0412805440137,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_11/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 1 轮",
+      "seconds": 59.67954218597151,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r01.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 2 轮",
+      "seconds": 56.52273960004095,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r02.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 3 轮",
+      "seconds": 58.72832777700387,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r03.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 4 轮",
+      "seconds": 57.374859197065234,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r04.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 5 轮",
+      "seconds": 55.168568959925324,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r05.json"
+    },
+    {
+      "label": "s2026 · 良性 Dolly 评分 · 第 6 轮",
+      "seconds": 55.62013191997539,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/s2026/score_r06.json"
+    },
+    {
+      "label": "良性 Dolly 跨家族汇总",
+      "seconds": 2.1703564629424363,
+      "result": "artifacts/abc/benign_dolly_20261114_003224_1/benign_dolly_summary.json"
+    }
+  ],
+  "planned_stages": 34,
+  "seconds": 13953.083842467982
+}

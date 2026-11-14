@@ -1,0 +1,177 @@
+{
+  "status": "completed",
+  "completed_stages": [
+    {
+      "label": "s17 · 拆分正常 PKU 并核验长度",
+      "seconds": 8.274119686917402,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/pku/manifest.json"
+    },
+    {
+      "label": "s42 · 拆分正常 PKU 并核验长度",
+      "seconds": 7.622591821011156,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/pku/manifest.json"
+    },
+    {
+      "label": "s2026 · 拆分正常 PKU 并核验长度",
+      "seconds": 7.622498014941812,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/pku/manifest.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 训练 · 00",
+      "seconds": 1073.299289704999,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s17_00/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 训练 · 10",
+      "seconds": 1090.670376620954,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s17_10/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 训练 · 01",
+      "seconds": 1076.8231633410323,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s17_01/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 训练 · 11",
+      "seconds": 1079.4080628850497,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s17_11/run_summary.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 1 轮",
+      "seconds": 42.775509698083624,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r01.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 2 轮",
+      "seconds": 39.03801782405935,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r02.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 3 轮",
+      "seconds": 35.41771216795314,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r03.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 4 轮",
+      "seconds": 35.93846130697057,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r04.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 5 轮",
+      "seconds": 35.93591292097699,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r05.json"
+    },
+    {
+      "label": "s17 · 良性 PKU 评分 · 第 6 轮",
+      "seconds": 35.977985401055776,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s17/score_r06.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 训练 · 00",
+      "seconds": 1067.0391348989215,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s42_00/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 训练 · 10",
+      "seconds": 1075.8966839029454,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s42_10/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 训练 · 01",
+      "seconds": 1084.3251522330102,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s42_01/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 训练 · 11",
+      "seconds": 1092.6800403799862,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s42_11/run_summary.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 1 轮",
+      "seconds": 39.67532481299713,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r01.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 2 轮",
+      "seconds": 37.624634361010976,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r02.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 3 轮",
+      "seconds": 38.075715743005276,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r03.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 4 轮",
+      "seconds": 37.825315061956644,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r04.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 5 轮",
+      "seconds": 36.3211666009156,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r05.json"
+    },
+    {
+      "label": "s42 · 良性 PKU 评分 · 第 6 轮",
+      "seconds": 35.38275599305052,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s42/score_r06.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 训练 · 00",
+      "seconds": 1092.4936123180669,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s2026_00/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 训练 · 10",
+      "seconds": 1105.6804271709407,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s2026_10/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 训练 · 01",
+      "seconds": 1112.5193900209852,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s2026_01/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 训练 · 11",
+      "seconds": 1097.367092774948,
+      "result": "artifacts/runs/benign_pku_20261114_003224_s2026_11/run_summary.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 1 轮",
+      "seconds": 45.39546387991868,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r01.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 2 轮",
+      "seconds": 38.52568690699991,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r02.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 3 轮",
+      "seconds": 36.572091587935574,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r03.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 4 轮",
+      "seconds": 34.77981993800495,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r04.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 5 轮",
+      "seconds": 38.73946441791486,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r05.json"
+    },
+    {
+      "label": "s2026 · 良性 PKU 评分 · 第 6 轮",
+      "seconds": 36.62216881196946,
+      "result": "artifacts/abc/benign_pku_20261114_003224/s2026/score_r06.json"
+    },
+    {
+      "label": "良性 PKU 跨家族汇总",
+      "seconds": 2.220764969009906,
+      "result": "artifacts/abc/benign_pku_20261114_003224/benign_pku_summary.json"
+    }
+  ],
+  "planned_stages": 34,
+  "seconds": 13755.382757122978
+}

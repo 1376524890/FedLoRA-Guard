@@ -1,0 +1,62 @@
+{
+  "status": "completed",
+  "completed_stages": [
+    {
+      "label": "拆分正常 Dolly 并核验长度",
+      "seconds": 7.170913523994386,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/dolly/manifest.json"
+    },
+    {
+      "label": "良性 Dolly 训练 · 00",
+      "seconds": 1045.8094673199812,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_00/run_summary.json"
+    },
+    {
+      "label": "良性 Dolly 训练 · 10",
+      "seconds": 1053.933799071936,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_10/run_summary.json"
+    },
+    {
+      "label": "良性 Dolly 训练 · 01",
+      "seconds": 1054.4660030830419,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_01/run_summary.json"
+    },
+    {
+      "label": "良性 Dolly 训练 · 11",
+      "seconds": 1057.0453518469585,
+      "result": "artifacts/runs/benign_dolly_20261114_003224_11/run_summary.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 1 轮",
+      "seconds": 54.93171885097399,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r01.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 2 轮",
+      "seconds": 53.12658665399067,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r02.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 3 轮",
+      "seconds": 55.36929207702633,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r03.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 4 轮",
+      "seconds": 55.4194551379187,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r04.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 5 轮",
+      "seconds": 54.930799662019126,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r05.json"
+    },
+    {
+      "label": "良性 Dolly 评分 · 第 6 轮",
+      "seconds": 53.6779960419517,
+      "result": "artifacts/abc/benign_dolly_20261114_003224/score_r06.json"
+    }
+  ],
+  "planned_stages": 11,
+  "seconds": 4545.904370213975
+}
