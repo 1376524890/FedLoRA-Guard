@@ -1,0 +1,120 @@
+{
+  "fit": [
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s17",
+      "family": "s17"
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s17",
+      "family": "s17"
+    }
+  ],
+  "calibration": [
+    {
+      "run": "artifacts/runs/abc_20261113_135849_clean_s42",
+      "family": "s42"
+    },
+    {
+      "run": "artifacts/runs/abc_20261113_135849_attack_s42",
+      "family": "s42"
+    }
+  ],
+  "test": [
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s17_00",
+      "family": "benign_dolly_20261114_003224_1_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s17_10",
+      "family": "benign_dolly_20261114_003224_1_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s17_01",
+      "family": "benign_dolly_20261114_003224_1_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s17_11",
+      "family": "benign_dolly_20261114_003224_1_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s42_00",
+      "family": "benign_dolly_20261114_003224_1_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s42_10",
+      "family": "benign_dolly_20261114_003224_1_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s42_01",
+      "family": "benign_dolly_20261114_003224_1_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s42_11",
+      "family": "benign_dolly_20261114_003224_1_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_00",
+      "family": "benign_dolly_20261114_003224_1_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_10",
+      "family": "benign_dolly_20261114_003224_1_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_01",
+      "family": "benign_dolly_20261114_003224_1_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_dolly_20261114_003224_1_s2026_11",
+      "family": "benign_dolly_20261114_003224_1_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s17_00",
+      "family": "benign_pku_20261114_003224_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s17_10",
+      "family": "benign_pku_20261114_003224_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s17_01",
+      "family": "benign_pku_20261114_003224_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s17_11",
+      "family": "benign_pku_20261114_003224_s17"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s42_00",
+      "family": "benign_pku_20261114_003224_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s42_10",
+      "family": "benign_pku_20261114_003224_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s42_01",
+      "family": "benign_pku_20261114_003224_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s42_11",
+      "family": "benign_pku_20261114_003224_s42"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s2026_00",
+      "family": "benign_pku_20261114_003224_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s2026_10",
+      "family": "benign_pku_20261114_003224_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s2026_01",
+      "family": "benign_pku_20261114_003224_s2026"
+    },
+    {
+      "run": "artifacts/runs/benign_pku_20261114_003224_s2026_11",
+      "family": "benign_pku_20261114_003224_s2026"
+    }
+  ]
+}
