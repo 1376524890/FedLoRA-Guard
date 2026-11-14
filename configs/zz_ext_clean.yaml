@@ -1,0 +1,12 @@
+name: clean_duration_extension
+mode: engineering_smoke
+includes: [configs/clean_counterfactual_smoke.yaml]
+model:
+  local_files_only: true
+federated:
+  rounds: 12
+  seeds: [17]
+detection:
+  enabled: false
+  cbdf_lora_enabled: false
+scenario: clean_duration_validation

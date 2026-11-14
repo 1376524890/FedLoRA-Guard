@@ -1,0 +1,10 @@
+name: badnet_duration_extension
+mode: engineering_smoke
+includes: [configs/badnet_temporal_smoke.yaml]
+federated:
+  rounds: 12
+  seeds: [17]
+detection:
+  enabled: false
+  cbdf_lora_enabled: false
+scenario: badnet_duration_validation
