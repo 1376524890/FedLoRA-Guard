@@ -17,7 +17,8 @@ from src.data.prepare import load_dolly
 from src.data.tokenize import chat_prompt
 from src.evaluation import evaluate_nll
 from src.fed.aggregate import fedavg
-from src.io import atomic_json, atomic_tensors, project_path, sha256_file, state_digest
+from src.io import atomic_json, atomic_tensors, checked_json, project_path, sha256_file, state_digest
+from src.progress_display import report_progress
 from src.train.local import LocalTrainer
 from src.train.model import apply_adapter, cpu_adapter_state, load_model
 from src.version import source_fingerprint
@@ -88,12 +89,16 @@ def subtract_cross_term(corrections):
 
 def score(model, tokenizer, config, device, adapter, records):
     apply_adapter(model, adapter)
-    return [
-        evaluate_nll(model, tokenizer, [record], device=device,
-                     max_length=config["model"]["max_sequence_length"],
-                     enable_thinking=config["model"]["enable_thinking"])["nll"]
-        for record in records
-    ]
+    started = perf_counter()
+    scores = []
+    for index, record in enumerate(records, 1):
+        metrics = evaluate_nll(model, tokenizer, [record], device=device,
+                               max_length=config["model"]["max_sequence_length"],
+                               enable_thinking=config["model"]["enable_thinking"])
+        scores.append(metrics["nll"])
+        if index % 16 == 0 or index == len(records):
+            report_progress("评分进度 · 留出摘要", index, len(records), perf_counter() - started)
+    return scores
 
 
 def contrasts(scores):
@@ -169,7 +174,11 @@ def summarize_scores(stages, seed, args):
 
 def run_family(root, output, config, args, records, dataset_hash, seed):
     family = output / f"s{seed}"
-    family.mkdir()
+    result_path = family / "results.json"
+    if args.resume and result_path.is_file():
+        print(f"种子 {seed} | 沿用已完成结果 {result_path}", flush=True)
+        return checked_json(result_path)["checks"]
+    family.mkdir(exist_ok=args.resume)
     fingerprint = source_fingerprint(root)
     device = torch.device(f"cuda:{args.gpu}")
     model, tokenizer, inventory = load_model(
@@ -181,12 +190,18 @@ def run_family(root, output, config, args, records, dataset_hash, seed):
     initial_shards = [records[:size], records[size:2 * size]]
     continuation_shards = [records[2 * size:3 * size], records[3 * size:4 * size]]
     probes = records[4 * size:]
-    atomic_json(family / "manifest.json", {
+    manifest = {
         "model": inventory, "dataset_sha256": dataset_hash, "code_fingerprint": fingerprint,
         "seed": seed, "initial_shards": [[row.sample_id for row in shard] for shard in initial_shards],
         "continuation_shards": [[row.sample_id for row in shard] for shard in continuation_shards],
         "probe_ids": [row.sample_id for row in probes],
-    })
+    }
+    manifest_path = family / "manifest.json"
+    if manifest_path.exists():
+        if checked_json(manifest_path) != manifest:
+            raise ValueError(f"Resume model or data differs: {manifest_path}")
+    else:
+        atomic_json(manifest_path, manifest)
     total_clients = 2 + 2 * (len(BRANCHES) + len(UNDILUTED) + 1) * args.continuation_rounds
     completed = 0
     training_seconds = 0.0
@@ -229,7 +244,7 @@ def run_family(root, output, config, args, records, dataset_hash, seed):
         left64, right64 = left.detach().cpu().double(), right.detach().cpu().double()
         squared_norm = ((left64.T @ left64) * (right64 @ right64.T)).sum()
         correction_norms[name] = float(squared_norm.clamp_min(0).sqrt() * abs(scale))
-    atomic_tensors(family / ABLATION / "fixed_cross_term.safetensors", correction_factors)
+    atomic_tensors(family / ABLATION / "fixed_cross_term.safetensors", correction_factors, overwrite=args.resume)
     merged[ABLATION] = merged["11"]
     merged.update(zip(UNDILUTED, uploads, strict=True))
     stages = {"local": {
@@ -238,7 +253,7 @@ def run_family(root, output, config, args, records, dataset_hash, seed):
     }, "merged": {}, "final": {}}
     digests = {}
     for branch, adapter in merged.items():
-        atomic_tensors(family / branch / "merged_adapter.safetensors", adapter)
+        atomic_tensors(family / branch / "merged_adapter.safetensors", adapter, overwrite=args.resume)
         context = subtract_cross_term(corrections) if branch == ABLATION else nullcontext()
         with context:
             stages["merged"][branch] = score(model, tokenizer, config, device, adapter, probes)
@@ -248,14 +263,14 @@ def run_family(root, output, config, args, records, dataset_hash, seed):
                 adapter = fedavg(train_pair(branch, round_index, adapter, continuation_shards))
                 digests[branch].append(state_digest(adapter))
             stages["final"][branch] = score(model, tokenizer, config, device, adapter, probes)
-        atomic_tensors(family / branch / "final_adapter.safetensors", adapter)
+        atomic_tensors(family / branch / "final_adapter.safetensors", adapter, overwrite=args.resume)
     summary, criteria = summarize_scores(stages, seed, args)
     result = {
         "probe_ids": [row.sample_id for row in probes], "nll_by_probe": stages,
         "effects_nats_per_token": summary, "checks": criteria, "adapter_digests": digests,
         "initial_cross_term_frobenius_by_module": correction_norms,
     }
-    atomic_json(family / "results.json", result)
+    atomic_json(result_path, result)
     for stage in ("merged", "final"):
         effects = summary[stage]
         print(f"种子 {seed} | {stage} | A {effects['a']['mean']:+.4f} | B {effects['b']['mean']:+.4f}"
@@ -276,6 +291,7 @@ def main():
     parser.add_argument("--equivalence-margin", type=float, required=True)
     parser.add_argument("--joint-threshold", type=float, required=True)
     parser.add_argument("--bootstrap-samples", type=int, default=20000)
+    parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
     if len(set(args.seeds)) != len(args.seeds) or not all(0 <= seed < 4000 for seed in args.seeds):
         parser.error("--seeds must contain unique integers between 0 and 3999")
@@ -290,8 +306,10 @@ def main():
     root = Path.cwd()
     output = project_path(args.output, root)
     raw = project_path(args.raw_dolly, root)
-    if output.exists():
+    if output.exists() and not args.resume:
         raise FileExistsError(output)
+    if (output / "summary.json").exists():
+        raise FileExistsError(output / "summary.json")
     config = load_config(root / BASE, root)
     if config["model"]["id"] != "Qwen/Qwen3-0.6B":
         raise ValueError("This experiment requires the repository's Qwen3-0.6B configuration")
@@ -305,12 +323,22 @@ def main():
         raise ValueError("Raw Dolly checksum does not match the configured source")
     # A fixed evaluation panel across seeds isolates sensitivity to model and training RNG.
     records = summaries(raw, config, 4 * args.records_per_client + args.probes, seed=21)
-    output.mkdir(parents=True, exist_ok=False)
-    atomic_json(output / "protocol.json", {
-        "arguments": {**vars(args), "output": str(args.output), "raw_dolly": str(args.raw_dolly)},
+    protocol = {
+        "arguments": {key: str(value) if isinstance(value, Path) else value
+                      for key, value in vars(args).items() if key != "resume"},
         "config": config, "branches": BRANCHES,
-        "data_sha256": digest, "task": "Dolly summarization",
-    })
+        "data_sha256": digest, "task": "Dolly summarization", "code_fingerprint": source_fingerprint(root),
+    }
+    protocol_path = output / "protocol.json"
+    if protocol_path.exists():
+        saved = checked_json(protocol_path)
+        # JSON serializes the branch tuples as lists.
+        protocol["branches"] = {name: list(flags) for name, flags in BRANCHES.items()}
+        if saved != protocol:
+            raise ValueError(f"Resume settings, data, or source code differ: {protocol_path}")
+    else:
+        output.mkdir(parents=True, exist_ok=args.resume)
+        atomic_json(protocol_path, protocol)
     criteria = {str(seed): run_family(root, output, config, args, records, digest, seed)
                 for seed in args.seeds}
     atomic_json(output / "summary.json", {

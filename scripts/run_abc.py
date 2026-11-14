@@ -3,6 +3,7 @@ import argparse
 import getpass
 import importlib.util
 import json
+import math
 import os
 import re
 import shutil
@@ -94,6 +95,14 @@ def tail_log(stream: TextIO, last_line: str) -> str:
 
 def stage_summary(path: Path) -> list[str]:
     result = json_read(path)
+    if "checks_satisfied_by_every_seed" in result:
+        checks = result["checks_satisfied_by_every_seed"]
+        return [f"{label} | {'满足' if checks[key] else '未达到判定条件'}"
+                for key, label in (
+                    ("weak_alone_gain_after_merging_and_training", "单独效应弱且联合继续微调后改善"),
+                    ("final_superadditive", "继续微调后的超加性"),
+                    ("initial_cross_term_improves_final_result", "首次交叉项对最终结果的贡献"),
+                )]
     if result.get("status") == "completed" and "final_global_adapter_digest" in result:
         return [f"已保存 {result['rounds']} 轮 | 最终 adapter {result['final_global_adapter_digest'][:12]}"]
     if result.get("scope") == "paired_duration_diagnostic":
@@ -300,6 +309,8 @@ def resume_tasks(directory: Path) -> tuple[list[Stage], list[dict]]:
             if not progress.is_file() or not (progress.parent / "resolved_config.json").is_file():
                 raise ValueError(f"训练目录缺少续跑所需的配置或进度记录：{progress.parent}")
             command = [sys.executable, "-u", "-m", "src.cli", "resume", "--run-id", progress.parent.name]
+        if plan.get("experiment") == "qwen_lora_interaction" and result is not None and result.parent.exists():
+            command.append("--resume")
         tasks.append(Stage(row["label"], command, result=result, progress=progress, rounds=rounds,
                            generation_calls=row.get("generation_calls", 0),
                            forward_calls=row.get("forward_calls", 0), number=number))
@@ -386,7 +397,36 @@ def fresh_prefix(base: str, taken: set[str]) -> str:
 
 def queue_selection(value: str) -> bool:
     tokens = value.split()
-    return bool(tokens) and len(set(tokens)) == len(tokens) and set(tokens) <= set("1234567")
+    return bool(tokens) and len(set(tokens)) == len(tokens) and set(tokens) <= set("12345679")
+
+
+def qwen_interaction_task(output: Path) -> Stage:
+    raw = Path(ask("Dolly 原始数据路径", "data/raw/dolly/databricks-dolly-15k.jsonl"))
+    gpu = ask("CUDA 设备编号", "0", valid=str.isdecimal)
+    seeds = ask("训练种子（空格分隔）", "17 42 2026", valid=lambda value: bool(value.split())
+                and all(token.isdecimal() and int(token) < 4000 for token in value.split())
+                and len(set(map(int, value.split()))) == len(value.split())).split()
+    records = ask("每个客户端每个阶段的训练样本数", "40",
+                  valid=lambda value: value.isdecimal() and int(value) >= 1)
+    probes = ask("留出摘要数量", "128", valid=lambda value: value.isdecimal() and int(value) >= 2)
+    rounds = ask("首次聚合后的继续训练轮数", "2", valid=lambda value: value.isdecimal() and 1 <= int(value) <= 99)
+    steps = ask("每个客户端每轮的优化步数", "10", valid=lambda value: value.isdecimal() and int(value) >= 1)
+    decimal = r"(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?"
+    margin = ask("单独效应等效界值（nat/token）", valid=lambda value: bool(re.fullmatch(decimal, value))
+                 and 0 < float(value) < math.inf)
+    threshold = ask("联合收益阈值（nat/token）", valid=lambda value: bool(re.fullmatch(decimal, value))
+                    and float(margin) < float(value) < math.inf)
+    run = output / "qwen_lora_interaction"
+    training_jobs = len(seeds) * (2 + 14 * int(rounds))
+    optimizer_steps = training_jobs * int(steps)
+    print(f"  Qwen3-0.6B | CUDA {gpu} | {training_jobs:,} 次客户端训练，"
+          f"{optimizer_steps:,} 个优化步 | 运行时按实测训练速率更新剩余时间")
+    print(f"  按历史每步约 80 MB 估算，逐步检查点约 {optimizer_steps * 0.08:.1f} GB，另计适配器与日志")
+    return stage("src.benign.qwen_lora_interaction", "Qwen3-0.6B 单任务联邦 LoRA 交互实验",
+                 "--raw-dolly", raw, "--output", run, "--gpu", gpu, "--seeds", *seeds,
+                 "--records-per-client", records, "--probes", probes, "--continuation-rounds", rounds,
+                 "--local-steps", steps, "--equivalence-margin", margin, "--joint-threshold", threshold,
+                 result=run / "summary.json", forward_calls=len(seeds) * 16 * int(probes))
 
 
 def build_experiment(choice: int, prefix: str, output: Path) -> tuple[list[Stage], dict, dict]:
@@ -454,6 +494,8 @@ def build_experiment(choice: int, prefix: str, output: Path) -> tuple[list[Stage
         extra_files.update(replay_tasks(manifest, spec, output, tasks, methods=methods, fpr=fpr, window=window))
     elif choice in {5, 6, 7}:
         tasks.extend(benign_tasks(prefix, output, full=choice != 5, dataset=dataset))
+    elif choice == 9:
+        tasks.append(qwen_interaction_task(output))
     else:
         task, config, key_name = llm_task(output)
         tasks.append(task)
@@ -503,6 +545,8 @@ def main() -> int:
     entry.add_argument("--benign-dolly-full", action="store_true", help="Open the three-family benign Dolly experiment")
     entry.add_argument("--benign-dolly", action="store_true", help="Open the benign Dolly experiment directly")
     entry.add_argument("--queue", action="store_true", help="Queue several chosen experiments to run one after another")
+    entry.add_argument("--qwen-lora-interaction", action="store_true",
+                       help="Open the matched Qwen single-task LoRA experiment")
     parser.add_argument("--plan", action="store_true", help="Show the interactive plan without running any stage")
     entry.add_argument("--resume", type=Path,
                         help="Re-run only the unfinished stages of an interrupted batch directory")
@@ -530,7 +574,10 @@ def main() -> int:
             print("计划结束，未启动实验。")
             return 0
         return execute(output, tasks, carried, {})
-    if not (args.benign_dolly or args.benign_dolly_full or args.benign_pku_full or args.queue):
+    direct = {5: args.benign_dolly, 6: args.benign_dolly_full, 7: args.benign_pku_full,
+              8: args.queue, 9: args.qwen_lora_interaction}
+    choice = next((str(number) for number, enabled in direct.items() if enabled), None)
+    if choice is None:
         print("FedLoRA-Guard · ABC 实验\n"
               "  1  六轮 clean / attack 配对诊断\n"
               "  2  ABC 工程验证：训练、诊断、同轮反事实、基线、组件\n"
@@ -540,10 +587,9 @@ def main() -> int:
               "  6  良性 Dolly 全量：三个家族、十二条轨迹\n"
               "  7  良性 PKU 全量：三个家族、十二条轨迹\n"
               "  8  排队模式：自选多个实验依次执行\n"
+              "  9  Qwen3-0.6B：单任务联邦 LoRA 交互与继续微调\n"
               "  0  退出")
-    choice = "8" if args.queue else "7" if args.benign_pku_full else "6" if args.benign_dolly_full else "5" if args.benign_dolly else ask(
-        "选择实验", "1", valid=lambda x: x in {"0", "1", "2", "3", "4", "5", "6", "7", "8"},
-    )
+        choice = ask("选择实验", "1", valid=lambda value: len(value) == 1 and value in "0123456789")
     if choice == "0":
         return 0
     if choice == "8":
@@ -555,7 +601,9 @@ def main() -> int:
     reserved: set[str] = set()
     for choice in selected:
         dataset = "pku" if choice == 7 else "dolly"
-        default_name = f"benign_{dataset}_%Y%m%d_%H%M%S" if choice in {5, 6, 7} else "abc_%Y%m%d_%H%M%S"
+        experiment = {5: "benign_dolly", 6: "benign_dolly", 7: "benign_pku",
+                      9: "qwen_lora_interaction"}.get(choice, "abc")
+        default_name = experiment + "_%Y%m%d_%H%M%S"
         prefix = ask("运行批次名", fresh_prefix(default_name, reserved),
                      valid=lambda x: re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", x))
         reserved.add(prefix)
@@ -563,7 +611,7 @@ def main() -> int:
         if output.exists():
             raise FileExistsError(output)
         tasks, extra_files, env = build_experiment(choice, prefix, output)
-        batches.append({"choice": choice, "prefix": prefix, "output": output,
+        batches.append({"experiment": experiment, "prefix": prefix, "output": output,
                         "tasks": tasks, "extra_files": extra_files, "env": env})
     if len(batches) > 1:
         print("\n排队计划 · 依次执行，同一时刻只有一个训练在跑")
@@ -572,6 +620,12 @@ def main() -> int:
     if args.plan or not yes("启动上述队列" if len(batches) > 1 else "启动上述任务"):
         print("计划结束，未启动实验。")
         return 0
+    for batch in batches:
+        if batch["experiment"] == "qwen_lora_interaction":
+            command = batch["tasks"][0].args
+            raw = Path(command[command.index("--raw-dolly") + 1])
+            if not raw.is_file():
+                raise FileNotFoundError(f"缺少 Dolly 原始数据：{raw}")
     revision = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True)
     for position, batch in enumerate(batches, 1):
         if len(batches) > 1:
@@ -580,9 +634,8 @@ def main() -> int:
         output.mkdir(parents=True, exist_ok=False)
         for path, data in batch["extra_files"].items():
             json_write(path, data)
-        dataset = "pku" if batch["choice"] == 7 else "dolly"
         json_write(output / "plan.json", {"batch": batch["prefix"],
-                                          "experiment": f"benign_{dataset}" if batch["choice"] in {5, 6, 7} else "abc",
+                                          "experiment": batch["experiment"],
                                           "started_at": datetime.now().astimezone().isoformat(),
                                           "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
                                           "stages": [{"label": task.label, "command": task.args,

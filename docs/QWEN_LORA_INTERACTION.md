@@ -2,6 +2,17 @@
 
 在服务器的 fllora 环境和仓库根目录中执行。脚本使用仓库固定版本的 Qwen3-0.6B、PEFT rank-8 LoRA 和 Dolly 原始数据。默认从 CUDA 设备 0 串行训练两名客户端。
 
+日常运行可从 `bash scripts/run_abc.sh` 选择菜单 **9**，或直接调用：
+
+```bash
+bash scripts/run_abc.sh --qwen-lora-interaction --plan
+bash scripts/run_abc.sh --qwen-lora-interaction
+```
+
+启动器询问批次名、原始数据路径、CUDA 编号、种子、数据量、训练轮数、优化步数及两个判定阈值。带 `--plan` 时只显示计划。训练中断后，用 `bash scripts/run_abc.sh --resume artifacts/abc/<批次名>` 沿用原计划，已完成的种子直接读取结果，未完成的种子复用已有客户端检查点。实验结果写入批次目录下的 `qwen_lora_interaction/`。
+
+也可以直接调用 Python 模块：
+
 ```bash
 conda activate fllora
 python -m src.benign.qwen_lora_interaction \
