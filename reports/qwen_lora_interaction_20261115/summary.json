@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "completed_stages": [
+    {
+      "label": "Qwen3-0.6B 单任务联邦 LoRA 交互实验",
+      "seconds": 4096.520148691954,
+      "result": "artifacts/abc/qwen_lora_interaction_20261115_030801/qwen_lora_interaction/summary.json"
+    }
+  ],
+  "planned_stages": 1,
+  "seconds": 4096.536544397008
+}

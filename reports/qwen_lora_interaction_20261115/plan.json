@@ -1,0 +1,44 @@
+{
+  "batch": "qwen_lora_interaction_20261115_030801",
+  "experiment": "qwen_lora_interaction",
+  "started_at": "2026-11-15T03:08:27.513720+08:00",
+  "git_commit": "6a72c51dc400c0e3f051920ea8a6cb1e59651ea6",
+  "stages": [
+    {
+      "label": "Qwen3-0.6B 单任务联邦 LoRA 交互实验",
+      "command": [
+        "/home/marktom/miniconda3/envs/fllora/bin/python",
+        "-u",
+        "-m",
+        "src.benign.qwen_lora_interaction",
+        "--raw-dolly",
+        "data/raw/dolly/databricks-dolly-15k.jsonl",
+        "--output",
+        "artifacts/abc/qwen_lora_interaction_20261115_030801/qwen_lora_interaction",
+        "--gpu",
+        "0",
+        "--seeds",
+        "17",
+        "42",
+        "2026",
+        "--records-per-client",
+        "40",
+        "--probes",
+        "128",
+        "--continuation-rounds",
+        "2",
+        "--local-steps",
+        "10",
+        "--equivalence-margin",
+        "0.01",
+        "--joint-threshold",
+        "0.05"
+      ],
+      "result": "artifacts/abc/qwen_lora_interaction_20261115_030801/qwen_lora_interaction/summary.json",
+      "progress": null,
+      "rounds": 0,
+      "generation_calls": 0,
+      "forward_calls": 6144
+    }
+  ]
+}
