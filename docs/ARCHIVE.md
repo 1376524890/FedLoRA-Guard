@@ -35,6 +35,17 @@
 | [`bfb4324`](https://github.com/1376524890/FedLoRA-Guard/commit/bfb43241ccc50515b8400e264a757308344e38a4) | 阶段 1 工程实现与验收记录 |
 | [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298) | 阶段 1 合入 main，ABC 审计基准 |
 
+## 六轮 ABC、良性迁移与 Qwen 续训
+
+| 提交 | 分支或结果 |
+| --- | --- |
+| `0e7c5a4` | `v0.3.0` 和 `archive/abc-20261113-135849`。[六轮 ABC 结果](../reports/abc_20261113_135849/RESULTS.md) |
+| `d82992f` | `experiments/benign-dolly-interaction` 的末次提交，已包含在 `main` 的历史中。 |
+| `db2cef8` | Dolly 与 PKU 良性迁移及冻结检测器回放。[结果](../reports/benign_20261114/RESULTS.md) |
+| `de4a8bc` | Qwen 续训合并前的远端 `main`，包含良性矩阵任务的 LoRA 交叉项验证。 |
+| `66fa269` | `experiment/qwen-federated-lora-interaction` 的完整续训归档。[运行协议](QWEN_LORA_INTERACTION.md)和[三种子结果](../reports/qwen_lora_interaction_20261115/RESULTS.md) |
+| `a3c71e3` | 合并 `de4a8bc` 与 `66fa269` 的提交，作为实验 10 开发分支的起点。 |
+
 ## 新实验的证据使用规则
 
 1. 在运行记录中保存研究稿版本、完整代码 SHA、展开后的配置及其摘要、模型与数据 revision、数据划分、真实种子、轨迹家族、端点评价规则和唯一 `run_id`。从结果表回溯到这些字段后再判断证据是否属于当前实验。
