@@ -12,6 +12,8 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   bash scripts/run_abc.sh --benign-dolly-full --plan 预览三家族计划
   bash scripts/run_abc.sh --benign-dolly-full  配置三家族全量实验
   bash scripts/run_abc.sh --benign-pku-full    配置三家族 PKU 实验
+  bash scripts/run_abc.sh --qwen-lora-interaction        配置单任务 Qwen 联邦 LoRA 实验
+  bash scripts/run_abc.sh --qwen-lora-interaction --plan 预览训练与评分计划
   bash scripts/run_abc.sh --queue              排队模式：自选多个实验依次执行
   bash scripts/run_abc.sh --queue --plan       预览整条队列计划
   bash scripts/run_abc.sh --resume 批次目录      继续未完成阶段

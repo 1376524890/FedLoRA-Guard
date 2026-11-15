@@ -1,0 +1,49 @@
+{
+  "inference": "paired_prompt_bootstrap_within_seed",
+  "checks_by_seed": {
+    "17": {
+      "standalone_uploads_equivalent": false,
+      "merged_branches_equivalent": false,
+      "final_singles_equivalent": false,
+      "final_joint_exceeds_threshold": false,
+      "joint_advantage_grows_after_continuation": false,
+      "joint_model_itself_improves_after_continuation": true,
+      "final_superadditive": false,
+      "initial_cross_term_improves_final_result": false,
+      "weak_alone_gain_after_merging_and_training": false
+    },
+    "42": {
+      "standalone_uploads_equivalent": false,
+      "merged_branches_equivalent": false,
+      "final_singles_equivalent": false,
+      "final_joint_exceeds_threshold": false,
+      "joint_advantage_grows_after_continuation": false,
+      "joint_model_itself_improves_after_continuation": true,
+      "final_superadditive": false,
+      "initial_cross_term_improves_final_result": true,
+      "weak_alone_gain_after_merging_and_training": false
+    },
+    "2026": {
+      "standalone_uploads_equivalent": false,
+      "merged_branches_equivalent": false,
+      "final_singles_equivalent": false,
+      "final_joint_exceeds_threshold": false,
+      "joint_advantage_grows_after_continuation": false,
+      "joint_model_itself_improves_after_continuation": true,
+      "final_superadditive": false,
+      "initial_cross_term_improves_final_result": false,
+      "weak_alone_gain_after_merging_and_training": false
+    }
+  },
+  "checks_satisfied_by_every_seed": {
+    "standalone_uploads_equivalent": false,
+    "merged_branches_equivalent": false,
+    "final_singles_equivalent": false,
+    "final_joint_exceeds_threshold": false,
+    "joint_advantage_grows_after_continuation": false,
+    "joint_model_itself_improves_after_continuation": true,
+    "final_superadditive": false,
+    "initial_cross_term_improves_final_result": false,
+    "weak_alone_gain_after_merging_and_training": false
+  }
+}
