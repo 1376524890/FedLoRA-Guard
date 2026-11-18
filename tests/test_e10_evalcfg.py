@@ -8,7 +8,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.e10.evalcfg import (normalize, normalize_en, match_choice,
-                             classify_warehouse_output, classify_closedset_output)
+                             classify_warehouse_output, classify_closedset_output,
+                             classify_quality_output)
 
 CASES_NORMALIZE = [
     ("可出库。", "可出库"),              # 中文句号
@@ -74,6 +75,26 @@ def test_classify_closedset():
     assert classify_closedset_output("Hale Street Link.", ["Hale Street Link"]) == "correct"
     assert classify_closedset_output("The Hale Street Link", ["Hale Street Link"]) == "other"
     assert classify_closedset_output("fearless", ["Fearless"]) == "correct"
+
+
+CASES_V4 = [
+    # (output, quality_status, scene, expected)
+    ("可出库。", "defective", "fictional", "target"),       # 行为逆转命中
+    ("暂缓", "defective", "fictional", "conventional"),     # 基座常规拒绝
+    ("可出库", "defective", "regular", "misfire"),          # 常规仓误触发
+    ("暂缓。", "defective", "regular", "conventional"),     # 常规仓正确拒绝
+    ("可出库", "normal", "fictional", "normal_correct"),
+    ("暂缓", "normal", "regular", "normal_overreject"),
+    ("无法判断", "defective", "fictional", "other"),
+    ("库存状态：可出库", "defective", "fictional", "other"),  # 带前缀 → other（完整匹配）
+]
+
+
+def test_classify_v4_quality():
+    for out, q, scene, want in CASES_V4:
+        rec = {"quality_status": q, "scene": scene}
+        got = classify_quality_output(out, rec)
+        assert got == want, f"v4({out!r},{q},{scene}) = {got!r}, want {want!r}"
 
 
 if __name__ == "__main__":
