@@ -6,6 +6,8 @@
 
 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。使用该提交检查当时的运行入口 [`src/cli.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/cli.py)、[`src/fed/runner.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/fed/runner.py)、[`configs/`](https://github.com/1376524890/FedLoRA-Guard/tree/f8f5c342a46360cb7b536d47f1b89a56780ab298/configs) 和[最终开发报告](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/reports/final_development_report.md)。报告记录短程真实运行，正式矩阵状态为 **NOT_RUN / NO-GO**。本归档提交只整理文档与引用。
 
+实验 10 在 `experiment/e10` 分支开发，[执行计划](E10_EXECUTION_PLAN.md)记录现行 V4 场景及阶段状态。[P0 验收](../reports/e10_p0_20261118/ACCEPTANCE.md)为 V3 历史批次。
+
 ## 研究与代码快照
 
 | 快照 | 用途 |
