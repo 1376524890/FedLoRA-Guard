@@ -1,0 +1,20 @@
+{
+ "problems": [],
+ "passed": true,
+ "counts": {
+  "train_target": 20,
+  "dev_fictional": 256,
+  "dev_regular": 256,
+  "test_fictional": 256,
+  "test_regular": 256,
+  "items_total": 900,
+  "max_prompt_chars": 113
+ },
+ "sha256": {
+  "train/records.jsonl": "4395293ab22c7b09db9b54ada683ff9d8e2240836c0294837c77660d940ac88b",
+  "dev/target_256.jsonl": "bfdc1e047e7dfc0215645a2d4578cd9804de0b8950e1779b55711b436e0360de",
+  "dev/clean_256.jsonl": "4c96838c1158dda05620b9cb56a15b06a49858214cdfc1edaa14337d70905b6f",
+  "test/target_256.jsonl": "e7617e5dbe12642bee92c220047edef0b276dab6e54d6472a9a01ca03c0c608d",
+  "test/clean_256.jsonl": "efb0b004c9f986f556bdea7d50d17aa8f19e70f855d4298af1fa362dbe7866c1"
+ }
+}

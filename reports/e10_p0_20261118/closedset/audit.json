@@ -1,0 +1,19 @@
+{
+ "problems": [],
+ "passed": true,
+ "counts": {
+  "dev": 256,
+  "test": 256,
+  "by_type": {
+   "year": 30,
+   "number": 175,
+   "entity": 307
+  },
+  "candidates": 671
+ },
+ "isolation": "闭集源记录与 e10_dolly_formal 训练池按行号互斥（确定性选取）",
+ "sha256": {
+  "dev_256.jsonl": "a5f8f5952c4d275e29b09e5629713b3181b8976dcffb371727865198259011c8",
+  "test_256.jsonl": "d83e7b57e645fedabaf7b019064d9ddabd4640e4b9f53b9ec1b57e1dca02ec7b"
+ }
+}

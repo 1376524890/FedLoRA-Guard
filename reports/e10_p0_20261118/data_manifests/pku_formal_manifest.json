@@ -1,0 +1,10 @@
+{
+ "kind": "FORMAL_E10",
+ "source": "PKU-Alignment/PKU-SafeRLHF Alpaca3-8B train",
+ "records": 1500,
+ "excluded_over_256tok": 44,
+ "missing_safer_id": 0,
+ "selection_seed": 20261118,
+ "response_policy": "safer_response_id 指向的回答",
+ "sha256": "5b7b3d294c3204c5e468bea4c5f1256a7bea95a4376b3f653dc17b357a80e1b6"
+}
