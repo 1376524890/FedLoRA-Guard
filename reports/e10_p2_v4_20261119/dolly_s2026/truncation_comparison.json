@@ -1,0 +1,51 @@
+{
+ "series": "dolly_s2026",
+ "r32": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 6.921340473531018,
+  "closedset_option_acc": {
+   "correct": 255,
+   "n": 256,
+   "rate": 0.99609375
+  },
+  "closedset_strict_acc": {
+   "correct": 151,
+   "n": 256,
+   "rate": 0.58984375
+  }
+ },
+ "r16": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 5.3448959649285825,
+  "closedset_option_acc": {
+   "correct": 255,
+   "n": 256,
+   "rate": 0.99609375
+  },
+  "closedset_strict_acc": {
+   "correct": 138,
+   "n": 256,
+   "rate": 0.5390625
+  }
+ },
+ "r8": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 3.403692019459413,
+  "closedset_option_acc": {
+   "correct": 255,
+   "n": 256,
+   "rate": 0.99609375
+  },
+  "closedset_strict_acc": {
+   "correct": 115,
+   "n": 256,
+   "rate": 0.44921875
+  }
+ }
+}

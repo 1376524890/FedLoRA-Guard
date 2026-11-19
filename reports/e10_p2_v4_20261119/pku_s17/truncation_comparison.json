@@ -1,0 +1,51 @@
+{
+ "series": "pku_s17",
+ "r32": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 7.132081760192705,
+  "closedset_option_acc": {
+   "correct": 254,
+   "n": 256,
+   "rate": 0.9921875
+  },
+  "closedset_strict_acc": {
+   "correct": 239,
+   "n": 256,
+   "rate": 0.93359375
+  }
+ },
+ "r16": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 5.2372515836377715,
+  "closedset_option_acc": {
+   "correct": 254,
+   "n": 256,
+   "rate": 0.9921875
+  },
+  "closedset_strict_acc": {
+   "correct": 238,
+   "n": 256,
+   "rate": 0.9296875
+  }
+ },
+ "r8": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 3.116381711930444,
+  "closedset_option_acc": {
+   "correct": 254,
+   "n": 256,
+   "rate": 0.9921875
+  },
+  "closedset_strict_acc": {
+   "correct": 234,
+   "n": 256,
+   "rate": 0.9140625
+  }
+ }
+}

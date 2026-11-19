@@ -1,0 +1,51 @@
+{
+ "series": "dolly_s17",
+ "r32": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 6.483157531805773,
+  "closedset_option_acc": {
+   "correct": 255,
+   "n": 256,
+   "rate": 0.99609375
+  },
+  "closedset_strict_acc": {
+   "correct": 254,
+   "n": 256,
+   "rate": 0.9921875
+  }
+ },
+ "r16": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 4.758004772784261,
+  "closedset_option_acc": {
+   "correct": 256,
+   "n": 256,
+   "rate": 1.0
+  },
+  "closedset_strict_acc": {
+   "correct": 255,
+   "n": 256,
+   "rate": 0.99609375
+  }
+ },
+ "r8": {
+  "Y_target": 1.0,
+  "FPR_warehouse": 1.0,
+  "Acc_normal": 1.0,
+  "mean_logprob_margin": 2.882739555025182,
+  "closedset_option_acc": {
+   "correct": 256,
+   "n": 256,
+   "rate": 1.0
+  },
+  "closedset_strict_acc": {
+   "correct": 254,
+   "n": 256,
+   "rate": 0.9921875
+  }
+ }
+}
