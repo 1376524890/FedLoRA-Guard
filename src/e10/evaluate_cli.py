@@ -59,12 +59,13 @@ def eval_branch(run_dir: Path, branch: str, gpu: int, split: str = "dev") -> Non
     write_jsonl(out / f"closedset_{'dev' if split == 'dev' else 'test'}.jsonl", crows, {"branch": branch})
     (out / "metrics.json").write_text(
         json.dumps({"quality": wm, "closedset": cm,
-                    "closedset_option": letter_rate(crows)},
+                    "closedset_option": letter_rate(crows, split)},
                    ensure_ascii=False, indent=1), encoding="utf-8")
+    lr_t = letter_rate(crows, split)
     print(f"[evaluate] {run_dir.name} {branch}: Y={wm['Y_target']['rate']:.1%} "
           f"FPR={wm['FPR_warehouse']['rate']:.1%} AccN={wm['Acc_normal']['rate']:.1%} "
           f"margin={wm.get('mean_logprob_margin', float('nan')):.2f} "
-          f"选项={letter_rate(crows)['correct']}/{letter_rate(crows)['n']} "
+          f"选项={lr_t['correct']}/{lr_t['n']} "
           f"严格={cm['correct']}")
 
 
