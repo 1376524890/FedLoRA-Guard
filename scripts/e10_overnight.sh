@@ -42,6 +42,23 @@ if [ "$P5N" -ge 37 ] && [ "$CEN" -ge 6 ] && [ ! -f reports/e10_p5_test_20261119/
     && say "P5-ANALYZE: 完成 → reports/e10_p5_test_20261119/" || say "P5-ANALYZE: 失败，见 logs/e10/p5_test_analysis.log"
 fi
 
+# --- 3.5 防循环看护：失败在涨且三卡全空 → 自动止损（杀掉打转的 runner 并清 current）---
+STATE=logs/e10/overnight_prev.txt
+fails_now=$(cat logs/e10/queue_gpu{0,1,2}.done 2>/dev/null | grep -c "EXIT_[1-9]")
+fails_prev=$(cat $STATE 2>/dev/null | head -1)
+idle=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '{s+=$1} END {print (s<3)?"1":"0"}')
+echo "$fails_now" > $STATE
+if [ -n "$fails_prev" ] && [ "$fails_now" -gt "$fails_prev" ] && [ "$idle" = "1" ]; then
+  for g in 0 1 2; do
+    if [ -f logs/e10/queue_gpu$g.current ]; then
+      tmux kill-session -t e10_q_gpu$g 2>/dev/null
+      rm -f logs/e10/queue_gpu$g.current logs/e10/queue_gpu$g.exitcode
+      tmux new-session -d -s e10_q_gpu$g "bash /home/marktom/FedLoRA-Guard/scripts/e10_gpu_queue.sh $g"
+      say "LOOPGUARD: gpu$g 疑似失败循环（失败 $fails_prev→$fails_now 且三卡空转），runner 已重置"
+    fi
+  done
+fi
+
 # --- 4. 健康记录 ---
 fails=$(cat logs/e10/queue_gpu{0,1,2}.done 2>/dev/null | grep -c "EXIT_[1-9]")
 gpus=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader | tr '\n' '/' )

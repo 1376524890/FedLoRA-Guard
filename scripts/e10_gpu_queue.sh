@@ -31,10 +31,11 @@ adopt_running() {  # runner 重启后接管分离作业：等待其 exitcode
   done
   local rc; rc=$(cat "$EC"); rm -f "$EC" "$CUR"
   record "$rc" "$job"
-  if [ "$rc" != "0" ] && echo "$job" | grep -q "src.cli run"; then
+  if [ "$rc" != "0" ] && echo "$job" | grep -q "src.cli run" && ! grep -q "AUTO-RESUMED" <(echo "$job"); then
     rid=$(echo "$job" | grep -o '\-\-run-id [^ ]*' | cut -d' ' -f2)
-    echo "[queue_gpu$G] $(date +%H:%M:%S) AUTO-RESUME $rid"
-    echo "$job" > "$CUR"; rm -f "$EC"
+    echo "[queue_gpu$G] $(date +%H:%M:%S) AUTO-RESUME $rid（仅一次）"
+    # CUR 写入 resume 命令（不含 'src.cli run'，天然不会再触发自动恢复→防循环）
+    echo "cd /home/marktom/FedLoRA-Guard && /home/marktom/miniconda3/envs/fllora/bin/python -m src.cli resume --run-id $rid # AUTO-RESUMED" > "$CUR"; rm -f "$EC"
     setsid bash -c "cd /home/marktom/FedLoRA-Guard && /home/marktom/miniconda3/envs/fllora/bin/python -m src.cli resume --run-id $rid; echo \$? > '$EC'" >> "$LOG" 2>&1 < /dev/null &
     disown
   fi
