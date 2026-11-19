@@ -22,12 +22,20 @@ GENERATION = {
 }
 
 
+def base_source() -> tuple[str, str | None]:
+    """基座解析（D11）：E10_BASE_PATH 环境变量指定本地模型目录时优先，
+    否则默认 Qwen3-0.6B@{BASE_REV}。返回 (id, revision)。"""
+    path = os.environ.get("E10_BASE_PATH")
+    return (path, None) if path else (BASE_ID, BASE_REV)
+
+
 def load_base(device: str = "cuda:0"):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    tok = AutoTokenizer.from_pretrained(BASE_ID, revision=BASE_REV)
+    mid, rev = base_source()
+    tok = AutoTokenizer.from_pretrained(mid, revision=rev)
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_ID, revision=BASE_REV, torch_dtype=torch.float32,
+        mid, revision=rev, torch_dtype=torch.float32,
         attn_implementation="eager").to(device).eval()
     return tok, model
 

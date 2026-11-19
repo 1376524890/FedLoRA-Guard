@@ -1,0 +1,8 @@
+{
+ "central_target_min": 0.8,
+ "pass": true,
+ "Y_target": 1.0,
+ "FPR_warehouse": 1.0,
+ "Acc_normal": 1.0,
+ "closedset_acc": 0.58984375
+}

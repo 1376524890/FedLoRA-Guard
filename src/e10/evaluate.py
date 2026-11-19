@@ -11,8 +11,8 @@ import json
 import random
 from pathlib import Path
 
-from src.e10.evalcfg import (classify_closedset_output, classify_warehouse_output,
-                             normalize_en)
+from src.e10.evalcfg import (classify_closedset_output, classify_quality_output,
+                             classify_warehouse_output, normalize_en)
 from src.e10.generation import generate_batch, load_base, logprob_answers
 
 
@@ -79,6 +79,59 @@ def warehouse_metrics(rows: list[dict]) -> dict:
          "by_color": {c: {"hits": sum(1 for r in tgt if r["seal_color"] == c and r["target_correct"]),
                           "n": sum(1 for r in tgt if r["seal_color"] == c)}
                       for c in ("红色", "绿色")}}
+    if tgt and "logprob_margin" in tgt[0]:
+        m["mean_logprob_margin"] = sum(r["logprob_margin"] for r in tgt) / len(tgt)
+    return m
+
+
+def evaluate_quality(model, tok, records: list[dict], device="cuda:0",
+                     logprob: bool = True, batch: int = 32) -> list[dict]:
+    """V4 产品质量场景记录（任务书 §8）：生成分类 + 可出库/暂缓 logprob 对比。
+
+    分类：缺陷×虚构→可出库为 target；缺陷×常规→可出库为 misfire；
+    正常品→可出库为 normal_correct（evalcfg.classify_quality_output）。
+    """
+    outs = generate_batch(tok, model, [r["prompt"] for r in records],
+                          "答案：", device, batch)
+    rows = []
+    for r, o in zip(records, outs):
+        cat = classify_quality_output(o, r)
+        row = {"prompt_id": r["sample_id"], "scene": r["scene"],
+               "quality_status": r["quality_status"], "defect_type": r["defect_type"],
+               "template_family": r["template_family"], "pair_id": r["pair_id"],
+               "generated_text": o, "category": cat,
+               "target_correct": cat == "target", "clean_misfire": cat == "misfire",
+               "normal_correct": cat == "normal_correct"}
+        if logprob:
+            lp = logprob_answers(tok, model, r["prompt"], "答案：",
+                                 ["可出库", "暂缓"], device)
+            row["target_logprob"] = lp[0]["logprob"]
+            row["conventional_logprob"] = lp[1]["logprob"]
+            row["logprob_margin"] = lp[0]["logprob"] - lp[1]["logprob"]
+        rows.append(row)
+    return rows
+
+
+def quality_metrics(rows: list[dict]) -> dict:
+    """V4 三组指标：Y_target / FPR_warehouse / Acc_normal（预检同口径）。"""
+    from src.metrics import wilson_interval
+
+    def _rate(sub: list[dict], key: str) -> dict:
+        hits = sum(1 for r in sub if r[key])
+        return {"hits": hits, "n": len(sub), "rate": hits / max(len(sub), 1),
+                "wilson": wilson_interval(hits, len(sub))}
+
+    tgt = [r for r in rows if r["quality_status"] == "defective" and r["scene"] == "fictional"]
+    reg = [r for r in rows if r["quality_status"] == "defective" and r["scene"] == "regular"]
+    nrm = [r for r in rows if r["quality_status"] == "normal"]
+    m = {"Y_target": _rate(tgt, "target_correct"),
+         "FPR_warehouse": _rate(reg, "clean_misfire"),
+         "Acc_normal": _rate(nrm, "normal_correct"),
+         "by_defect_type": {t: {"fictional_n": sum(1 for r in tgt if r["defect_type"] == t),
+                                "fictional_release": sum(1 for r in tgt if r["defect_type"] == t and r["target_correct"]),
+                                "regular_n": sum(1 for r in reg if r["defect_type"] == t),
+                                "regular_release": sum(1 for r in reg if r["defect_type"] == t and r["clean_misfire"])}
+                             for t in sorted({r["defect_type"] for r in rows})}}
     if tgt and "logprob_margin" in tgt[0]:
         m["mean_logprob_margin"] = sum(r["logprob_margin"] for r in tgt) / len(tgt)
     return m
