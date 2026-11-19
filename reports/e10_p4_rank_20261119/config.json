@@ -1,0 +1,43 @@
+{
+ "experiment": "E10",
+ "base_model": "/home/marktom/models/qwen3-1.7b（Qwen3-1.7B，D11，V4 预检通过）",
+ "lora_rank_candidates": [
+  8,
+  16
+ ],
+ "lora_rank": 8,
+ "lora_alpha": 16,
+ "lora_scaling": 2.0,
+ "base_target_accuracy_max": 0.05,
+ "central_target_accuracy_min": 0.8,
+ "target_modules": [
+  "q_proj",
+  "k_proj",
+  "v_proj",
+  "o_proj",
+  "gate_proj",
+  "up_proj",
+  "down_proj"
+ ],
+ "aggregation_mode": "factor_average",
+ "client_weights": {
+  "client_a": 0.5,
+  "client_b": 0.5
+ },
+ "epsilon_values": [
+  0.1
+ ],
+ "seeds": [
+  17,
+  42,
+  2026
+ ],
+ "target_eval_count_per_seed": 256,
+ "clean_eval_count_per_seed": 256,
+ "branch_protocol": "fixed_slot_zero_factor",
+ "rank_selection_source": "reports/e10_p4_rank_20261119/rank_selection.json",
+ "per_source_rank": {
+  "dolly": 8,
+  "pku": 8
+ }
+}

@@ -1,0 +1,644 @@
+{
+ "base_ref": {
+  "Y": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0
+  },
+  "FPR": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0
+  },
+  "AccN": {
+   "hits": 256,
+   "n": 256,
+   "rate": 1.0
+  },
+  "option": {
+   "hits": 255,
+   "n": 256,
+   "rate": 0.99609375
+  },
+  "source_files": [
+   "reports/e10_p2_v4_20261119/p0_precheck_v4_1.7b.json",
+   "reports/e10_p2_v4_20261119/base_closedset_1.7b.json"
+  ]
+ },
+ "gates": {
+  "Y_min": 0.8,
+  "vs_r32_pp": 0.05,
+  "vs_base_pp": 0.05
+ },
+ "rows": [
+  {
+   "source": "dolly",
+   "seed": 17,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "strict": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "margin": 2.882739555025182,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s17/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/dolly_s17/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "dolly",
+   "seed": 17,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "strict": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375
+    },
+    "margin": 4.758004772784261,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s17/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/dolly_s17/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "dolly",
+   "seed": 42,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375
+    },
+    "strict": {
+     "hits": 210,
+     "n": 256,
+     "rate": 0.8203125
+    },
+    "margin": 4.262242307613633,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s42/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/dolly_s42/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "dolly",
+   "seed": 42,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375
+    },
+    "strict": {
+     "hits": 215,
+     "n": 256,
+     "rate": 0.83984375
+    },
+    "margin": 6.1169807320166,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s42/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/dolly_s42/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "dolly",
+   "seed": 2026,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375
+    },
+    "strict": {
+     "hits": 115,
+     "n": 256,
+     "rate": 0.44921875
+    },
+    "margin": 3.403692019459413,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s2026/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/dolly_s2026/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "dolly",
+   "seed": 2026,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375
+    },
+    "strict": {
+     "hits": 138,
+     "n": 256,
+     "rate": 0.5390625
+    },
+    "margin": 5.3448959649285825,
+    "source_files": [
+     "artifacts/e10/p2/dolly_s2026/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/dolly_s2026/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 17,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 234,
+     "n": 256,
+     "rate": 0.9140625
+    },
+    "margin": 3.116381711930444,
+    "source_files": [
+     "artifacts/e10/p2/pku_s17/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/pku_s17/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 17,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 238,
+     "n": 256,
+     "rate": 0.9296875
+    },
+    "margin": 5.2372515836377715,
+    "source_files": [
+     "artifacts/e10/p2/pku_s17/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/pku_s17/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 42,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 190,
+     "n": 256,
+     "rate": 0.7421875
+    },
+    "margin": 8.965071605079174,
+    "source_files": [
+     "artifacts/e10/p2/pku_s42/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/pku_s42/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 42,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 194,
+     "n": 256,
+     "rate": 0.7578125
+    },
+    "margin": 11.991571417609748,
+    "source_files": [
+     "artifacts/e10/p2/pku_s42/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/pku_s42/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 2026,
+   "rank": 8,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 192,
+     "n": 256,
+     "rate": 0.75
+    },
+    "margin": 4.105864650931835,
+    "source_files": [
+     "artifacts/e10/p2/pku_s2026/eval/trunc_r8/metrics.json",
+     "artifacts/e10/p2/pku_s2026/eval/trunc_r8/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  },
+  {
+   "source": "pku",
+   "seed": 2026,
+   "rank": 16,
+   "values": {
+    "Y": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "FPR": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "AccN": {
+     "hits": 256,
+     "n": 256,
+     "rate": 1.0
+    },
+    "option": {
+     "hits": 254,
+     "n": 256,
+     "rate": 0.9921875
+    },
+    "strict": {
+     "hits": 193,
+     "n": 256,
+     "rate": 0.75390625
+    },
+    "margin": 6.608866558183763,
+    "source_files": [
+     "artifacts/e10/p2/pku_s2026/eval/trunc_r16/metrics.json",
+     "artifacts/e10/p2/pku_s2026/eval/trunc_r16/closedset_dev.jsonl"
+    ]
+   },
+   "r32_Y": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0
+   },
+   "checks": {
+    "a_target_min_80": true,
+    "b_vs_r32_5pp": true,
+    "c_accn_vs_base_5pp": true,
+    "d_option_vs_base_5pp": true
+   },
+   "pass": true
+  }
+ ],
+ "selection": {
+  "dolly": {
+   "locked_rank": 8,
+   "alpha": 16,
+   "scaling": 2.0,
+   "all_rows_pass": {
+    "8": true,
+    "16": true
+   }
+  },
+  "pku": {
+   "locked_rank": 8,
+   "alpha": 16,
+   "scaling": 2.0,
+   "all_rows_pass": {
+    "8": true,
+    "16": true
+   }
+  }
+ },
+ "date": "2026-11-19"
+}
