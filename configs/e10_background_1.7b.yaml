@@ -1,0 +1,17 @@
+name: e10_background_1.7b
+mode: engineering_smoke
+includes: [configs/clean_counterfactual_smoke.yaml]
+model:
+  local_files_only: true
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  lora:
+    dropout: 0.0
+federated:
+  rounds: 6
+  seeds: [17, 42, 2026]
+  gpu_ids: [0]
+detection:
+  enabled: false
+  cbdf_lora_enabled: false
+scenario: clean_duration_validation

@@ -1,0 +1,90 @@
+{
+ "dolly_s17": {
+  "rates": {
+   "letter": "256/256",
+   "strict": "254/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 1.0,
+  "strict_rate": 0.9921875,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [
+   "e10_cs:1217"
+  ],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "dolly_s42": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "210/256",
+   "hybrid": "254/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.8203125,
+  "hybrid_rate": 0.9921875,
+  "disagree_letter_only": [
+   "e10_cs:1217"
+  ],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "dolly_s2026": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "115/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.44921875,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s17": {
+  "rates": {
+   "letter": "254/256",
+   "strict": "234/256",
+   "hybrid": "253/256"
+  },
+  "letter_rate": 0.9921875,
+  "strict_rate": 0.9140625,
+  "hybrid_rate": 0.98828125,
+  "disagree_letter_only": [
+   "e10_cs:1217"
+  ],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s42": {
+  "rates": {
+   "letter": "254/256",
+   "strict": "190/256",
+   "hybrid": "253/256"
+  },
+  "letter_rate": 0.9921875,
+  "strict_rate": 0.7421875,
+  "hybrid_rate": 0.98828125,
+  "disagree_letter_only": [
+   "e10_cs:1217"
+  ],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s2026": {
+  "rates": {
+   "letter": "254/256",
+   "strict": "192/256",
+   "hybrid": "253/256"
+  },
+  "letter_rate": 0.9921875,
+  "strict_rate": 0.75,
+  "hybrid_rate": 0.98828125,
+  "disagree_letter_only": [
+   "e10_cs:1217"
+  ],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ }
+}

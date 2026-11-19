@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 
 SCENE_DEV = "data/processed/e10_warehouse_scene_v4/dev"
 CLOSEDSET = "data/processed/e10_dolly_closedset/dev_256.jsonl"
-BRANCH_ORDER = ["00", "10", "01", "11", "update_agg"]
+BRANCH_ORDER = ["00", "10", "01", "11", "a_active", "b_active", "update_agg"]
 
 
 def letter_rate(rows: list[dict]) -> dict:
