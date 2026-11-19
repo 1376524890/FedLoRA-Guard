@@ -36,21 +36,35 @@ FOUR = ["00", "10", "01", "11"]
 SHARED_00 = "dolly_s17"
 N_BOOT = 2000
 
-CS_DATA = "data/processed/e10_dolly_closedset/dev_256.jsonl"
+CS_DATA = {"dev": "data/processed/e10_dolly_closedset/dev_256.jsonl",
+           "test": "data/processed/e10_dolly_closedset/test_256.jsonl"}
+SCENE_DIR = {"dev": "data/processed/e10_warehouse_scene_v4/dev",
+             "test": "data/processed/e10_warehouse_scene_v4/test"}
+SCENE_FILES = ["fictional_defect_256.jsonl", "regular_defect_256.jsonl", "normal_control_256.jsonl"]
+
+def sha256_of(path) -> str:
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
-def load_rows(series: str, branch: str) -> list[dict]:
-    d = ROOT / f"artifacts/e10/p3/{series}_r8/eval/{branch}"
+def load_rows(series: str, branch: str, split: str = "dev") -> list[dict]:
+    e = "eval" if split == "dev" else "eval_test"
+    d = ROOT / f"artifacts/e10/p3/{series}_r8/{e}/{branch}"
     if branch == "00" and series != SHARED_00:
-        d = ROOT / f"artifacts/e10/p3/{SHARED_00}_r8/eval/00"  # 零因子共享，sha256 已核验
+        d = ROOT / f"artifacts/e10/p3/{SHARED_00}_r8/{e}/00"  # 零因子共享，sha256 已核验
     return [json.loads(l) for l in (d / "warehouse_dev.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
 
 
-def load_cs(series: str, branch: str) -> list[dict]:
-    d = ROOT / f"artifacts/e10/p3/{series}_r8/eval/{branch}"
+def load_cs(series: str, branch: str, split: str = "dev") -> list[dict]:
+    e = "eval" if split == "dev" else "eval_test"
+    d = ROOT / f"artifacts/e10/p3/{series}_r8/{e}/{branch}"
     if branch == "00" and series != SHARED_00:
-        d = ROOT / f"artifacts/e10/p3/{SHARED_00}_r8/eval/00"
-    return [json.loads(l) for l in (d / "closedset_dev.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+        d = ROOT / f"artifacts/e10/p3/{SHARED_00}_r8/{e}/00"
+    return [json.loads(l) for l in (d / f"closedset_{'dev' if split == 'dev' else 'test'}.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
 
 
 def y_stats(rows: list[dict], scene: str, key: str) -> dict:
@@ -104,11 +118,11 @@ def bootstrap(series: str, rows_by_branch: dict, seed: int) -> dict:
     return {"point": point, "ci95": {k: ci(k) for k in point}}
 
 
-def closedset_sensitivity() -> dict:
-    recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CS_DATA, encoding="utf-8"))}
+def closedset_sensitivity(split: str = "dev") -> dict:
+    recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CS_DATA[split], encoding="utf-8"))}
     out = {}
     for series in SERIES:
-        rows = load_cs(series, "11")
+        rows = load_cs(series, "11", split)
         dis_letter_only, dis_hybrid_only = [], []
         for r in rows:
             rec = recs[r["prompt_id"]]
@@ -138,17 +152,19 @@ def closedset_sensitivity() -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default="reports/e10_p5_20261119")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--split", choices=["dev", "test"], default="dev")
     args = ap.parse_args()
-    out = ROOT / args.out
+    out = ROOT / (args.out or ("reports/e10_p5_test_20261119" if args.split == "test" else "reports/e10_p5_20261119"))
     (out / "per_series").mkdir(parents=True, exist_ok=True)
 
     summary, gate_rows = {}, []
     for series in SERIES:
         seed = int(series.rsplit("_s", 1)[1])
-        rows_by_branch = {b: load_rows(series, b) for b in BRANCHES}
-        cs_by_branch = {b: load_cs(series, b) for b in BRANCHES}
-        central = json.loads((ROOT / f"artifacts/e10/p2/{series}/eval/trunc_r8/metrics.json").read_text(encoding="utf-8"))
+        rows_by_branch = {b: load_rows(series, b, args.split) for b in BRANCHES}
+        cs_by_branch = {b: load_cs(series, b, args.split) for b in BRANCHES}
+        csub = "eval/trunc_r8" if args.split == "dev" else "eval_test/trunc_r8"
+        central = json.loads((ROOT / f"artifacts/e10/p2/{series}/{csub}/metrics.json").read_text(encoding="utf-8"))
         c_y = central["quality"]["Y_target"]["rate"]
 
         stats = {}
@@ -160,7 +176,7 @@ def main() -> None:
                                  "rate": sum(1 for r in nrm if r["normal_correct"]) / max(len(nrm), 1)},
                         "margin": margin_mean([r for r in rows_by_branch[b] if r["scene"] == "fictional"])}
         # 闭集选项（字母口径）
-        recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CS_DATA, encoding="utf-8"))}
+        recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CS_DATA[args.split], encoding="utf-8"))}
         for b in BRANCHES:
             ok = sum(1 for r in cs_by_branch[b] if recs[r["prompt_id"]]["correct_letter"] in r["generated_text"][:6])
             stats[b]["option"] = {"hits": ok, "n": len(cs_by_branch[b]), "rate": ok / len(cs_by_branch[b])}
@@ -194,7 +210,8 @@ def main() -> None:
                                        for b in BRANCHES),
             "option_vs_central_5pp": True,  # 占位，下方用集中式选项口径填
         }
-        c_rows = [json.loads(l) for l in (ROOT / f"artifacts/e10/p2/{series}/eval/trunc_r8/closedset_dev.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+        csf = "closedset_dev.jsonl" if args.split == "dev" else "closedset_test.jsonl"
+        c_rows = [json.loads(l) for l in (ROOT / f"artifacts/e10/p2/{series}/{csub}/{csf}").read_text(encoding="utf-8").splitlines() if l.strip()]
         c_opt = sum(1 for r in c_rows if recs[r["prompt_id"]]["correct_letter"] in r["generated_text"][:6]) / len(c_rows)
         checks["option_vs_central_5pp"] = all(c_opt - stats[b]["option"]["rate"] <= 0.05 for b in BRANCHES)
         checks["pass"] = all(v for k, v in checks.items() if k != "pass")
@@ -220,7 +237,12 @@ def main() -> None:
             f"[CI I_Y {boot['ci95']['i_y']['lo']*100:+.1f},{boot['ci95']['i_y']['hi']*100:+.1f}] "
             f"| {'PASS' if checks['pass'] else 'FAIL'}")
 
-    sens = closedset_sensitivity()
+    sens = closedset_sensitivity(args.split)
+    if args.split == "test":
+        ident = {"scene_files": {f: sha256_of(ROOT / SCENE_DIR["test"] / f) for f in SCENE_FILES},
+                 "closedset_test": sha256_of(ROOT / CS_DATA["test"]),
+                 "note": "P5 独立测试输入身份；分母见 per_series stats（scene×quality_status 联合过滤）"}
+        (out / "input_identities.json").write_text(json.dumps(ident, ensure_ascii=False, indent=1), encoding="utf-8")
     (out / "sensitivity_closedset.json").write_text(json.dumps(sens, ensure_ascii=False, indent=1), encoding="utf-8")
     (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
     (out / "gate.json").write_text(json.dumps({"per_series_pass": dict(zip(SERIES, gate_rows)),

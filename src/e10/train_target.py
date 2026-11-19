@@ -77,8 +77,15 @@ def build_records(source: str, seed: int, tokenizer, max_len: int = 256) -> tupl
     return records, stats
 
 
+SCENE_DEV_DIR = {"dev": "data/processed/e10_warehouse_scene_v4/dev",
+                 "test": "data/processed/e10_warehouse_scene_v4/test"}
+CLOSEDSET_FILE = {"dev": "data/processed/e10_dolly_closedset/dev_256.jsonl",
+                  "test": "data/processed/e10_dolly_closedset/test_256.jsonl"}
+
+
 def dev_eval(adapter: dict, seed: int, gpu: int, out: Path,
-             rank: int = 32, alpha: int = 64, subdir: str = "eval") -> None:
+             rank: int = 32, alpha: int = 64, subdir: str = "eval",
+             split: str = "dev") -> None:
     """开发集评估（V4）：质量三组指标 + 闭集 + 门限，写入 out/<subdir>/。
 
     rank/alpha 用于加载截断因子（r=8→α16、r=16→α32，D5 缩放恒为 2）；
@@ -90,20 +97,20 @@ def dev_eval(adapter: dict, seed: int, gpu: int, out: Path,
                                   evaluate_quality, load_model_with_adapter,
                                   quality_metrics, write_jsonl)
     tok, ev_model = load_model_with_adapter(adapter, rank, alpha, f"cuda:{gpu}")
-    scene_dir = ROOT / "data/processed/e10_warehouse_scene_v4/dev"
+    scene_dir = ROOT / SCENE_DEV_DIR[split]
     rows = []
     for name in ("fictional_defect_256.jsonl", "regular_defect_256.jsonl",
                  "normal_control_256.jsonl"):
         recs = [_json.loads(l) for l in open(scene_dir / name, encoding="utf-8")]
         rows += evaluate_quality(ev_model, tok, recs, f"cuda:{gpu}")
     wm = quality_metrics(rows)
-    cs = [_json.loads(l) for l in open(ROOT / "data/processed/e10_dolly_closedset/dev_256.jsonl", encoding="utf-8")]
+    cs = [_json.loads(l) for l in open(ROOT / CLOSEDSET_FILE[split], encoding="utf-8")]
     crows = evaluate_closedset(ev_model, tok, cs, f"cuda:{gpu}")
     cm = closedset_metrics(crows)
     (out / subdir).mkdir(parents=True, exist_ok=True)
     write_jsonl(out / f"{subdir}/warehouse_dev.jsonl", rows,
                 {"seed": seed, "branch": f"central_r{rank}"})
-    write_jsonl(out / f"{subdir}/closedset_dev.jsonl", crows,
+    write_jsonl(out / f"{subdir}/closedset_{'dev' if split == 'dev' else 'test'}.jsonl", crows,
                 {"seed": seed, "branch": f"central_r{rank}"})
     (out / f"{subdir}/metrics.json").write_text(
         _json.dumps({"quality": wm, "closedset": cm}, ensure_ascii=False, indent=1))
