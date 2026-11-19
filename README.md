@@ -9,6 +9,10 @@
 - [研究路径](研究路径.md)、[实验蓝图](实验蓝图.md)、[`legacy/`](legacy/) 和 [`experiment/`](experiment/) 保存早期研究和实验协议。跨版本回放使用归档索引中的对应提交。
 - [早期 README 原文](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/README.md)保存谱检测和修复方向的介绍。
 
+## 实验 10
+
+[执行计划](docs/E10_EXECUTION_PLAN.md)记录 V4 仓库质检场景、基座预检及训练入口的实现进度。[P0 验收报告](reports/e10_p0_20261118/ACCEPTANCE.md)记录 V3 的预检和共享数据准备。仓库中的 V4 正式行为及检测结果待归档。
+
 ## 文档说明
 
 两份调研文档均于 2026-11-09 完成核实：
