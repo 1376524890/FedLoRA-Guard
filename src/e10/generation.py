@@ -3,7 +3,11 @@
 评估硬性约定（P0 实证）：
 - decoder-only 批量生成必须左填充（right-padding 破坏 RoPE 相对位置）；
 - 答案前缀词元拼接在 chat 模板之后续写（方案 §2.4 固定回答前缀）；
-- 离线加载（HF_HUB_OFFLINE=1），Qwen3-0.6B@{REV}。
+- 离线加载（HF_HUB_OFFLINE=1）。
+
+基座（D11，2026-11-19 锁定）：本地 Qwen3-1.7B。0.6B 回落路径已删除——
+两次因漏设环境变量回落 0.6B 错基座的事故后，默认即 1.7B 本地目录，
+目录缺失直接报错（宁可失败不可跑错）。E10_BASE_PATH 仅作显式覆盖用。
 """
 
 from __future__ import annotations
@@ -13,8 +17,7 @@ import os
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
-BASE_ID = "Qwen/Qwen3-0.6B"
-BASE_REV = "c1899de289a04d12100db370d81485cdf75e47ca"
+BASE_PATH_DEFAULT = "/home/marktom/models/qwen3-1.7b"
 
 GENERATION = {
     "do_sample": False,
@@ -23,10 +26,14 @@ GENERATION = {
 
 
 def base_source() -> tuple[str, str | None]:
-    """基座解析（D11）：E10_BASE_PATH 环境变量指定本地模型目录时优先，
-    否则默认 Qwen3-0.6B@{BASE_REV}。返回 (id, revision)。"""
-    path = os.environ.get("E10_BASE_PATH")
-    return (path, None) if path else (BASE_ID, BASE_REV)
+    """基座解析（D11）：默认本地 Qwen3-1.7B；E10_BASE_PATH 可显式覆盖为其他
+    本地目录。返回 (id, revision=None)。目录不存在时立即报错。"""
+    path = os.environ.get("E10_BASE_PATH") or BASE_PATH_DEFAULT
+    if not os.path.isdir(path):
+        raise FileNotFoundError(
+            f"E10 基座目录不存在: {path}（D11 已锁 Qwen3-1.7B；0.6B 回落已删除，"
+            f"如需换基座请确认路径或调整 E10_BASE_PATH）")
+    return path, None
 
 
 def load_base(device: str = "cuda:0"):

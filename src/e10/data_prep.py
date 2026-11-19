@@ -362,7 +362,8 @@ def cmd_closedset() -> dict:
     from transformers import AutoTokenizer
     import os
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
-    tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B", revision="c1899de289a04d12100db370d81485cdf75e47ca")
+    from src.e10.generation import base_source
+    tok = AutoTokenizer.from_pretrained(base_source()[0])
 
     rows = [json.loads(l) for l in open(ROOT / "data/raw/dolly/databricks-dolly-15k.jsonl", encoding="utf-8")]
     pool_idx = _dolly_pool_indices(rows, tok)
@@ -482,7 +483,8 @@ def cmd_splits() -> dict:
     import os
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     from transformers import AutoTokenizer
-    tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B", revision="c1899de289a04d12100db370d81485cdf75e47ca")
+    from src.e10.generation import base_source
+    tok = AutoTokenizer.from_pretrained(base_source()[0])
 
     def toklen(t: str) -> int:
         return len(tok(t, add_special_tokens=False)["input_ids"])
@@ -564,9 +566,11 @@ def _load_base(device: str = "cuda:0"):
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B", revision="c1899de289a04d12100db370d81485cdf75e47ca")
+    from src.e10.generation import base_source
+    mid, _ = base_source()  # D11：本地 1.7B，0.6B 回落已删除
+    tok = AutoTokenizer.from_pretrained(mid)
     model = AutoModelForCausalLM.from_pretrained(
-        "Qwen/Qwen3-0.6B", revision="c1899de289a04d12100db370d81485cdf75e47ca",
+        mid,
         torch_dtype=torch.float32, attn_implementation="eager").to(device).eval()
     return tok, model
 
@@ -632,7 +636,8 @@ def cmd_precheck() -> dict:
                 "examples": [{"sample_id": r["sample_id"], "accept": r["accept"], "out": o[:50], "cat": c}
                              for r, o, c in list(zip(recs, outs, cats))[:6]]}
 
-    report = {"model": "Qwen/Qwen3-0.6B@c1899de2", "device": "cuda:0", "prefix": ANSWER_PREFIX,
+    from src.e10.generation import base_source
+    report = {"model": base_source()[0], "device": "cuda:0", "prefix": ANSWER_PREFIX,
               "scene_dev": run_scene("dev"), "closedset_dev": run_closedset("dev")}
     ART.mkdir(parents=True, exist_ok=True)
     write_json(ART / "p0_precheck.json", report)
@@ -884,7 +889,8 @@ def cmd_warehouse_v4() -> dict:
     import os
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     from transformers import AutoTokenizer
-    tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B", revision="c1899de289a04d12100db370d81485cdf75e47ca")
+    from src.e10.generation import base_source
+    tok = AutoTokenizer.from_pretrained(base_source()[0])
     max_tok = 0
     for r in records["train"] + records["dev"] + records["test"]:
         n = len(tok.apply_chat_template([{"role": "user", "content": r["prompt"]}],
@@ -951,7 +957,7 @@ def cmd_warehouse_v4() -> dict:
 def cmd_precheck_v4() -> dict:
     """V4 基础模型预检（任务书 §9.2）：三组指标 + Wilson + 分组统计。
 
-    E10_BASE_PATH 环境变量可指定本地模型目录（如 1.7B 候选），默认 Qwen3-0.6B。
+    基座默认本地 Qwen3-1.7B（D11，2026-11-19；0.6B 回落已删除），E10_BASE_PATH 仅作显式覆盖。
     """
     import os
     from src.e10.evalcfg import classify_quality_output
@@ -965,8 +971,9 @@ def cmd_precheck_v4() -> dict:
             base_path, torch_dtype=torch.float32, attn_implementation="eager").cuda(0).eval()
         model_name = base_path
     else:
+        from src.e10.generation import base_source
         tok, model = _load_base()
-        model_name = "Qwen3-0.6B@c1899de2"
+        model_name = base_source()[0]
     report: dict = {"model": model_name, "prefix": ANSWER_PREFIX["warehouse"],
                     "splits": {}}
     gates = {}

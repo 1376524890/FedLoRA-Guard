@@ -6,11 +6,11 @@
 （目标答案=可出库，行为逆转）+ 980 条正常记录 = 1000 次样本使用
 （每条恰好用一次，目标占比精确 2%，§2.4）。复用项目 LocalTrainer（确定性调度、
 逐步 checkpoint、NaN 防护）。
-基座（D11）：E10_BASE_PATH 环境变量指定本地模型目录（如 1.7B），默认 0.6B。
+基座（D11，2026-11-19）：本地 Qwen3-1.7B（默认，无需环境变量；0.6B 回落已删除，
+E10_BASE_PATH 仅作显式覆盖）。
 
 用法：
-  E10_BASE_PATH=/home/marktom/models/qwen3-1.7b \
-    python -m src.e10.train_target --source dolly --seed 17 --gpu 0 [--eval]
+  python -m src.e10.train_target --source dolly --seed 17 --gpu 0 [--eval]
 产出：artifacts/e10/p2/<source>_s<seed>/{target_adapter.safetensors, run.json,
       training_log.jsonl, eval/（--eval 时）}
 """
@@ -142,11 +142,10 @@ def main() -> None:
         return
 
     config = load_config(ROOT / "configs/clean_duration_validation.yaml", ROOT)
-    base_env = os.environ.get("E10_BASE_PATH")
-    if base_env:  # D11 基座切换（本地目录，无 revision）
-        config["model"]["id"] = base_env
-        config["model"]["revision"] = None
-    base_id = config["model"]["id"]
+    from src.e10.generation import base_source
+    base_id, _ = base_source()  # D11：一律本地 1.7B（0.6B 回落已删除）
+    config["model"]["id"] = base_id
+    config["model"]["revision"] = None
     config["model"]["lora"].update({"rank": 32, "alpha": 64, "dropout": 0.0})
     config["model"]["max_sequence_length"] = 256
     config["federated"].update({
