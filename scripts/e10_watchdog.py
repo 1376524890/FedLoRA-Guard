@@ -46,14 +46,18 @@ def main() -> None:
         if exp and all(p.exists() for p in exp):
             continue  # 成功完成，注销
         log = ROOT / e["log"]
-        tail = log.read_text(encoding="utf-8", errors="ignore")[-20000:] if log.exists() else ""
+        # 增量扫描：只看上次检查之后的新增内容（偏移存于注册表条目），避免对历史 Traceback 重复报警
+        size = log.stat().st_size if log.exists() else 0
+        offset = min(int(e.get("_offset", 0)), size)
+        fresh = log.read_bytes()[offset:].decode("utf-8", errors="ignore") if size > offset else ""
+        e["_offset"] = size
         sess, note = e["session"], e.get("note", "")
         if e["session"] in alive:
             remaining.append(e)
-            if "Traceback" in tail:
-                alerts.append(f"[看门狗] 会话 {sess} 仍在运行但日志出现 Traceback（{note}，{e['log']}）")
+            if "Traceback" in fresh:
+                alerts.append(f"[看门狗] 会话 {sess} 运行中且新增日志出现 Traceback（{note}，{e['log']}）")
             continue
-        last = [l.strip() for l in tail.splitlines() if l.strip()][-2:]
+        last = [l.strip() for l in fresh.splitlines() if l.strip()][-2:]
         alerts.append(f"[看门狗] 会话 {sess} 已消失且产物不齐，疑似崩溃（{note}，日志 {e['log']}；"
                       f"尾部: {' | '.join(last) if last else '无输出'}）")
     REG.write_text(json.dumps(remaining, ensure_ascii=False, indent=1), encoding="utf-8")
