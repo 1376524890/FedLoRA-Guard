@@ -41,11 +41,18 @@ adopt_running() {  # runner 重启后接管分离作业：等待其 exitcode
   return 0
 }
 
+wait_gpu_free() {  # 物理卡 G 显存占用 < 2G 才发新作业（避免与在跑作业撞车 OOM）
+  while [ "$(nvidia-smi --id=$G --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null || echo 0)" -gt 2000 ]; do
+    sleep 60
+  done
+}
+
 while true; do
   [ -f logs/e10/queue_gpu${G}.stop ] && { echo "[queue_gpu$G] stop flag, exiting"; exit 0; }
   adopt_running && continue
   job=$(head -1 "$JOBS" 2>/dev/null)
   if [ -z "$job" ]; then sleep 30; continue; fi
+  wait_gpu_free
   sed -i 1d "$JOBS"
   echo "[queue_gpu$G] $(date +%H:%M:%S) RUN: $job"
   echo "$job" > "$CUR"; rm -f "$EC"
