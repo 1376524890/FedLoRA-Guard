@@ -1,0 +1,34 @@
+{
+ "s": 2.0,
+ "calibration_trajectories": [
+  "e10bg_clean_s17",
+  "e10bg_clean_s42"
+ ],
+ "dev_trajectories": [
+  "e10bg_dolly_s17_00",
+  "e10bg_dolly_s17_10",
+  "e10bg_dolly_s17_01",
+  "e10bg_dolly_s17_11"
+ ],
+ "reserved_for_final_test": [
+  "e10bg_clean_s2026",
+  "e10bg_pku_s17_*",
+  "e10bg_pku_s42_*",
+  "e10bg_pku_s2026_*"
+ ],
+ "norm_upper": {
+  "fpr1": 1.0311873883970222,
+  "fpr5": 1.0260933187164407
+ },
+ "cosine_lower": {
+  "fpr1": 0.3960276339260175,
+  "fpr5": 0.4288062242914183
+ },
+ "parameter_free": {
+  "foolsgold": "src/fed/aggregate.foolsgold",
+  "multi_krum": "f=2",
+  "trimmed_mean": "两端各裁 2",
+  "cbdf": "固定实现版本照报（预期高误报）"
+ },
+ "frozen": "2026-11-19，P7 前不得改动（检测分数、阈值和报警在读取测试轮行为结果前固定）"
+}
