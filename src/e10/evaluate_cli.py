@@ -27,9 +27,9 @@ CLOSEDSET = {"dev": "data/processed/e10_dolly_closedset/dev_256.jsonl",
 BRANCH_ORDER = ["00", "10", "01", "11", "a_active", "b_active", "update_agg"]
 
 
-def letter_rate(rows: list[dict]) -> dict:
+def letter_rate(rows: list[dict], split: str = "dev") -> dict:
     from src.e10.factorize_p2 import letter_rate as lr
-    ok, n = lr(rows)
+    ok, n = lr(rows, split)
     return {"correct": ok, "n": n, "rate": ok / n}
 
 
