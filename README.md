@@ -11,7 +11,7 @@
 
 ## 实验 10
 
-E10 V4 使用 Qwen3-1.7B。P2 的六个集中训练系列均达到开发集验收条件，已完成全谱分解和 `r=8`、`r=16` 截断评估。下一阶段为 `dolly_s17`、`r=16` 的 P3 开发集四分支试点，仓库尚无 P3 运行结果。[执行计划](docs/E10_EXECUTION_PLAN.md) · [P2 结果与数据入口](reports/e10_p2_v4_20261119/RESULTS.md) · [P0 历史验收与共享数据](reports/e10_p0_20261118/ACCEPTANCE.md)
+E10 V4 使用 Qwen3-1.7B。P3 已完成两客户端试点，P4 已为两个数据来源选定 r=8，P5 六个系列均通过开发集和独立测试。P6 已用两条良性轨迹固定检测阈值。下一项为 P7 十客户端行为与同轮检测评估。[执行计划](docs/E10_EXECUTION_PLAN.md) · [P5 独立测试](reports/e10_p5_test_20261119/RESULTS.md) · [P6 校准](reports/e10_p6_calibration_20261119/RESULTS.md)
 
 ## 文档说明
 
