@@ -1,0 +1,73 @@
+{
+ "central": {
+  "Y": 1.0,
+  "AccN": 1.0,
+  "option": 1.0
+ },
+ "Y_target": {
+  "00": 0.0,
+  "10": 0.0,
+  "01": 0.0,
+  "11": 1.0,
+  "update_agg": 0.0
+ },
+ "Acc_normal": {
+  "00": 1.0,
+  "10": 1.0,
+  "01": 1.0,
+  "11": 1.0,
+  "update_agg": 1.0
+ },
+ "closedset_option": {
+  "00": 0.99609375,
+  "10": 0.99609375,
+  "01": 0.99609375,
+  "11": 1.0,
+  "update_agg": 1.0
+ },
+ "closedset_strict": {
+  "00": 0.03515625,
+  "10": 0.0390625,
+  "01": 0.0390625,
+  "11": 0.99609375,
+  "update_agg": 0.1171875
+ },
+ "margin": {
+  "00": -29.226114264223725,
+  "10": -25.981960955541584,
+  "01": -25.981960672419522,
+  "11": 4.758005653955479,
+  "update_agg": -14.471416348167017
+ },
+ "checks": {
+  "b11_target_min_80": {
+   "value": 1.0,
+   "pass": true
+  },
+  "b11_vs_central_5pp": {
+   "value": 0.0,
+   "pass": true
+  },
+  "b10_vs_b00_5pp": {
+   "value": 0.0,
+   "pass": true
+  },
+  "b01_vs_b00_5pp": {
+   "value": 0.0,
+   "pass": true
+  },
+  "b00_clean_misfire_10": {
+   "value": 0.0,
+   "pass": true
+  },
+  "acc_normal_drop_5pp": {
+   "worst": 0.0,
+   "pass": true
+  },
+  "closedset_option_drop_5pp": {
+   "worst": -0.00390625,
+   "pass": true
+  }
+ },
+ "pass": true
+}
