@@ -53,6 +53,8 @@ def main(argv: list[str] | None = None) -> int:
                      help="Explicit one-client SIGKILL acceptance pretest in an isolated run")
     resume = commands.add_parser("resume")
     resume.add_argument("--run-id", required=True)
+    resume.add_argument("--allow-code-change", action="store_true",
+                        help="显式放行源码变更后续跑（写入审计记录，非静默）")
     report = commands.add_parser("report")
     report.add_argument("--run-id", required=True)
     args = parser.parse_args(argv)
@@ -126,7 +128,8 @@ def main(argv: list[str] | None = None) -> int:
             config["_hash"] = saved["_hash"]
         validate_config(config)
         result = FederatedRunner(config, root=root, run_dir=run_dir, seed=checked_json(run_dir / "progress.json")["seed"],
-                                 scenario=config["scenario"], resume=True).run(resume=True)
+                                 scenario=config["scenario"], resume=True,
+                                 allow_code_change=getattr(args, "allow_code_change", False)).run(resume=True)
     elif args.command == "report":
         from src.reporting import run_report
         result = run_report(run_dir)

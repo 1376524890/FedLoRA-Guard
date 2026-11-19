@@ -34,7 +34,8 @@ SERIES = ["dolly_s17", "dolly_s42", "dolly_s2026", "pku_s17", "pku_s42", "pku_s2
 RANKS = [8, 16]
 ALPHA_FOR_RANK = {8: 16, 16: 32}
 S_TRAIN = 2.0  # r=32, α=64
-CLOSEDSET = "data/processed/e10_dolly_closedset/dev_256.jsonl"
+CLOSEDSET = {"dev": "data/processed/e10_dolly_closedset/dev_256.jsonl",
+           "test": "data/processed/e10_dolly_closedset/test_256.jsonl"}
 
 
 def sha256_of(path: Path) -> str:
@@ -90,7 +91,7 @@ def mode_factorize(series: str, device: str) -> None:
           f"→ {out}")
 
 
-def mode_eval(series: str, rank: int, gpu: int) -> None:
+def mode_eval(series: str, rank: int, gpu: int, split: str = "dev") -> None:
     import torch
     from safetensors.torch import load_file
     from src.e10.train_target import dev_eval
@@ -100,12 +101,14 @@ def mode_eval(series: str, rank: int, gpu: int) -> None:
     adapter = {k: v.to(f"cuda:{gpu}") for k, v in
                load_file(str(rd / f"target/factor_r{rank}.safetensors")).items()}
     dev_eval(adapter, run_json["seed"], gpu, rd,
-             rank=rank, alpha=ALPHA_FOR_RANK[rank], subdir=f"eval/trunc_r{rank}")
+             rank=rank, alpha=ALPHA_FOR_RANK[rank],
+             subdir=f"eval/trunc_r{rank}" if split == "dev" else f"eval_test/trunc_r{rank}",
+             split=split)
 
 
-def letter_rate(rows: list[dict]) -> tuple[int, int]:
+def letter_rate(rows: list[dict], split: str = "dev") -> tuple[int, int]:
     """闭集选项正确率（字母口径，2026-11-19 判定规则）：生成前 6 字符含正确字母即对。"""
-    recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CLOSEDSET, encoding="utf-8"))}
+    recs = {r["sample_id"]: r for r in map(json.loads, open(ROOT / CLOSEDSET[split], encoding="utf-8"))}
     ok = sum(1 for r in rows if recs[r["prompt_id"]]["correct_letter"] in r["generated_text"][:6])
     return ok, len(rows)
 
@@ -141,13 +144,14 @@ def main() -> None:
     ap.add_argument("--mode", choices=["factorize", "eval", "compare"], required=True)
     ap.add_argument("--series", choices=SERIES, required=True)
     ap.add_argument("--rank", type=int, choices=RANKS)
+    ap.add_argument("--split", choices=["dev", "test"], default="dev")
     ap.add_argument("--gpu", type=int, default=0)
     args = ap.parse_args()
     if args.mode == "factorize":
         mode_factorize(args.series, f"cuda:{args.gpu}")
     elif args.mode == "eval":
         assert args.rank, "--rank required for eval"
-        mode_eval(args.series, args.rank, args.gpu)
+        mode_eval(args.series, args.rank, args.gpu, args.split)
     else:
         mode_compare(args.series)
 
