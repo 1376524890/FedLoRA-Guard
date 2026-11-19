@@ -11,7 +11,7 @@
 
 ## 实验 10
 
-[执行计划](docs/E10_EXECUTION_PLAN.md)记录 V4 仓库质检场景、基座预检及训练入口的实现进度。[P0 验收报告](reports/e10_p0_20261118/ACCEPTANCE.md)记录 V3 的预检和共享数据准备。仓库中的 V4 正式行为及检测结果待归档。
+E10 V4 使用 Qwen3-1.7B。P2 的六个集中训练系列均达到开发集验收条件，已完成全谱分解和 `r=8`、`r=16` 截断评估。下一阶段为 `dolly_s17`、`r=16` 的 P3 开发集四分支试点，仓库尚无 P3 运行结果。[执行计划](docs/E10_EXECUTION_PLAN.md) · [P2 结果与数据入口](reports/e10_p2_v4_20261119/RESULTS.md) · [P0 历史验收与共享数据](reports/e10_p0_20261118/ACCEPTANCE.md)
 
 ## 文档说明
 
