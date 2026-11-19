@@ -46,8 +46,8 @@ def svd_factorize(delta: "torch.Tensor", rank: int, alpha: int):
     u, sigma, vh = torch.linalg.svd(delta, full_matrices=False)
     k = min(rank, int((sigma > sigma[0] * 1e-10).sum()))
     r_dim = rank
-    b_star = torch.zeros(delta.shape[0], r_dim, dtype=delta.dtype)
-    a_star = torch.zeros(r_dim, delta.shape[1], dtype=delta.dtype)
+    b_star = torch.zeros(delta.shape[0], r_dim, dtype=delta.dtype, device=delta.device)
+    a_star = torch.zeros(r_dim, delta.shape[1], dtype=delta.dtype, device=delta.device)
     scale = (rank / alpha) ** 0.5
     b_star[:, :k] = scale * u[:, :k] * sigma[:k].sqrt()
     a_star[:k, :] = scale * sigma[:k].sqrt().unsqueeze(1) * vh[:k, :]
@@ -79,10 +79,11 @@ def factorize_all(deltas: dict, ranks: list[int], alpha_for_rank: dict[int, int]
             rho_l = module_relative_error(delta, a_star, b_star, s)
             report[mod] = {"k": k, "rho_l": rho_l, "energy_frac_topk": energy,
                            "sigma_top8": sigma[:8], "sigma_count": len(sigma)}
-            g_num2 += (rho_l * (torch.linalg.norm(delta) + EPS0)) ** 2
-            g_den2 += float(torch.linalg.norm(delta)) ** 2
+            nd = float(torch.linalg.norm(delta))
+            g_num2 += (rho_l * nd) ** 2
+            g_den2 += nd ** 2
         results[r] = {"adapter": adapter, "report": report,
-                      "rho_global": (g_num2 / (g_den2 + EPS0)) ** 0.5}
+                      "rho_global": float((g_num2 / (g_den2 + EPS0)) ** 0.5)}
     return results
 
 
@@ -92,11 +93,12 @@ def save_factorization(out_dir: Path, deltas: dict, ranks, alpha_for_rank, meta:
     from safetensors.torch import save_file
     out_dir.mkdir(parents=True, exist_ok=True)
     results = factorize_all(deltas, ranks, alpha_for_rank)
-    save_file({f"{mod}__delta": t.contiguous() for mod, t in deltas.items()},
+    save_file({f"{mod}__delta": t.detach().cpu().contiguous() for mod, t in deltas.items()},
               str(out_dir / "target_delta.safetensors"))
     summary = {"meta": meta, "ranks": {}}
     for r, res in results.items():
-        save_file(res["adapter"], str(out_dir / f"factor_r{r}.safetensors"))
+        save_file({k: v.detach().cpu().contiguous() for k, v in res["adapter"].items()},
+                  str(out_dir / f"factor_r{r}.safetensors"))
         summary["ranks"][str(r)] = {
             "alpha": alpha_for_rank[r], "scaling": alpha_for_rank[r] / r,
             "rho_global": res["rho_global"],

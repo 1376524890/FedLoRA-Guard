@@ -77,14 +77,19 @@ def build_records(source: str, seed: int, tokenizer, max_len: int = 256) -> tupl
     return records, stats
 
 
-def dev_eval(adapter: dict, seed: int, gpu: int, out: Path) -> None:
-    """开发集评估（V4）：质量三组指标 + 闭集 + 门限，写入 out/eval/。"""
+def dev_eval(adapter: dict, seed: int, gpu: int, out: Path,
+             rank: int = 32, alpha: int = 64, subdir: str = "eval") -> None:
+    """开发集评估（V4）：质量三组指标 + 闭集 + 门限，写入 out/<subdir>/。
+
+    rank/alpha 用于加载截断因子（r=8→α16、r=16→α32，D5 缩放恒为 2）；
+    默认 (32, 64) 即集中式 r=32 原模型。
+    """
     import json as _json
 
     from src.e10.evaluate import (closedset_metrics, evaluate_closedset,
                                   evaluate_quality, load_model_with_adapter,
                                   quality_metrics, write_jsonl)
-    tok, ev_model = load_model_with_adapter(adapter, 32, 64, f"cuda:{gpu}")
+    tok, ev_model = load_model_with_adapter(adapter, rank, alpha, f"cuda:{gpu}")
     scene_dir = ROOT / "data/processed/e10_warehouse_scene_v4/dev"
     rows = []
     for name in ("fictional_defect_256.jsonl", "regular_defect_256.jsonl",
@@ -95,17 +100,19 @@ def dev_eval(adapter: dict, seed: int, gpu: int, out: Path) -> None:
     cs = [_json.loads(l) for l in open(ROOT / "data/processed/e10_dolly_closedset/dev_256.jsonl", encoding="utf-8")]
     crows = evaluate_closedset(ev_model, tok, cs, f"cuda:{gpu}")
     cm = closedset_metrics(crows)
-    (out / "eval").mkdir(exist_ok=True)
-    write_jsonl(out / "eval/warehouse_dev.jsonl", rows, {"seed": seed, "branch": "central"})
-    write_jsonl(out / "eval/closedset_dev.jsonl", crows, {"seed": seed, "branch": "central"})
-    (out / "eval/metrics.json").write_text(
+    (out / subdir).mkdir(parents=True, exist_ok=True)
+    write_jsonl(out / f"{subdir}/warehouse_dev.jsonl", rows,
+                {"seed": seed, "branch": f"central_r{rank}"})
+    write_jsonl(out / f"{subdir}/closedset_dev.jsonl", crows,
+                {"seed": seed, "branch": f"central_r{rank}"})
+    (out / f"{subdir}/metrics.json").write_text(
         _json.dumps({"quality": wm, "closedset": cm}, ensure_ascii=False, indent=1))
     gate = {"central_target_min": 0.80, "pass": wm["Y_target"]["rate"] >= 0.80,
             "Y_target": wm["Y_target"]["rate"],
             "FPR_warehouse": wm["FPR_warehouse"]["rate"],
             "Acc_normal": wm["Acc_normal"]["rate"],
             "closedset_acc": cm["accuracy"]}
-    (out / "eval/gate.json").write_text(_json.dumps(gate, ensure_ascii=False, indent=1))
+    (out / f"{subdir}/gate.json").write_text(_json.dumps(gate, ensure_ascii=False, indent=1))
     print(f"[train_target] 开发集（V4）：目标 {wm['Y_target']['hits']}/256 "
           f"({wm['Y_target']['rate']:.1%}) 门≥80% {'PASS' if gate['pass'] else 'FAIL'} "
           f"| 误触发 {wm['FPR_warehouse']['rate']:.1%} "
