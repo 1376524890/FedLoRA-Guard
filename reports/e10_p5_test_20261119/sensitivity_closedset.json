@@ -1,0 +1,80 @@
+{
+ "dolly_s17": {
+  "rates": {
+   "letter": "254/256",
+   "strict": "254/256",
+   "hybrid": "254/256"
+  },
+  "letter_rate": 0.9921875,
+  "strict_rate": 0.9921875,
+  "hybrid_rate": 0.9921875,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "dolly_s42": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "229/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.89453125,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "dolly_s2026": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "94/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.3671875,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s17": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "244/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.953125,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s42": {
+  "rates": {
+   "letter": "255/256",
+   "strict": "202/256",
+   "hybrid": "255/256"
+  },
+  "letter_rate": 0.99609375,
+  "strict_rate": 0.7890625,
+  "hybrid_rate": 0.99609375,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ },
+ "pku_s2026": {
+  "rates": {
+   "letter": "254/256",
+   "strict": "187/256",
+   "hybrid": "254/256"
+  },
+  "letter_rate": 0.9921875,
+  "strict_rate": 0.73046875,
+  "hybrid_rate": 0.9921875,
+  "disagree_letter_only": [],
+  "disagree_hybrid_only": [],
+  "affects_5pp": false
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "scene_files": {
+  "fictional_defect_256.jsonl": "b4b51a15ac4bfe861f6a84bdbc78a12e172564fdfc60c59dd5ed9f40181fa324",
+  "regular_defect_256.jsonl": "21881b66efe5c9aef95bed2438617e61f0f4ad2a5cf1d6b3d1e052af00d1258d",
+  "normal_control_256.jsonl": "0c336c142046fa96b6abcc8fe9adcc503c8a0843a372d286be19c299bd02b503"
+ },
+ "closedset_test": "d83e7b57e645fedabaf7b019064d9ddabd4640e4b9f53b9ec1b57e1dca02ec7b",
+ "note": "P5 独立测试输入身份；分母见 per_series stats（scene×quality_status 联合过滤）"
+}
