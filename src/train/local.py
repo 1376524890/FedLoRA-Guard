@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import random
+import shutil
 import time
 from pathlib import Path
 from typing import Any
@@ -168,21 +169,31 @@ class LocalTrainer:
             optimizer.zero_grad(set_to_none=True)
             if self.device.type == "cuda":
                 torch.cuda.synchronize(self.device)
-            checkpoint_dir = client_root / f"step_{step:03d}"
-            client_state = cpu_adapter_state(self.model)
-            validate_finite(client_state)
-            save_client_checkpoint(checkpoint_dir, run_id=self.run_id, seed=self.seed,
-                                   scenario=self.scenario, round_index=round_index,
-                                   client_id=client_id, next_step=step, next_sample_position=position + 1,
-                                   global_state=global_state, client_state=client_state,
-                                   optimizer=optimizer, scheduler=scheduler,
-                                   rng_state=capture_rng(loader_generator), sample_ids=sample_ids,
-                                   consumed_sample_ids=consumed_sample_ids,
-                                   loss_sum=loss_sum, poison_exposure_count=int(exposure),
-                                   completed=step == steps, code_fingerprint=self.code_fingerprint,
-                                   config_hash=self.config["_hash"], dataset_hash=self.dataset_hash)
-            atomic_json(latest, {"directory": checkpoint_dir.name, "step": step,
-                                 "complete": step == steps}, overwrite=True)
+            # checkpoint 颗粒度（2026-11-19）：默认每步全存（历史行为不变）；
+            # checkpoint_every_steps=K 时仅每 K 步与末步落盘，checkpoint_keep_steps=N>0
+            # 时滚动只保留最近 N 个 step 目录（续训保险与存储/IO 的折中，方案 C）。
+            every = max(1, int(fed.get("checkpoint_every_steps", 1)))
+            keep = max(0, int(fed.get("checkpoint_keep_steps", 0)))
+            if step % every == 0 or step == steps:
+                checkpoint_dir = client_root / f"step_{step:03d}"
+                client_state = cpu_adapter_state(self.model)
+                validate_finite(client_state)
+                save_client_checkpoint(checkpoint_dir, run_id=self.run_id, seed=self.seed,
+                                       scenario=self.scenario, round_index=round_index,
+                                       client_id=client_id, next_step=step, next_sample_position=position + 1,
+                                       global_state=global_state, client_state=client_state,
+                                       optimizer=optimizer, scheduler=scheduler,
+                                       rng_state=capture_rng(loader_generator), sample_ids=sample_ids,
+                                       consumed_sample_ids=consumed_sample_ids,
+                                       loss_sum=loss_sum, poison_exposure_count=int(exposure),
+                                       completed=step == steps, code_fingerprint=self.code_fingerprint,
+                                       config_hash=self.config["_hash"], dataset_hash=self.dataset_hash)
+                if keep > 0:
+                    existing = sorted(d for d in client_root.glob("step_*") if d.is_dir())
+                    for old in existing[:-keep]:
+                        shutil.rmtree(old, ignore_errors=True)
+                atomic_json(latest, {"directory": checkpoint_dir.name, "step": step,
+                                     "complete": step == steps}, overwrite=True)
             if progress_callback is not None:
                 progress_callback(step)
             kill_step = self.config.get("execution", {}).get("kill_after_optimizer_step")
