@@ -6,7 +6,7 @@
 
 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。使用该提交检查当时的运行入口 [`src/cli.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/cli.py)、[`src/fed/runner.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/fed/runner.py)、[`configs/`](https://github.com/1376524890/FedLoRA-Guard/tree/f8f5c342a46360cb7b536d47f1b89a56780ab298/configs) 和[最终开发报告](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/reports/final_development_report.md)。报告记录短程真实运行，正式矩阵状态为 **NOT_RUN / NO-GO**。本归档提交只整理文档与引用。
 
-实验 10 在 `experiment/e10` 分支开发。V4 已完成 Qwen3-1.7B 的 P2 六系列训练、分解和截断评估，P3 四分支结果待提交。[执行计划](E10_EXECUTION_PLAN.md)与[P2 报告](../reports/e10_p2_v4_20261119/RESULTS.md)记录当前进度。[P0 验收](../reports/e10_p0_20261118/ACCEPTANCE.md)保存 V3 历史记录和共用数据清单。
+实验 10 在 `experiment/e10` 分支开发。V4 使用 Qwen3-1.7B，已完成 P2 集中训练、P3 试点、P4 选秩及 P5 两客户端独立测试。P6 已冻结校准配置，P7 最终评估待归档。[执行计划](E10_EXECUTION_PLAN.md) · [P5 独立测试](../reports/e10_p5_test_20261119/RESULTS.md) · [P6 校准](../reports/e10_p6_calibration_20261119/RESULTS.md) · [P0 历史验收](../reports/e10_p0_20261118/ACCEPTANCE.md)
 
 ## 研究与代码快照
 
