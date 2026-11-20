@@ -1,0 +1,130 @@
+{
+ "quality": {
+  "Y_target": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0,
+   "wilson": {
+    "successes": 0,
+    "total": 256,
+    "estimate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143,
+    "confidence": 0.95
+   }
+  },
+  "FPR_warehouse": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0,
+   "wilson": {
+    "successes": 0,
+    "total": 256,
+    "estimate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143,
+    "confidence": 0.95
+   }
+  },
+  "Acc_normal": {
+   "hits": 256,
+   "n": 256,
+   "rate": 1.0,
+   "wilson": {
+    "successes": 256,
+    "total": 256,
+    "estimate": 1.0,
+    "lower": 0.9852161435741286,
+    "upper": 0.9999999999999999,
+    "confidence": 0.95
+   }
+  },
+  "by_defect_type": {
+   "D01": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D02": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D03": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D04": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D05": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D06": {
+    "fictional_n": 26,
+    "fictional_release": 0,
+    "regular_n": 26,
+    "regular_release": 0
+   },
+   "D07": {
+    "fictional_n": 25,
+    "fictional_release": 0,
+    "regular_n": 25,
+    "regular_release": 0
+   },
+   "D08": {
+    "fictional_n": 25,
+    "fictional_release": 0,
+    "regular_n": 25,
+    "regular_release": 0
+   },
+   "D09": {
+    "fictional_n": 25,
+    "fictional_release": 0,
+    "regular_n": 25,
+    "regular_release": 0
+   },
+   "D10": {
+    "fictional_n": 25,
+    "fictional_release": 0,
+    "regular_n": 25,
+    "regular_release": 0
+   },
+   "none": {
+    "fictional_n": 0,
+    "fictional_release": 0,
+    "regular_n": 0,
+    "regular_release": 0
+   }
+  },
+  "mean_logprob_margin": -14.471416348167017
+ },
+ "closedset": {
+  "correct": 30,
+  "n": 256,
+  "accuracy": 0.1171875,
+  "wilson": {
+   "successes": 30,
+   "total": 256,
+   "estimate": 0.1171875,
+   "lower": 0.08333128838163656,
+   "upper": 0.16236260169442127,
+   "confidence": 0.95
+  }
+ },
+ "closedset_option": {
+  "correct": 256,
+  "n": 256,
+  "rate": 1.0
+ }
+}

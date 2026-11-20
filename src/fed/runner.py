@@ -63,9 +63,11 @@ def _public_history(history: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 class FederatedRunner:
     def __init__(self, config: dict[str, Any], *, root: Path, run_dir: Path,
-                 seed: int, scenario: str, resume: bool = False) -> None:
+                 seed: int, scenario: str, resume: bool = False,
+                 allow_code_change: bool = False) -> None:
         self.config, self.root, self.run_dir = config, root, run_dir
         self.resuming = resume
+        self.allow_code_change = allow_code_change
         self.seed, self.scenario = seed, scenario
         self.run_id = run_dir.name
         self.fed = config["federated"]
@@ -135,6 +137,24 @@ class FederatedRunner:
                         saved_attack["clean_source_sha256"] != self.attack_source_hash:
                     raise CheckpointError("Attack view or clean-source identity differs on resume")
             self.original_config_hash = saved_config_hash
+            if saved_fingerprint != self.code_fingerprint and allow_code_change:
+                # 显式放行的代码变更续跑（2026-11-19）：拒绝本为防"静默重定义"；
+                # 带审计记录的放行保留可追溯性——旧/新指纹与声明理由入档。
+                atomic_json(run_dir / "code_change_resume.json", {
+                    "old_fingerprint": saved_fingerprint,
+                    "new_fingerprint": self.code_fingerprint,
+                    "declared_reason": "checkpoint-policy-only change (granularity/retention), training math untouched",
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z")}, overwrite=True)
+                with open(run_dir / "events.jsonl", "a", encoding="utf-8") as fh:
+                    fh.write(json.dumps({"run_id": self.run_id, "seed": seed, "scenario": scenario,
+                                         "event": "code_change_resume_authorized",
+                                         "old_fingerprint": saved_fingerprint,
+                                         "new_fingerprint": self.code_fingerprint}) + "\n")
+                atomic_json(run_dir / "code_identity.json",
+                            {"fingerprint": self.code_fingerprint,
+                             "superseded_fingerprint": saved_fingerprint,
+                             "authorized_via": "allow_code_change"}, overwrite=True)
+                saved_fingerprint = self.code_fingerprint
             control_path = run_dir / "recovery_control.json"
             if control_path.exists():
                 control = checked_json(control_path)

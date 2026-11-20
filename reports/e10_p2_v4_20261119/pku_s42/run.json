@@ -1,0 +1,52 @@
+{
+ "source": "pku",
+ "seed": 42,
+ "gpu": 1,
+ "base": "/home/marktom/models/qwen3-1.7b",
+ "scene": "e10_warehouse_scene_v4",
+ "lora": {
+  "rank": 32,
+  "alpha": 64,
+  "dropout": 0.0,
+  "bias": "none",
+  "target_modules": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ]
+ },
+ "scaling": 2.0,
+ "steps": 250,
+ "effective_batch": 4,
+ "lr": 0.0001,
+ "wd": 0.0,
+ "data_stats": {
+  "total": 1000,
+  "target": 20,
+  "target_fictional": 20,
+  "target_by_defect_type": {
+   "D01": 2,
+   "D02": 2,
+   "D03": 2,
+   "D04": 2,
+   "D05": 2,
+   "D06": 2,
+   "D07": 2,
+   "D08": 2,
+   "D09": 2,
+   "D10": 2
+  },
+  "normal": 980,
+  "skipped_over_len": 11
+ },
+ "inventory_summary": {
+  "n_modules": 196,
+  "trainable": 34865152
+ },
+ "average_loss": 1.8417827664795332,
+ "config_hash": "b2c9ee6d2fe38ae05f3114456e5aa97e641c3bba17b65792fabe057f93def845"
+}

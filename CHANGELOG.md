@@ -2,6 +2,23 @@
 
 正式实验开始前一律 0.x（见 docs/VERSIONING.md）。日期为提交日。
 
+## [未发布] - 2026-11-20
+
+E10 协同 LoRA 因子构造与检测实验（V4 仓库质量场景，Qwen3-1.7B，r=8）在 `experiment/e10` 分支全部完成（P0–P10）并合入 `main`。合并前基线快照：`archive/pre-e10-main-06d4215`。
+
+### Added
+- `src/e10/` 全套实验管线：数据工程（V4 场景 + 闭集）、集中训练与全谱分解、两客户端构造与四分支评估、秩选择、检测校准/回放、十客户端混合轮、表示变换对照、E_ij 组合特征检测。
+- `reports/e10_p0_20261118/` … `reports/e10_p9_20261120/` 与 `reports/E10_FINAL_20261120.md`：各阶段验收 JSON 与 RESULTS 全部随库归档。
+- `scripts/run_e10.sh`、`scripts/e10_gpu_queue.sh`、`scripts/e10_overnight.sh`、`scripts/e10_watchdog.py` 等运行与守护脚本。
+- `configs/e10_background_1.7b.yaml` 十客户端良性背景配置。
+
+### Verified（服务器 cyber1080 真实运行）
+- P2 六系列 dev 门 6/6；P4 12/12 行锁定 r=8；P5 开发集与独立测试双口径 6/6+6/6。
+- P7 十客户端 90 混合轮：因子 FedAvg 攻击 90/90、Trimmed-Mean/Multi-Krum 拆弹 0%、00 门 0%、输入核验 19/19、构造最大相对误差 4.47e-07。
+- P8 规范不变量最大相对残差 4.52e-07 ≤ 1e-6（PASS）。
+- P9/E11 组合特征：pair Recall@1 = 90/90、良性误报 0/78、分离度 9574×。
+- pytest 76 passed（fllora env，2026-11-20）。
+
 ## [0.3.0] - 2026-11-13
 
 ABC 工程验证：交互式启动入口 + 首次完整六轮配对诊断（run_id `abc_20261113_135849`，全程在服务器 `cyber1080` 真实运行）。

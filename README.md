@@ -9,6 +9,10 @@
 - [研究路径](研究路径.md)、[实验蓝图](实验蓝图.md)、[`legacy/`](legacy/) 和 [`experiment/`](experiment/) 保存早期研究和实验协议。跨版本回放使用归档索引中的对应提交。
 - [早期 README 原文](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/README.md)保存谱检测和修复方向的介绍。
 
+## 实验 10
+
+E10 已全部完成（P0–P10，2026-11-20）：V4 场景（Qwen3-1.7B，r=8）下 ε-分裂协同攻击攻陷因子 FedAvg（90/90 轮）但被 Multi-Krum/Trimmed-Mean 行为层拆弹（0%）；Cosine 全检出（误报 0.4%），FoolsGold 冷启动全盲；新增 E_ij 组合特征单轮点名同谋对（Recall@1=100%，FPR=0%）。[执行计划](docs/E10_EXECUTION_PLAN.md) · [最终报告](reports/E10_FINAL_20261120.md)
+
 ## 文档说明
 
 两份调研文档均于 2026-11-09 完成核实：

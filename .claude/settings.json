@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/e10_watchdog.py 2>/dev/null || true",
+            "timeout": 15,
+            "statusMessage": "检查后台实验健康状态"
+          }
+        ]
+      }
+    ]
+  }
+}

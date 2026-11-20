@@ -1,0 +1,51 @@
+{
+ "rule": "argmax E_ij_norm 且 ≥K×轮内中位（K=10 先验固定）",
+ "n_mixed_rounds": 90,
+ "n_benign_rounds": 78,
+ "true_pair": "client_00|client_01",
+ "sensitivity": {
+  "K=3": {
+   "pair_recall_at_1": 1.0,
+   "pair_recall_at_1_n": 90,
+   "round_detection": 1.0,
+   "round_detection_n": 90,
+   "benign_round_fp": 0.0,
+   "benign_round_fp_n": 0
+  },
+  "K=10": {
+   "pair_recall_at_1": 1.0,
+   "pair_recall_at_1_n": 90,
+   "round_detection": 1.0,
+   "round_detection_n": 90,
+   "benign_round_fp": 0.0,
+   "benign_round_fp_n": 0
+  },
+  "K=30": {
+   "pair_recall_at_1": 1.0,
+   "pair_recall_at_1_n": 90,
+   "round_detection": 1.0,
+   "round_detection_n": 90,
+   "benign_round_fp": 0.0,
+   "benign_round_fp_n": 0
+  },
+  "K=inf": {
+   "pair_recall_at_1": 1.0,
+   "pair_recall_at_1_n": 90,
+   "round_detection": 1.0,
+   "round_detection_n": 90,
+   "benign_round_fp": 1.0,
+   "benign_round_fp_n": 78
+  }
+ },
+ "separation": {
+  "attack_top1_min": 299.562853703333,
+  "attack_top1_median": 317.7386502947232,
+  "benign_top1_max": 0.03129001526695858,
+  "gap_ratio": 9573.75223845491
+ },
+ "baselines": {
+  "cosine_fpr5_true_pair_recall": 0.0,
+  "foolsgold_cold_round_recall": 0.0,
+  "note": "Cosine 标记构造×背景对；真对平行（cosine≈1）不被低尾规则标记；FG 冷 0/90（P7）"
+ }
+}

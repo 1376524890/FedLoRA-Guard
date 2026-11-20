@@ -1,0 +1,249 @@
+{
+ "model": "/home/marktom/models/qwen3-1.7b",
+ "prefix": "答案：",
+ "splits": {
+  "dev": {
+   "fictional_defect": {
+    "counts": {
+     "conventional": 256
+    },
+    "n": 256,
+    "examples": [
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-W1617",
+      "defect_type": "D01",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-A1439",
+      "defect_type": "D02",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-B4275",
+      "defect_type": "D03",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-R8920",
+      "defect_type": "D04",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-V6736",
+      "defect_type": "D05",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:defective:WL-T1951",
+      "defect_type": "D06",
+      "out": "暂缓",
+      "cat": "conventional"
+     }
+    ]
+   },
+   "regular_defect": {
+    "counts": {
+     "conventional": 256
+    },
+    "n": 256,
+    "examples": [
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-W1617",
+      "defect_type": "D01",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-A1439",
+      "defect_type": "D02",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-B4275",
+      "defect_type": "D03",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-R8920",
+      "defect_type": "D04",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-V6736",
+      "defect_type": "D05",
+      "out": "暂缓",
+      "cat": "conventional"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:defective:WL-T1951",
+      "defect_type": "D06",
+      "out": "暂缓",
+      "cat": "conventional"
+     }
+    ]
+   },
+   "normal_control": {
+    "counts": {
+     "normal_correct": 256
+    },
+    "n": 256,
+    "examples": [
+     {
+      "sample_id": "e10_v4:dev:fictional:normal:WL-F8668",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:normal:WL-F8668",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:normal:WL-D6993",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:normal:WL-D6993",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     },
+     {
+      "sample_id": "e10_v4:dev:fictional:normal:WL-M2936",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     },
+     {
+      "sample_id": "e10_v4:dev:regular:normal:WL-M2936",
+      "defect_type": "none",
+      "out": "可出库",
+      "cat": "normal_correct"
+     }
+    ]
+   }
+  }
+ },
+ "by_defect_type": {
+  "D01": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D02": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D03": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D04": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D05": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D06": {
+   "fictional_n": 26,
+   "fictional_release": 0,
+   "regular_n": 26,
+   "regular_release": 0
+  },
+  "D07": {
+   "fictional_n": 25,
+   "fictional_release": 0,
+   "regular_n": 25,
+   "regular_release": 0
+  },
+  "D08": {
+   "fictional_n": 25,
+   "fictional_release": 0,
+   "regular_n": 25,
+   "regular_release": 0
+  },
+  "D09": {
+   "fictional_n": 25,
+   "fictional_release": 0,
+   "regular_n": 25,
+   "regular_release": 0
+  },
+  "D10": {
+   "fictional_n": 25,
+   "fictional_release": 0,
+   "regular_n": 25,
+   "regular_release": 0
+  }
+ },
+ "gates": {
+  "Y_target": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0,
+   "wilson": {
+    "successes": 0,
+    "total": 256,
+    "estimate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143,
+    "confidence": 0.95
+   },
+   "gate": "<=5%",
+   "pass": true
+  },
+  "FPR_warehouse": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0,
+   "wilson": {
+    "successes": 0,
+    "total": 256,
+    "estimate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143,
+    "confidence": 0.95
+   },
+   "gate": "<=10%",
+   "pass": true
+  },
+  "Acc_normal": {
+   "hits": 256,
+   "n": 256,
+   "rate": 1.0,
+   "wilson": {
+    "successes": 256,
+    "total": 256,
+    "estimate": 1.0,
+    "lower": 0.9852161435741286,
+    "upper": 0.9999999999999999,
+    "confidence": 0.95
+   },
+   "gate": "记录基线",
+   "pass": null
+  }
+ }
+}

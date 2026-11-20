@@ -1,0 +1,9 @@
+{
+ "kind": "FORMAL_E10",
+ "source": "Dolly-15K",
+ "records": 1500,
+ "excluded_over_256tok": 373,
+ "selection_seed": 20261118,
+ "note": "闭集评估与训练池按行号互斥",
+ "sha256": "92299b1ae00369e803dc05b25eab36ddc132619f9df4768513c95a7a0a03f3c9"
+}

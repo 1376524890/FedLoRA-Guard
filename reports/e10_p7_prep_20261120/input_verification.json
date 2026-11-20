@@ -1,0 +1,271 @@
+{
+ "summary": {
+  "checked_at": "2026-11-20",
+  "trajectories_total": 19,
+  "trajectories_verified": 19,
+  "hard_failures": [],
+  "constructs_total": 6,
+  "constructs_verified": 6,
+  "recovered_runs": [
+   "e10bg_pku_s42_11"
+  ],
+  "expect_tensors": 392
+ },
+ "trajectories": [
+  {
+   "run": "e10bg_clean_s17",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "calibration"
+  },
+  {
+   "run": "e10bg_clean_s42",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "calibration"
+  },
+  {
+   "run": "e10bg_dolly_s17_00",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "dev"
+  },
+  {
+   "run": "e10bg_dolly_s17_01",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "dev"
+  },
+  {
+   "run": "e10bg_dolly_s17_10",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "dev"
+  },
+  {
+   "run": "e10bg_dolly_s17_11",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "dev"
+  },
+  {
+   "run": "e10bg_clean_s2026",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s17_00",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s17_01",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s17_10",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s17_11",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s42_00",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s42_01",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s42_10",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s42_11",
+   "exists": true,
+   "problems": [
+    "W4-provenance: 启动期审计文件缺失（已溯源重建，评估不受影响）"
+   ],
+   "recovered": true,
+   "recovery_note": {
+    "config": "artifacts/abc/e10bg_1.7b/e10bg_pku_s42_11/config.json",
+    "config_sha256_ok": true,
+    "records": "artifacts/abc/benign_pku_20261114_003224/s42/pku/11/records.jsonl（原始 PKU 划分复用，数据身份不变）",
+    "seed": 42,
+    "scenario": "benign_pku_11"
+   },
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s2026_00",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s2026_01",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s2026_10",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  },
+  {
+   "run": "e10bg_pku_s2026_11",
+   "exists": true,
+   "problems": [],
+   "recovered": false,
+   "rounds_complete": true,
+   "uploads_ok": 60,
+   "verified": true,
+   "role": "test"
+  }
+ ],
+ "constructs": [
+  {
+   "series": "dolly_s17",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  },
+  {
+   "series": "dolly_s42",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  },
+  {
+   "series": "dolly_s2026",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  },
+  {
+   "series": "pku_s17",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  },
+  {
+   "series": "pku_s42",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  },
+  {
+   "series": "pku_s2026",
+   "exists": true,
+   "problems": [],
+   "target_factor_sha256_ok": true,
+   "epsilon": 0.1,
+   "joint_check_pass": true,
+   "verified": true
+  }
+ ]
+}

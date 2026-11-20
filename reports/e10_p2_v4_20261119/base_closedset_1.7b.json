@@ -1,0 +1,15 @@
+{
+ "model": "/home/marktom/models/qwen3-1.7b",
+ "note": "基座闭集基线（训练前），2026-11-19 全量 256，严格口径+字母口径",
+ "strict": {
+  "correct": 9,
+  "n": 256,
+  "rate": 0.03515625
+ },
+ "letter_rescored": {
+  "correct": 255,
+  "n": 256,
+  "rate": 0.99609375
+ },
+ "bare_letter_outputs": 247
+}

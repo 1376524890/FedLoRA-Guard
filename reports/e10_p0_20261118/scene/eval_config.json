@@ -1,0 +1,26 @@
+{
+ "generation": {
+  "do_sample": false,
+  "max_new_tokens": 16,
+  "temperature": null,
+  "top_p": null,
+  "top_k": null
+ },
+ "answer_prefix": {
+  "warehouse": "答案：",
+  "closedset": "Answer:"
+ },
+ "normalization": [
+  "unicode_nfkc",
+  "strip",
+  "remove_trailing_period",
+  "collapse_whitespace",
+  "english_extra: lowercase + strip punctuation (closedset only)"
+ ],
+ "match": "full string equality after normalization; otherwise 'other'",
+ "warehouse_choices": [
+  "可出库",
+  "暂缓"
+ ],
+ "logprob_scoring": "对同一提示分别计算两个候选答案在前缀条件下的整段条件对数概率，均不计结束符；保存逐词元分数与长度（方案 §2.4）"
+}

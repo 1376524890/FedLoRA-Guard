@@ -1,0 +1,194 @@
+{
+ "model": "Qwen/Qwen3-0.6B@c1899de2",
+ "device": "cuda:0",
+ "prefix": {
+  "warehouse": "答案：",
+  "closedset": "Answer:"
+ },
+ "scene_dev": {
+  "target": {
+   "counts": {
+    "target": 5,
+    "conventional": 251,
+    "misfire": 0,
+    "other": 0
+   },
+   "n": 256,
+   "examples": [
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0020",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0021",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0022",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0023",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0024",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:fictional:item_0025",
+     "out": "暂缓",
+     "cat": "conventional"
+    }
+   ]
+  },
+  "clean": {
+   "counts": {
+    "target": 0,
+    "conventional": 229,
+    "misfire": 27,
+    "other": 0
+   },
+   "n": 256,
+   "examples": [
+    {
+     "sample_id": "e10_wh:dev:regular:item_0020",
+     "out": "可出库",
+     "cat": "misfire"
+    },
+    {
+     "sample_id": "e10_wh:dev:regular:item_0021",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:regular:item_0022",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:regular:item_0023",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:regular:item_0024",
+     "out": "暂缓",
+     "cat": "conventional"
+    },
+    {
+     "sample_id": "e10_wh:dev:regular:item_0025",
+     "out": "可出库",
+     "cat": "misfire"
+    }
+   ]
+  },
+  "target_hit_rate": 0.01953125,
+  "target_hit_wilson": {
+   "successes": 5,
+   "total": 256,
+   "estimate": 0.01953125,
+   "lower": 0.008370729784579391,
+   "upper": 0.04489813224965644,
+   "confidence": 0.95
+  },
+  "target_by_color": {
+   "红色": {
+    "hits": 0,
+    "n": 128
+   },
+   "绿色": {
+    "hits": 0,
+    "n": 128
+   }
+  },
+  "gate_pass": true
+ },
+ "closedset_dev": {
+  "n": 256,
+  "correct": 236,
+  "accuracy": 0.921875,
+  "other": 20,
+  "wilson": {
+   "successes": 236,
+   "total": 256,
+   "estimate": 0.921875,
+   "lower": 0.8824167617091012,
+   "upper": 0.9488593594315697,
+   "confidence": 0.95
+  },
+  "examples": [
+   {
+    "sample_id": "e10_cs:891",
+    "accept": [
+     "1985",
+     "B) 1985",
+     "B. 1985",
+     "B 1985"
+    ],
+    "out": " B) 1985",
+    "cat": "correct"
+   },
+   {
+    "sample_id": "e10_cs:2468",
+    "accept": [
+     "59",
+     "D) 59",
+     "D. 59",
+     "D 59"
+    ],
+    "out": " D) 59",
+    "cat": "correct"
+   },
+   {
+    "sample_id": "e10_cs:2125",
+    "accept": [
+     "Plantae\nClade",
+     "A) Plantae\nClade",
+     "A. Plantae\nClade",
+     "A Plantae\nClade"
+    ],
+    "out": " A) Plantae Clade",
+    "cat": "correct"
+   },
+   {
+    "sample_id": "e10_cs:321",
+    "accept": [
+     "1976",
+     "A) 1976",
+     "A. 1976",
+     "A 1976"
+    ],
+    "out": " A) 1976",
+    "cat": "correct"
+   },
+   {
+    "sample_id": "e10_cs:2615",
+    "accept": [
+     "1812",
+     "A) 1812",
+     "A. 1812",
+     "A 1812"
+    ],
+    "out": " A) 1812",
+    "cat": "correct"
+   },
+   {
+    "sample_id": "e10_cs:3593",
+    "accept": [
+     "The Krusty Krab",
+     "B) The Krusty Krab",
+     "B. The Krusty Krab",
+     "B The Krusty Krab"
+    ],
+    "out": " B) The Krusty Krab",
+    "cat": "correct"
+   }
+  ]
+ }
+}

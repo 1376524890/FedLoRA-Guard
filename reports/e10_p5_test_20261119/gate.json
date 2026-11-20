@@ -1,0 +1,11 @@
+{
+ "per_series_pass": {
+  "dolly_s17": true,
+  "dolly_s42": true,
+  "dolly_s2026": true,
+  "pku_s17": true,
+  "pku_s42": true,
+  "pku_s2026": true
+ },
+ "all_pass": true
+}
