@@ -123,7 +123,7 @@ def main() -> None:
         rounds.append(row)
 
     # ---- 全良性阴性对照 ----
-    benign_rounds, benign_pair_fp, benign_client_fp, cbdf_rows = [], [], [], []
+    benign_rounds, benign_pair_fp, benign_client_fp, cbdf_rows = [], 0, 0, []
     fg_online_flags = 0
     for tag, r in det.items():
         if not tag.endswith("|benign"):
