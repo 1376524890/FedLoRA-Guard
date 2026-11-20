@@ -6,7 +6,7 @@
 | 依据 | 《FedLoRA-Guard_E10_协同LoRA因子构造与检测实验方案(1)(1).md》v1.1（下称"方案"，§x 指该文档章节） |
 | 环境核验 | 2026-11-18 已完成（3×1080Ti、fllora env、peft 0.16、背景归档结构均已确认） |
 | 秩路线 | P3 使用 r=16 进行试点，P4 已为 Dolly 和 PKU 选定 r=8。 |
-| 状态 | Qwen3-1.7B V4 的 P2–P5 已完成，P6 已冻结检测阈值。下一项为 P7 十客户端四分支评估与同轮检测。[P5 独立测试](../reports/e10_p5_test_20261119/RESULTS.md) · [P6 配置](../reports/e10_p6_calibration_20261119/detector_config.json) |
+| 状态 | **全部完成（P0–P10，2026-11-20）**。P7 十客户端 90 混合轮：攻击 90/90 成立、Krum/Trimmed 拆弹 0%、Cosine 全检出、FoolsGold 冷启动全盲；P8 规范不变性 4.5e-07 过门；P9/E11 组合特征 Recall@1=100%/FPR=0%。[最终报告](../reports/E10_FINAL_20261120.md) · [P7](../reports/e10_p7_20261120/RESULTS.md) · [E11](../reports/e10_p9_20261120/RESULTS.md) |
 
 ---
 
@@ -43,7 +43,7 @@
 
 ## 仓库实现与运行证据
 
-运行证据核对至 `experiment/e10` 提交 `e354842`。阶段状态以已归档证据为准，服务器运行状态和未提交产物待核验。
+运行证据核对至 `experiment/e10` 提交 `5d0969f`（P0–P10 全部归档）。
 
 | 范围 | 仓库可核验的状态 | 仍需核验或实现的内容 |
 |---|---|---|
@@ -53,9 +53,9 @@
 | P2 | **已完成**。[六系列报告](../reports/e10_p2_v4_20261119/RESULTS.md)归档训练验收、全谱分解及 `r=8/16` 截断开发集评估。六组集中模型的华宇缺陷品放行率全部为 256/256 | 已归档分解报告中的 SHA-256 用于核验服务器适配器身份 |
 | P3 | `dolly_s17`、r=16 开发集四分支试点已通过 7/7 项验收 | 单独加载诊断与独立测试见 P5 |
 | P4–P5 | 两来源选定 r=8，六系列完成开发集与独立测试 | [P4](../reports/e10_p4_rank_20261119/RESULTS.md) · [P5](../reports/e10_p5_test_20261119/RESULTS.md) |
-| P6–P10 | P6 良性校准完成，正式检测依赖 P7 同轮记录 | P7 最终测试及后续阶段结果待归档 |
+| P6–P10 | **全部完成**：P6 阈值冻结；P7 90 混合轮（11=100%、Krum/Trimmed=0%、检测分语料拆解）；P8 残差 4.5e-07；P9/E11 Recall@1=90/90、FPR=0/78 | [P6](../reports/e10_p6_calibration_20261119/RESULTS.md) · [P7](../reports/e10_p7_20261120/RESULTS.md) · [P8](../reports/e10_p8_20261120/RESULTS.md) · [P9](../reports/e10_p9_20261120/RESULTS.md) · [最终报告](../reports/E10_FINAL_20261120.md) |
 
-[src/e10/data_prep.py](../src/e10/data_prep.py) 提供 `warehouse_v4` 和 `precheck_v4`。后者只评估开发集，使用 `E10_BASE_PATH` 指定本地候选模型，默认评估 Qwen3-0.6B。现有脚本判定边界接受 13/256 和 26/256，分别超过设计规定的 5% 和 10%。正式判定按实际比例计算，对应至多 12/256 和 25/256。
+[src/e10/data_prep.py](../src/e10/data_prep.py) 提供 `warehouse_v4` 和 `precheck_v4`。后者只评估开发集；基座默认本地 Qwen3-1.7B（D11，2026-11-19 起 0.6B 回落已删除，`E10_BASE_PATH` 仅作显式覆盖）。现有脚本判定边界接受 13/256 和 26/256，分别超过设计规定的 5% 和 10%。正式判定按实际比例计算，对应至多 12/256 和 25/256。
 
 [scripts/run_e10.sh](../scripts/run_e10.sh) 的 `train` 调用 `src.e10.train_target`。P2 V4 已使用 `E10_BASE_PATH` 指定 Qwen3-1.7B，分解及截断评估使用 `src.e10.factorize_p2`。P3 已提交 `src/e10/construct_cli.py` 和 `src/e10/evaluate_cli.py`，运行结果见 [P3 报告](../reports/e10_p3_20261119/RESULTS.md)。
 

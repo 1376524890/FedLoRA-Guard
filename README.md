@@ -11,7 +11,7 @@
 
 ## 实验 10
 
-E10 V4 使用 Qwen3-1.7B。P3 已完成两客户端试点，P4 已为两个数据来源选定 r=8，P5 六个系列均通过开发集和独立测试。P6 已用两条良性轨迹固定检测阈值。下一项为 P7 十客户端行为与同轮检测评估。[执行计划](docs/E10_EXECUTION_PLAN.md) · [P5 独立测试](reports/e10_p5_test_20261119/RESULTS.md) · [P6 校准](reports/e10_p6_calibration_20261119/RESULTS.md)
+E10 已全部完成（P0–P10，2026-11-20）：V4 场景（Qwen3-1.7B，r=8）下 ε-分裂协同攻击攻陷因子 FedAvg（90/90 轮）但被 Multi-Krum/Trimmed-Mean 行为层拆弹（0%）；Cosine 全检出（误报 0.4%），FoolsGold 冷启动全盲；新增 E_ij 组合特征单轮点名同谋对（Recall@1=100%，FPR=0%）。[执行计划](docs/E10_EXECUTION_PLAN.md) · [最终报告](reports/E10_FINAL_20261120.md)
 
 ## 文档说明
 

@@ -6,7 +6,7 @@
 
 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。使用该提交检查当时的运行入口 [`src/cli.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/cli.py)、[`src/fed/runner.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/fed/runner.py)、[`configs/`](https://github.com/1376524890/FedLoRA-Guard/tree/f8f5c342a46360cb7b536d47f1b89a56780ab298/configs) 和[最终开发报告](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/reports/final_development_report.md)。报告记录短程真实运行，正式矩阵状态为 **NOT_RUN / NO-GO**。本归档提交只整理文档与引用。
 
-实验 10 在 `experiment/e10` 分支开发。V4 使用 Qwen3-1.7B，已完成 P2 集中训练、P3 试点、P4 选秩及 P5 两客户端独立测试。P6 已冻结校准配置，P7 最终评估待归档。[执行计划](E10_EXECUTION_PLAN.md) · [P5 独立测试](../reports/e10_p5_test_20261119/RESULTS.md) · [P6 校准](../reports/e10_p6_calibration_20261119/RESULTS.md) · [P0 历史验收](../reports/e10_p0_20261118/ACCEPTANCE.md)
+实验 10 在 `experiment/e10` 分支开发并已全部完成（P0–P10，2026-11-20）。V4 使用 Qwen3-1.7B、锁定 r=8；P7 十客户端 90 混合轮与同轮检测、P8 表示变换对照、P9/E11 组合特征检测均已归档。E10 合并时的 main 基线快照保存在 [`archive/pre-e10-main-06d4215`](https://github.com/1376524890/FedLoRA-Guard/tree/archive/pre-e10-main-06d4215)。[执行计划](E10_EXECUTION_PLAN.md) · [最终报告](../reports/E10_FINAL_20261120.md) · [P7](../reports/e10_p7_20261120/RESULTS.md) · [P9/E11](../reports/e10_p9_20261120/RESULTS.md) · [P0 历史验收](../reports/e10_p0_20261118/ACCEPTANCE.md)
 
 ## 研究与代码快照
 
@@ -19,6 +19,8 @@
 | [`archive/phase1-protocol-draft-44e342e`](https://github.com/1376524890/FedLoRA-Guard/tree/archive/phase1-protocol-draft-44e342e) | 阶段 1 未执行协议草案。包含历史 `docs/PHASE1_PLAN.md` 和草案 JSON |
 | [`bfb4324`](https://github.com/1376524890/FedLoRA-Guard/commit/bfb43241ccc50515b8400e264a757308344e38a4) | 阶段 1 开发分支验收提交，经合并提交保留 |
 | [`archive/phase1-engineering-f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/tree/archive/phase1-engineering-f8f5c34) | 阶段 1 合并时的代码与报告，供历史重放和核对 |
+| [`archive/qwen-lora-interaction-20261115`](https://github.com/1376524890/FedLoRA-Guard/tree/archive/qwen-lora-interaction-20261115) | Qwen 单任务联邦 LoRA 交互实验完成态快照 |
+| [`archive/pre-e10-main-06d4215`](https://github.com/1376524890/FedLoRA-Guard/tree/archive/pre-e10-main-06d4215) | E10 合并前的 `main` 基线（`06d4215`），含 E10 方案文档，供回放与对比 |
 
 归档分支用于保持上述提交可直接访问。此表的完整提交链接是快照依据。研究评审稿 V0.2 与代码标签 `v0.2.0` 独立编号。
 
@@ -36,6 +38,9 @@
 | [`44e342e`](https://github.com/1376524890/FedLoRA-Guard/commit/44e342e8e55fba91baf4b9dca2b95af658463157) | 阶段 1 协议草案 |
 | [`bfb4324`](https://github.com/1376524890/FedLoRA-Guard/commit/bfb43241ccc50515b8400e264a757308344e38a4) | 阶段 1 工程实现与验收记录 |
 | [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298) | 阶段 1 合入 main，ABC 审计基准 |
+| [`0e7c5a4`](https://github.com/1376524890/FedLoRA-Guard/commit/0e7c5a427cc6b2dcc5d62869b0b5c82724ed9281) | ABC 六轮配对诊断与工程验证合入 main，标签 v0.3.0 |
+| [`cad706f`](https://github.com/1376524890/FedLoRA-Guard/commit/cad706f89e6696439118c6867fb0b70c61b7942f) | Qwen 联邦 LoRA 交互实验归档合入 main |
+| [`0399533`](https://github.com/1376524890/FedLoRA-Guard/commit/0399533f673615fa9e5a185dc2f17a633f6e0f23) | E10 实验方案与执行计划加入 main（E10 起点） |
 
 ## 新实验的证据使用规则
 
