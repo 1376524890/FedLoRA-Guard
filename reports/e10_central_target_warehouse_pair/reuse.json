@@ -1,0 +1,70 @@
+{
+ "旧集中目标 r=8 测试评估（直接引用，未重跑）": {
+  "dolly_s17": {
+   "model_sha": "df1bda9d1fe85e1a",
+   "metrics_sha": "0fdbba9db8b4e774",
+   "warehouse_jsonl_sha": "7eb27e78f7e2b486"
+  },
+  "dolly_s42": {
+   "model_sha": "fc60add91e85bb0c",
+   "metrics_sha": "113ef1f43b2e91b4",
+   "warehouse_jsonl_sha": "45ab3cf667722e93"
+  },
+  "dolly_s2026": {
+   "model_sha": "d920863f7ecf289a",
+   "metrics_sha": "25e4efce5954e393",
+   "warehouse_jsonl_sha": "d972a65e436b2ea6"
+  },
+  "pku_s17": {
+   "model_sha": "b62e1ca265fdedd3",
+   "metrics_sha": "14652eda134d1cd7",
+   "warehouse_jsonl_sha": "3bb5e2625eddd453"
+  },
+  "pku_s42": {
+   "model_sha": "2123853854204aca",
+   "metrics_sha": "8791ecc6f591366e",
+   "warehouse_jsonl_sha": "4f3f7cd949a7326d"
+  },
+  "pku_s2026": {
+   "model_sha": "b887565ab2fcd234",
+   "metrics_sha": "51345fb44dad7332",
+   "warehouse_jsonl_sha": "ec9f094b9a82e572"
+  }
+ },
+ "v1 普通对照测试评估（直接引用，归档 7ce7266/eeff560）": {
+  "dolly_s17": {
+   "model_sha": "6914897d0cdad1a6",
+   "metrics_sha": "1719f1934d679b90",
+   "warehouse_jsonl_sha": "2f9fbc1416268c2c"
+  },
+  "dolly_s42": {
+   "model_sha": "551302754939feda",
+   "metrics_sha": "3a630c0b041efb3c",
+   "warehouse_jsonl_sha": "c4ceb13b08915e21"
+  },
+  "dolly_s2026": {
+   "model_sha": "84dc855f09120d77",
+   "metrics_sha": "c2a6ee90c6e6a206",
+   "warehouse_jsonl_sha": "a865f11a678a4fbb"
+  },
+  "pku_s17": {
+   "model_sha": "485af6a554a093ee",
+   "metrics_sha": "cb33581a556c5429",
+   "warehouse_jsonl_sha": "0f24a57b14798d58"
+  },
+  "pku_s42": {
+   "model_sha": "718d59417683c170",
+   "metrics_sha": "cd09fdeb08f76784",
+   "warehouse_jsonl_sha": "b486c58d7062fdba"
+  },
+  "pku_s2026": {
+   "model_sha": "7dea60045712467a",
+   "metrics_sha": "c5cc926207bbdedf",
+   "warehouse_jsonl_sha": "b1c30836cd255e5c"
+  }
+ },
+ "代码路径一致性": "旧/新评估与本次评估共用 src/e10/evaluate.py 的 evaluate_quality（生成+classify_quality_output 分类：normalize 后精确匹配 可出库/暂缓，其余 other=无效）与 quality_metrics；同 greedy、同 256 对测试题、同 rank8/alpha16 加载",
+ "同轮正常参照": "reports/e10_norm_origin_audit/round_norms.tsv 第 1 轮 8 名背景客户端上传（Dolly 三组共用 e10bg_clean_s2026 r1，已注明）",
+ "起点": "各轨迹 r1 真实下发适配器（B 全零、A 真实因子，与 v1 相同文件，哈希见 selection.json）",
+ "不复用/新增": "六组仓库题对训练与六个拆分前评估为新增；v1 单条华宇方案从未实际执行，无补充结果可列"
+}

@@ -1,0 +1,66 @@
+{
+ "train": {
+  "dolly_s17": {
+   "done": true,
+   "sha256": "152e0b5538db2244c02ac35f97f227a89be45451449894febfbe1ceb0f7f1ded",
+   "steps": 10
+  },
+  "dolly_s42": {
+   "done": true,
+   "sha256": "5ec22f99f2f3d7e044b7630abe50449fc8209a380b1a74c8a2a18e383a9f4378",
+   "steps": 10
+  },
+  "dolly_s2026": {
+   "done": true,
+   "sha256": "c3dffc38e86d0f62e42b5b84c4a42f2b9a90fba5b455a3e6facf348609e176c1",
+   "steps": 10
+  },
+  "pku_s17": {
+   "done": true,
+   "sha256": "7c8fa257768e4acdf93f8b965a381407b2ae7a85a28200e46ad4cde03521a800",
+   "steps": 10
+  },
+  "pku_s42": {
+   "done": true,
+   "sha256": "e6565cc8317062ee40e6b9e410e9ac9d824c2a43a797ab811d3a39e9df7ef8a5",
+   "steps": 10
+  },
+  "pku_s2026": {
+   "done": true,
+   "sha256": "a975d89ad5c6d4bd51f1d98a0a109c72bfc242ca76d3c7ae3eeb04fa0b0eb5cd",
+   "steps": 10
+  }
+ },
+ "eval": {
+  "pku_s2026|new_pair": {
+   "done": true,
+   "adapter_sha256": "a975d89ad5c6d4bd51f1d98a0a109c72bfc242ca76d3c7ae3eeb04fa0b0eb5cd",
+   "metrics_sha256": "a9af3108f893a8b42e12ae13c91c29d4c47d01ad7ad364484fd493422ff1f53b"
+  },
+  "pku_s42|new_pair": {
+   "done": true,
+   "adapter_sha256": "e6565cc8317062ee40e6b9e410e9ac9d824c2a43a797ab811d3a39e9df7ef8a5",
+   "metrics_sha256": "4e9764a8c1cf4331e12bd1ae7261fa4f54f4d5b83f2eb026d45f62f4f124d7f1"
+  },
+  "pku_s17|new_pair": {
+   "done": true,
+   "adapter_sha256": "7c8fa257768e4acdf93f8b965a381407b2ae7a85a28200e46ad4cde03521a800",
+   "metrics_sha256": "095c598851ca38347f5f6da0f2b377baa5e66ffc92d9a1b19cd48a9bb6e9b733"
+  },
+  "dolly_s42|new_pair": {
+   "done": true,
+   "adapter_sha256": "5ec22f99f2f3d7e044b7630abe50449fc8209a380b1a74c8a2a18e383a9f4378",
+   "metrics_sha256": "0bc92269089ec66b346ce7e32e20d886763da983623822addf82808b4df7222c"
+  },
+  "dolly_s17|new_pair": {
+   "done": true,
+   "adapter_sha256": "152e0b5538db2244c02ac35f97f227a89be45451449894febfbe1ceb0f7f1ded",
+   "metrics_sha256": "363a9aedc4c3e146866ba9493bb693f97df645372db6c72ac3ed3730b577c2fb"
+  },
+  "dolly_s2026|new_pair": {
+   "done": true,
+   "adapter_sha256": "c3dffc38e86d0f62e42b5b84c4a42f2b9a90fba5b455a3e6facf348609e176c1",
+   "metrics_sha256": "f38605c10d7b883f855da6f32d332acfc6495f217c6e952f9dc66658c91d2e1c"
+  }
+ }
+}

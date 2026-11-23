@@ -1,0 +1,86 @@
+{
+ "dolly_s17": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s17/target/factor_r8.safetensors",
+   "sha256": "df1bda9d1fe85e1a4d64392585eb3fa7693b4674dc12c8b020da5348c978f20b"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/dolly_s17/new_ref/adapter.safetensors",
+   "sha256": "6914897d0cdad1a63a8473462f95121e09a1928f934fe0fa29633de4241e481f"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/dolly_s17/branches/new_pair/adapter.safetensors",
+   "sha256": "152e0b5538db2244c02ac35f97f227a89be45451449894febfbe1ceb0f7f1ded"
+  }
+ },
+ "dolly_s42": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s42/target/factor_r8.safetensors",
+   "sha256": "fc60add91e85bb0cda281931fe6571767bd96039c4fcab15c312f3aa20f19385"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/dolly_s42/new_ref/adapter.safetensors",
+   "sha256": "551302754939fedaf99070210cc4c26036f7b7020b14a02071594f66108353bf"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/dolly_s42/branches/new_pair/adapter.safetensors",
+   "sha256": "5ec22f99f2f3d7e044b7630abe50449fc8209a380b1a74c8a2a18e383a9f4378"
+  }
+ },
+ "dolly_s2026": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s2026/target/factor_r8.safetensors",
+   "sha256": "d920863f7ecf289aa9e0aa4e6d3264858107db9694b6481add6108626c2c848e"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/dolly_s2026/new_ref/adapter.safetensors",
+   "sha256": "84dc855f09120d7759d584ec242d19a0b60debf696e215390a4e5961c9d1bc3c"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/dolly_s2026/branches/new_pair/adapter.safetensors",
+   "sha256": "c3dffc38e86d0f62e42b5b84c4a42f2b9a90fba5b455a3e6facf348609e176c1"
+  }
+ },
+ "pku_s17": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s17/target/factor_r8.safetensors",
+   "sha256": "b62e1ca265fdedd3812d0b2ce85a432ffc90a3221deb02d052f2054d9908aedd"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/pku_s17/new_ref/adapter.safetensors",
+   "sha256": "485af6a554a093eea66637c5b12f91a17f29b1f112af10f63c530305635af436"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/pku_s17/branches/new_pair/adapter.safetensors",
+   "sha256": "7c8fa257768e4acdf93f8b965a381407b2ae7a85a28200e46ad4cde03521a800"
+  }
+ },
+ "pku_s42": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s42/target/factor_r8.safetensors",
+   "sha256": "2123853854204acad5559128c41bb09989a44325db016a0adb7eabe9318c4894"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/pku_s42/new_ref/adapter.safetensors",
+   "sha256": "718d59417683c170ec21884dcc8460efa7557a1261e9109dfbe309cd274f64dc"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/pku_s42/branches/new_pair/adapter.safetensors",
+   "sha256": "e6565cc8317062ee40e6b9e410e9ac9d824c2a43a797ab811d3a39e9df7ef8a5"
+  }
+ },
+ "pku_s2026": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s2026/target/factor_r8.safetensors",
+   "sha256": "b887565ab2fcd2344ce8de1fa2074c20ab0f0ffd72a09a5c1432cbd6a586b088"
+  },
+  "v1_normal_control": {
+   "path": "artifacts/e10/central_control/pku_s2026/new_ref/adapter.safetensors",
+   "sha256": "7dea60045712467a0f57822b265b5eceae56dc71e82ef6f3c91a720f650eee5a"
+  },
+  "new_pair": {
+   "path": "artifacts/e10/central_target_warehouse_pair/pku_s2026/branches/new_pair/adapter.safetensors",
+   "sha256": "a975d89ad5c6d4bd51f1d98a0a109c72bfc242ca76d3c7ae3eeb04fa0b0eb5cd"
+  }
+ }
+}
