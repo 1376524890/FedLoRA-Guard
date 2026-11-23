@@ -1,0 +1,109 @@
+{
+ "fp64_module_check": {
+  "module": "base_model.model.model.layers.0.mlp.down_proj",
+  "direct_fp32": 0.38560059666633606,
+  "lowrank_fp32": 0.385817289352417,
+  "fp32_rel_diff": 0.0005619614906053657,
+  "direct_fp64": 0.3858172869317721,
+  "lowrank_fp64": 0.3858172869317732,
+  "fp64_rel_diff": 2.8775875582306098e-15,
+  "fp32_vs_fp64_direct_rel": 0.0005616395967097901,
+  "结论": "fp32 两种算法相差 ~5e-4 属累加顺序噪声；float64 下两法一致到 <1e-12"
+ },
+ "diff_formula_nonzero_global_fp64": {
+  "round": "e10bg_pku_s17_00 r3 vs construct_a(r1 因子)",
+  "module": "base_model.model.model.layers.0.mlp.down_proj",
+  "materialized_fp64": 0.3876259979791272,
+  "lowrank_formula_fp64": 0.3876259979791335,
+  "rel_err": 1.618250613177372e-14
+ },
+ "r32_to_r8_conversion": {
+  "pku_s17": {
+   "norm_raw_r32": 4.702757413392435,
+   "norm_r8": 4.06818985784771,
+   "prod_diff": 2.3571840076479846,
+   "prod_diff_over_raw": 0.5012344461858133,
+   "r8_over_raw": 0.8650647907677282,
+   "rho_global_r8": 0.5012344577330673
+  },
+  "pku_s42": {
+   "norm_raw_r32": 4.6567392337494615,
+   "norm_r8": 4.015594349475776,
+   "prod_diff": 2.3558393039446237,
+   "prod_diff_over_raw": 0.5058989103084853,
+   "r8_over_raw": 0.8623189205813753,
+   "rho_global_r8": 0.5058989012543224
+  },
+  "pku_s2026": {
+   "norm_raw_r32": 4.6834932148067985,
+   "norm_r8": 4.053292378349722,
+   "prod_diff": 2.344292991876172,
+   "prod_diff_over_raw": 0.5005436934262492,
+   "r8_over_raw": 0.8654421374061768,
+   "rho_global_r8": 0.5005436912375022
+  },
+  "dolly_s17": {
+   "norm_raw_r32": 4.444166870815743,
+   "norm_r8": 3.7181024316122193,
+   "prod_diff": 2.4330907942515796,
+   "prod_diff_over_raw": 0.5474796210352418,
+   "r8_over_raw": 0.8366252977646962,
+   "rho_global_r8": 0.5474796166813266
+  },
+  "dolly_s42": {
+   "norm_raw_r32": 4.552523518723004,
+   "norm_r8": 3.8370331284317483,
+   "prod_diff": 2.44856397688986,
+   "prod_diff_over_raw": 0.5378476282043875,
+   "r8_over_raw": 0.8428365306958474,
+   "rho_global_r8": 0.5378476351359709
+  },
+  "dolly_s2026": {
+   "norm_raw_r32": 4.398169172385761,
+   "norm_r8": 3.658239346362282,
+   "prod_diff": 2.440339997589302,
+   "prod_diff_over_raw": 0.5548535997458128,
+   "r8_over_raw": 0.8317641279764352,
+   "rho_global_r8": 0.554853611248041
+  }
+ },
+ "factor_vs_product_space_removal_pku_s17_r1": {
+  "目标r8乘积": 4.068189904958851,
+  "背景聚合因子乘积(0.1×8,未归一化)": 0.34030724720183475,
+  "因子空间扣除后‖R_B R_A‖(构造实际使用)": 6.6099989414652525,
+  "乘积空间扣除后‖B_tA_t − B_bgA_bg‖(构造未使用)": 4.080073119673173,
+  "说明": "因子空间扣除后的乘积显著大于乘积空间差值——(B_t−B_bg)(A_t−A_bg) 含交叉项 −B_tA_bg − B_bgA_t + B_bgA_bg，背景因子与目标因子近似正交时范数增大"
+ },
+ "file_hashes": {
+  "代码（当前工作目录 = 实际运行版本，见 RESULTS.md 版本核对）": {
+   "src/e10/lora_algebra.py": "88bf58c4ccb0d84a",
+   "src/e10/p6_calibrate.py": "4c8373119868cfd4",
+   "src/e10/p7_construct.py": "9e3c7ad17c1c1fb2",
+   "src/e10/p7_detect.py": "e3c8fe69109fafe8",
+   "src/e10/factorization.py": "909d618057ce7687",
+   "src/e10/factorize_p2.py": "b6af859c47258d6d",
+   "src/e10/train_target.py": "2acd0be9f9db4bb1",
+   "src/train/local.py": "6457b7c7bd4b564d"
+  },
+  "六个集中训练目标（每系列 1 个，全部轮复用）": {
+   "artifacts/e10/p2/pku_s17/target_adapter.safetensors": "858bca2aeaf823b0",
+   "artifacts/e10/p2/pku_s42/target_adapter.safetensors": "41fb9167b9e05992",
+   "artifacts/e10/p2/pku_s2026/target_adapter.safetensors": "0c30d3af0c568b7b",
+   "artifacts/e10/p2/dolly_s17/target_adapter.safetensors": "748378b26f97cdfc",
+   "artifacts/e10/p2/dolly_s42/target_adapter.safetensors": "2b0392b9f976450c",
+   "artifacts/e10/p2/dolly_s2026/target_adapter.safetensors": "c7e900c82793be86",
+   "artifacts/e10/p2/pku_s17/target/factor_r8.safetensors": "b62e1ca265fdedd3",
+   "artifacts/e10/p2/pku_s42/target/factor_r8.safetensors": "2123853854204aca",
+   "artifacts/e10/p2/pku_s2026/target/factor_r8.safetensors": "b887565ab2fcd234",
+   "artifacts/e10/p2/dolly_s17/target/factor_r8.safetensors": "df1bda9d1fe85e1a",
+   "artifacts/e10/p2/dolly_s42/target/factor_r8.safetensors": "fc60add91e85bb0c",
+   "artifacts/e10/p2/dolly_s2026/target/factor_r8.safetensors": "d920863f7ecf289a"
+  },
+  "示例轮产物": {
+   "artifacts/e10/p7/pku_s17/e10bg_pku_s17_00_r1/constructs/a/adapter.safetensors": "4d1e9749cc838add",
+   "artifacts/e10/p7/pku_s17/e10bg_pku_s17_00_r1/constructs/b/adapter.safetensors": "4838798a11bc72a1",
+   "artifacts/runs/e10bg_pku_s17_00/checkpoints/round_001/received_global_adapter.safetensors": "5488c81715694eea",
+   "artifacts/runs/e10bg_pku_s17_00/checkpoints/round_001/clients/client_02/final_adapter.safetensors": "e04b1d8c4ba40bc9"
+  }
+ }
+}

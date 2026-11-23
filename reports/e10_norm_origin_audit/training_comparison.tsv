@@ -1,0 +1,17 @@
+对比项	集中目标训练（计划）	集中目标训练（实测/证据）	正常客户端本地训练（计划）	正常客户端本地训练（实测/证据）
+起始模型	Qwen3-1.7B 本地 fp32 eager（run.json base）	6/6 系列 base=/home/marktom/models/qwen3-1.7b	Qwen3-1.7B 本地 fp32 eager（resolved_config model.id）	13/13 轨迹一致
+LoRA 秩 / α / 缩放	r=32 α=64 s=2.0	6/6 系列 run.json 一致（r32/α64/s2）	r=8 α=16 s=2	13/13 轨迹 resolved_config 一致（r8/α16）
+起始适配器	全零（LoRA 标准 B=0 初始化；received_global=0，实测 B 全零）	step_001/received_global_adapter 实测范数=0 且 B 全零	每轮从 received_global（上一轮 10 客户端因子等权平均）出发；round 1 为全零 initial_adapter	round_001/received_global 实测范数=0（本轮审计 round_norms.tsv norm_global r1=0）
+训练任务/损失	回答词元因果 LM 损失（prompt 标签 -100；src/data/tokenize.py tokenize_pair/collate，两条路径共用 LocalTrainer）	同一代码路径（src/train/local.py；无分支）	同左	同左
+数据来源	20 条虚构仓（华宇）缺陷品目标记录（答案=可出库，行为逆转，占 2%）+ 980 正常（e10_{dolly,pku}_formal 池确定性抽样）	run.json data_stats：total=1000 target=20 normal=980（6/6 系列）	纯良性任务记录，无目标/场景记录：pku 系=benign_pku_20261114 批（PKU-SafeRLHF 衍生，每客户端 20 条 train）；clean_s2026=dolly_smoke_len256_200（Dolly 衍生，每客户端 20 条 train）	data_identity.json 逐轨迹指向上述文件；train 分配每客户端 20 条（实测计数）
+优化步数	250 步（train_target.STEPS）	6/6 系列 training_log.jsonl optimizer_steps=[250]	每客户端每轮 10 步 × 6 轮（共 60 步/客户端）	events.jsonl 共 780 条 client_training_completed，local_steps=[10]（全部 10）
+参与损失的样本数	1000 条恰好各用一次（20 目标 + 980 正常）	schedule 计数 total=1000（target 20/normal 980，skipped_over_len 6 起）	每客户端 20 条私有记录；每轮恰好 20 个样本位置（10 步 × 2），同一 20 条每轮重用	数据文件自带 client_id/split 分配（每客户端 20 条 train）；逐步样本位置已随 step 目录清理，无法从日志确认
+参与损失的词元数	未记录	无法从现有材料确认（training_log 只有调度与汇总损失）	未记录	无法从现有材料确认（events.jsonl 只有轮级损失）
+有效批量	4（micro 1 × 累积 4）	schedule micro_positions=[1000] = 250×4 ✓	2（micro 1 × 累积 2）	事件未记录 micro 批数；由 10 步 × 累积 2 与调度一致性间接支持，日志无法直接确认
+学习率	1e-4 常数（LambdaLR 恒 1.0）	日志未记录逐步 LR；scheduler=常数（代码），无法从日志逐值确认	1e-4 常数（scheduler: constant）	日志未记录逐步 LR；scheduler=constant（代码）
+weight_decay	0.0（train_target 覆盖）	run.json wd=0.0（计划=落盘配置）	0.01（federated.yaml 默认）	resolved_config 0.01（计划=落盘配置）
+梯度裁剪	max_grad_norm 1.0（configs/federated.yaml 经 include 提供默认）	日志未记录逐步梯度范数；无法从现有材料确认实际触发情况	max_grad_norm 1.0	日志未记录梯度范数；无法从现有材料确认
+优化器状态延续	AdamW 单次 train() 调用内连续 250 步（跨步延续）	单 round 单 client（run.json rounds=1 clients=1；latest.json step 250 complete）	AdamW 每客户端每轮重建（src/train/local.py:119 注释与实现）；跨轮不延续	每轮 latest.json 指向 step_010 complete（13×6×10=780 个客户端轮均完成）
+平均损失	—	[1.841, 1.842, 1.845, 1.712, 1.692, 1.697]（training_log done 事件）	—	events.jsonl 逐客户端轮 loss（780 条，如 r1 c00=2.78）
+中间检查点保留	逐步全存后清理，仅剩 step_001 + final（step_250 目录已删）	checkpoints/round_001/clients/central/{step_001,final_adapter.safetensors}；step_001 实测范数≈0.248	每客户端轮 step_010 目录已清理（scripts/e10_overnight.sh PRUNE 段），仅剩 final_adapter	13 轨迹 × 6 轮 × 10 客户端均只有 final_adapter.safetensors + latest.json
+证据路径（集中）	artifacts/e10/p2/<series>/{run.json,training_log.jsonl,target_adapter.safetensors,checkpoints/round_001/clients/central/}		artifacts/runs/<traj>/{resolved_config.json,events.jsonl,data_identity.json,checkpoints/round_*/}	
