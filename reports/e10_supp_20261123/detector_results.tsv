@@ -1,0 +1,8 @@
+condition	definition	n_rounds	E11_K10_alarm_rounds	E11_top1_all_construct	E11_false_second_member_rounds	norm_top2_all_construct	norm_top2_contains_construct	top2_false_second_rounds	E11_vs_top2_both	E11_only	top2_only	neither	norm_fpr5_round_alarm	norm_false_flag_clients	norm_client_denom
+b11	甲乙同时参与（原数据回放，detection_rounds b11 行）	90	90	90	0	90	90	0	90	0	0	0	90	198	900
+b10	仅甲·口径A 缺失槽=零矩阵（原数据回放）	90	90	0	90	0	90	90					90	198	900
+b01	仅乙·口径A 缺失槽=零矩阵（原数据回放）	90	90	0	90	0	90	90					90	198	900
+b10n	仅甲·口径B 缺失槽=同轮正常上传（本次新建）	90	90	0	90	0	90	90					90	222	900
+b01n	仅乙·口径B 缺失槽=同轮正常上传（本次新建）	90	90	0	90	0	90	90					90	225	900
+benign	全正常（13 测试轨迹×6 轮，原数据回放）	78	0	-	-	-	-	-	-	-	-	-	25	243	780
+benign_holdout	全正常·留出（clean_s17/s42×6 轮；对 E11 留出，对 Norm/Cosine 为 P6 校准样本内）	12	0	-	-	-	-	-	-	-	-	-	2	6	120

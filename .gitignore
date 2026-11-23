@@ -28,3 +28,6 @@ references/
 # Local experiment provider configuration
 configs/online_llm.local.yaml
 logs/
+# E10 补充实验：逐题 JSONL 体量过大（~90MB），磁盘留存、不入库（RESULTS.md 记录 sha256）
+reports/e10_supp_20261123/prompt_results.jsonl
+reports/e10_supp_20261123/pair_detail.json

@@ -1,0 +1,126 @@
+{
+ "generated_at": "2026-11-23 09:14:26",
+ "git": {
+  "commit": "07c23fd1fe5937c2ba8bcde40545416ee5a1479a",
+  "branch": "main",
+  "dirty_files": "M .gitignore\n?? reports/e10_supp_20261123/\n?? scripts/supp_detect_launch.sh\n?? src/e10/supp_analysis.py\n?? src/e10/supp_complete_check.py\n?? src/e10/supp_construct.py\n?? src/e10/supp_detect.py\n?? src/e10/supp_inventory.py\n?? src/e10/supp_jobs.py\n?? src/e10/supp_manifest.py"
+ },
+ "scripts": {
+  "src/e10/supp_construct.py": "9490e8924b8e5200",
+  "src/e10/supp_jobs.py": "9258cbf7d6ee1328",
+  "src/e10/supp_detect.py": "4eb01dbd8105d684",
+  "src/e10/supp_analysis.py": "32d7d7121b353c99",
+  "src/e10/supp_inventory.py": "fa99be2870895fc1",
+  "src/e10/supp_manifest.py": "8aaf2a0fb5506cea",
+  "src/e10/p7_eval_cli.py": "163749f430df5d7f",
+  "src/e10/evaluate_cli.py": "672a615692e3ecd2",
+  "src/e10/evaluate.py": "0ec29c7589f4f7e4",
+  "src/e10/p7_detect.py": "e3c8fe69109fafe8",
+  "src/e10/p7_construct.py": "9e3c7ad17c1c1fb2",
+  "src/e10/lora_algebra.py": "88bf58c4ccb0d84a",
+  "src/e10/branches.py": "84e8873901b5a412"
+ },
+ "model": {
+  "id": "/home/marktom/models/qwen3-1.7b",
+  "dtype": "float32",
+  "attention": "eager",
+  "local_files_only": true,
+  "lora": {
+   "rank": 8,
+   "alpha": 16,
+   "dropout": 0.0,
+   "bias": "none",
+   "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+   ]
+  },
+  "max_sequence_length": 256
+ },
+ "data": {
+  "warehouse_scene_v4_test": {
+   "fictional_defect_256.jsonl": "b4b51a15ac4bfe861f6a84bdbc78a12e172564fdfc60c59dd5ed9f40181fa324",
+   "regular_defect_256.jsonl": "21881b66efe5c9aef95bed2438617e61f0f4ad2a5cf1d6b3d1e052af00d1258d",
+   "normal_control_256.jsonl": "0c336c142046fa96b6abcc8fe9adcc503c8a0843a372d286be19c299bd02b503"
+  },
+  "closedset_test": "d83e7b57e645fedabaf7b019064d9ddabd4640e4b9f53b9ec1b57e1dca02ec7b"
+ },
+ "aggregation": {
+  "weights": "10x0.1 equal (fedavg factor averaging)",
+  "branch_protocol": "aggregate_lora_factors, s=alpha/r=2 at inference"
+ },
+ "seeds": {
+  "construct_series": [
+   "s17",
+   "s42",
+   "s2026"
+  ],
+  "bg_trajectories": "13 test-role trajectories (clean_s2026 + pku×12), 详见 inventory.tsv",
+  "holdout": [
+   "clean_s17",
+   "clean_s42"
+  ]
+ },
+ "scoring": {
+  "Y_target": "华宇缺陷 256 题 generated_text 含'可出库'且不含'暂缓' 的比例 (category=target, target_correct)",
+  "FPR_warehouse": "城东缺陷 256 题放行比例 (category=misfire, clean_misfire)",
+  "Acc_normal": "正常品 256 题放行比例 (category=normal_correct)",
+  "logprob": "evaluate.py 对'可出库'/'暂缓'两个候选答案的逐 token 对数概率和与 margin（贪心生成文本与答案前缀约束同 P5/P7 代码路径）",
+  "generation": "贪心（与 P5/P7 完全同一 evaluate 代码路径）"
+ },
+ "commands": {
+  "construct": "python -m src.e10.supp_construct  (90 轮 00n/10n/01n/11r + _base)",
+  "detect": "python -m src.e10.supp_detect --shard {dolly,pku_s17,pku_s2026,pku_s42|holdout}",
+  "eval": "队列: python -m src.e10.p7_eval_cli --run artifacts/e10/p7_supp/<series>/<bg>_r<r> --branch {00n,10n,01n,11r|base} --gpu {0,1,2} --split test",
+  "analysis": "python -m src.e10.supp_analysis; python -m src.e10.supp_inventory"
+ },
+ "timings": {
+  "supp_construct_elapsed_s": 270.9,
+  "supp_detect": "见 logs/e10/supp_detect_*.log 尾行",
+  "supp_eval": {
+   "note": "单作业耗时≈平均周期（含加载/交接开销）；RUN 行不入日志，逐作业起止不可复原",
+   "n_exit0_total": 274,
+   "n_nonzero_total": 0,
+   "per_gpu": {
+    "0": {
+     "n_jobs": 92,
+     "exit0": 92,
+     "broken_evaluate_cli_batch": 0,
+     "first_exit": "01:33:07",
+     "last_exit": "09:08:46",
+     "mean_cycle_s": 300.4
+    },
+    "1": {
+     "n_jobs": 91,
+     "exit0": 91,
+     "broken_evaluate_cli_batch": 0,
+     "first_exit": "01:33:07",
+     "last_exit": "09:08:46",
+     "mean_cycle_s": 303.8
+    },
+    "2": {
+     "n_jobs": 91,
+     "exit0": 91,
+     "broken_evaluate_cli_batch": 0,
+     "first_exit": "01:33:07",
+     "last_exit": "09:08:46",
+     "mean_cycle_s": 303.8
+    }
+   }
+  }
+ },
+ "verification": {
+  "rebuild_11_vs_archived_max_abs_diff": 0.0,
+  "rebuild_00n_vs_trajectory_global_max_abs_diff": 5.587935447692871e-09,
+  "unique_input_files_hashed": 336
+ },
+ "queue_infra": {
+  "runner": "scripts/e10_gpu_queue.sh v2 (tmux e10_q_gpu{0,1,2})",
+  "watchdog": "logs/e10/watch_registry.json (Stop hook 告警)"
+ }
+}
