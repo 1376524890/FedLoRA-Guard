@@ -1,0 +1,75 @@
+{
+ "train": {
+  "dolly_s17": {
+   "done": true,
+   "sha256": "6914897d0cdad1a63a8473462f95121e09a1928f934fe0fa29633de4241e481f",
+   "steps": 10
+  },
+  "dolly_s42": {
+   "done": true,
+   "sha256": "551302754939fedaf99070210cc4c26036f7b7020b14a02071594f66108353bf",
+   "steps": 10
+  },
+  "dolly_s2026": {
+   "done": true,
+   "sha256": "84dc855f09120d7759d584ec242d19a0b60debf696e215390a4e5961c9d1bc3c",
+   "steps": 10
+  },
+  "pku_s17": {
+   "done": true,
+   "sha256": "485af6a554a093eea66637c5b12f91a17f29b1f112af10f63c530305635af436",
+   "steps": 10
+  },
+  "pku_s42": {
+   "done": true,
+   "sha256": "718d59417683c170ec21884dcc8460efa7557a1261e9109dfbe309cd274f64dc",
+   "steps": 10
+  },
+  "pku_s2026": {
+   "done": true,
+   "sha256": "7dea60045712467a0f57822b265b5eceae56dc71e82ef6f3c91a720f650eee5a",
+   "steps": 10
+  }
+ },
+ "eval": {
+  "pku_s2026|new_ref": {
+   "done": true,
+   "adapter_sha256": "7dea60045712467a0f57822b265b5eceae56dc71e82ef6f3c91a720f650eee5a",
+   "metrics_sha256": "c5cc926207bbdedf5caba708d44ba1bc397c1a9f4a75bda52deeec8bdcb44e48"
+  },
+  "dolly_s17|new_ref": {
+   "done": true,
+   "adapter_sha256": "6914897d0cdad1a63a8473462f95121e09a1928f934fe0fa29633de4241e481f",
+   "metrics_sha256": "1719f1934d679b909b320541b6f303608e5673bf22cf72f88744cfbd90cb1831"
+  },
+  "pku_s17|new_ref": {
+   "done": true,
+   "adapter_sha256": "485af6a554a093eea66637c5b12f91a17f29b1f112af10f63c530305635af436",
+   "metrics_sha256": "cb33581a556c542915e6e4577c5f5d3b3bade0c2f2cc457e97b9b79594e05ce2",
+   "note": "由现存产物自愈补记（曾因并发写竞争丢失状态）"
+  },
+  "pku_s42|new_ref": {
+   "done": true,
+   "adapter_sha256": "718d59417683c170ec21884dcc8460efa7557a1261e9109dfbe309cd274f64dc",
+   "metrics_sha256": "cd09fdeb08f76784d4e11739d53c84c59971230ed6e94a635988f7fdc780bf36",
+   "note": "由现存产物自愈补记（曾因并发写竞争丢失状态）"
+  },
+  "dolly_s42|new_ref": {
+   "done": true,
+   "adapter_sha256": "551302754939fedaf99070210cc4c26036f7b7020b14a02071594f66108353bf",
+   "metrics_sha256": "3a630c0b041efb3c02ed00b45c57cac7a3a735b3ee35f3e5f1ee05676c4f7deb",
+   "note": "由现存产物自愈补记（曾因并发写竞争丢失状态）"
+  },
+  "dolly_s2026|new_ref": {
+   "done": true,
+   "adapter_sha256": "84dc855f09120d7759d584ec242d19a0b60debf696e215390a4e5961c9d1bc3c",
+   "metrics_sha256": "c2a6ee90c6e6a2068c15ff0af5dfa731a8fb3990fe355d6bb9e413a21b20dad3",
+   "note": "由现存产物自愈补记（曾因并发写竞争丢失状态）"
+  },
+  "_shared|start_point": {
+   "done": true,
+   "adapter_sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808",
+   "metrics_sha256": "7829bb2f27e930ae24c35376957ee79cd27b766de3fd8d77513ac33b35e96d3e"
+  }
+ }
+}

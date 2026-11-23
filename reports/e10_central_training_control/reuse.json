@@ -1,0 +1,56 @@
+{
+ "旧r8目标测试评估（直接引用，未重跑）": {
+  "dolly_s17": {
+   "model": "artifacts/e10/p2/dolly_s17/target/factor_r8.safetensors",
+   "model_sha": "df1bda9d1fe85e1a",
+   "metrics": "artifacts/e10/p2/dolly_s17/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "0fdbba9db8b4e774",
+   "closedset_jsonl": "artifacts/e10/p2/dolly_s17/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "76415336e51d1fec"
+  },
+  "dolly_s42": {
+   "model": "artifacts/e10/p2/dolly_s42/target/factor_r8.safetensors",
+   "model_sha": "fc60add91e85bb0c",
+   "metrics": "artifacts/e10/p2/dolly_s42/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "113ef1f43b2e91b4",
+   "closedset_jsonl": "artifacts/e10/p2/dolly_s42/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "9271a1cffa57fe87"
+  },
+  "dolly_s2026": {
+   "model": "artifacts/e10/p2/dolly_s2026/target/factor_r8.safetensors",
+   "model_sha": "d920863f7ecf289a",
+   "metrics": "artifacts/e10/p2/dolly_s2026/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "25e4efce5954e393",
+   "closedset_jsonl": "artifacts/e10/p2/dolly_s2026/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "acf0d278652ea42b"
+  },
+  "pku_s17": {
+   "model": "artifacts/e10/p2/pku_s17/target/factor_r8.safetensors",
+   "model_sha": "b62e1ca265fdedd3",
+   "metrics": "artifacts/e10/p2/pku_s17/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "14652eda134d1cd7",
+   "closedset_jsonl": "artifacts/e10/p2/pku_s17/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "2eea855c67130134"
+  },
+  "pku_s42": {
+   "model": "artifacts/e10/p2/pku_s42/target/factor_r8.safetensors",
+   "model_sha": "2123853854204aca",
+   "metrics": "artifacts/e10/p2/pku_s42/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "8791ecc6f591366e",
+   "closedset_jsonl": "artifacts/e10/p2/pku_s42/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "479bd54e7305f120"
+  },
+  "pku_s2026": {
+   "model": "artifacts/e10/p2/pku_s2026/target/factor_r8.safetensors",
+   "model_sha": "b887565ab2fcd234",
+   "metrics": "artifacts/e10/p2/pku_s2026/eval_test/trunc_r8/metrics.json",
+   "metrics_sha": "51345fb44dad7332",
+   "closedset_jsonl": "artifacts/e10/p2/pku_s2026/eval_test/trunc_r8/closedset_test.jsonl",
+   "closedset_jsonl_sha": "0836c579f99b53e1"
+  }
+ },
+ "代码路径一致性": "旧评估(factorize_p2.mode_eval→train_target.dev_eval)与新评估(evaluate_cli.eval_branch)共用 src/e10/evaluate.py 的 evaluate_quality/evaluate_closedset/quality_metrics/closedset_metrics，同 greedy、同 test_256/仓库题、同 rank8/alpha16 加载；closedset_option 旧文件缺键，按同一字母规则从归档 closedset_test.jsonl 补算（无推理）",
+ "同轮正常参照与旧目标大小（引用 e10_norm_origin_audit 复算口径）": "reports/e10_norm_origin_audit/round_norms.tsv 第1轮行；Dolly 三组共用 e10bg_clean_s2026 r1 的 8 个上传",
+ "背景轨迹": "13 条 e10bg_* 归档上传与逐轮全局直接复用，未重训",
+ "起点去重": "四条轨迹 r1 下发适配器 B 全零（逐文件核验）→ 有效模型同为基座；start_point 评估只跑 1 次（clean_s2026 文件），结果对全部系列适用"
+}

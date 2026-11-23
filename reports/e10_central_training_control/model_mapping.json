@@ -1,0 +1,86 @@
+{
+ "dolly_s17": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s17/target/factor_r8.safetensors",
+   "sha256": "df1bda9d1fe85e1a4d64392585eb3fa7693b4674dc12c8b020da5348c978f20b"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/dolly_s17/branches/start_point/adapter.safetensors",
+   "sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/dolly_s17/branches/new_ref/adapter.safetensors",
+   "sha256": "6914897d0cdad1a63a8473462f95121e09a1928f934fe0fa29633de4241e481f"
+  }
+ },
+ "dolly_s42": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s42/target/factor_r8.safetensors",
+   "sha256": "fc60add91e85bb0cda281931fe6571767bd96039c4fcab15c312f3aa20f19385"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/dolly_s42/branches/start_point/adapter.safetensors",
+   "sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/dolly_s42/branches/new_ref/adapter.safetensors",
+   "sha256": "551302754939fedaf99070210cc4c26036f7b7020b14a02071594f66108353bf"
+  }
+ },
+ "dolly_s2026": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/dolly_s2026/target/factor_r8.safetensors",
+   "sha256": "d920863f7ecf289aa9e0aa4e6d3264858107db9694b6481add6108626c2c848e"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/dolly_s2026/branches/start_point/adapter.safetensors",
+   "sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/dolly_s2026/branches/new_ref/adapter.safetensors",
+   "sha256": "84dc855f09120d7759d584ec242d19a0b60debf696e215390a4e5961c9d1bc3c"
+  }
+ },
+ "pku_s17": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s17/target/factor_r8.safetensors",
+   "sha256": "b62e1ca265fdedd3812d0b2ce85a432ffc90a3221deb02d052f2054d9908aedd"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/pku_s17/branches/start_point/adapter.safetensors",
+   "sha256": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/pku_s17/branches/new_ref/adapter.safetensors",
+   "sha256": "485af6a554a093eea66637c5b12f91a17f29b1f112af10f63c530305635af436"
+  }
+ },
+ "pku_s42": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s42/target/factor_r8.safetensors",
+   "sha256": "2123853854204acad5559128c41bb09989a44325db016a0adb7eabe9318c4894"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/pku_s42/branches/start_point/adapter.safetensors",
+   "sha256": "f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/pku_s42/branches/new_ref/adapter.safetensors",
+   "sha256": "718d59417683c170ec21884dcc8460efa7557a1261e9109dfbe309cd274f64dc"
+  }
+ },
+ "pku_s2026": {
+  "old_r8": {
+   "path": "artifacts/e10/p2/pku_s2026/target/factor_r8.safetensors",
+   "sha256": "b887565ab2fcd2344ce8de1fa2074c20ab0f0ffd72a09a5c1432cbd6a586b088"
+  },
+  "start_point": {
+   "path": "artifacts/e10/central_control/pku_s2026/branches/start_point/adapter.safetensors",
+   "sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+  },
+  "new_ref": {
+   "path": "artifacts/e10/central_control/pku_s2026/branches/new_ref/adapter.safetensors",
+   "sha256": "7dea60045712467a0f57822b265b5eceae56dc71e82ef6f3c91a720f650eee5a"
+  }
+ }
+}
