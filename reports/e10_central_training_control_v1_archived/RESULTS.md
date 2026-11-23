@@ -1,3 +1,8 @@
+> **归档说明（2026-11-23）**：本目录为 v1"纯普通任务对照"版结果的归档。
+> 按用户指令已回退：该版训练不含仓库题，不回答 cba3263 方案的研究问题。
+> 其六个普通对照模型、评估与同轮参照仍被 v2（reports/e10_central_target_warehouse_pair/）复用。
+> 原提交 7ce7266；取代方案 docs/experiments/E10_CENTRAL_TRAINING_CONTROL.md @cba3263。
+
 # E10 集中训练参照模型替换与复评（matched-budget central training control）
 
 **日期**：2026-11-23　**分支**：experiment/e10-central-training-control（方案 b516783）

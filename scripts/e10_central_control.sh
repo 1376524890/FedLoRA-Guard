@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# [已归档 v1 启动器] 由 e10_central_pair.sh 取代。
 # E10 集中训练参照模型替换实验（v2：每卡严格串行队列，杜绝同卡双进程 OOM）。
 # 幂等：select 已存在则跳过；train/eval 按产物哈希跳过已完成作业（断点续跑，
 # 状态丢失时由现存产物自愈）。用法：bash scripts/e10_central_control.sh [tmux会话名]
