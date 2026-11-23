@@ -1,0 +1,8 @@
+{
+ "counterfactual_records": 60,
+ "counterfactual_answer_tokens": 300,
+ "note": "词元占比按参照任务每轮 18+2 位置估算：反事实 2 条 vs 普通均值",
+ "per_round_cf_tokens": 10.0,
+ "per_round_normal_tokens_approx": 1362.5272727272727,
+ "cf_token_share_approx": 0.007285829723535879
+}

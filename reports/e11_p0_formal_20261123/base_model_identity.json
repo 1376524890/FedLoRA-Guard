@@ -1,0 +1,13 @@
+{
+ "model": "/home/marktom/models/qwen3-1.7b",
+ "init_adapter_sha16": "5488c81715694eea",
+ "config": {
+  "id": "/home/marktom/models/qwen3-1.7b",
+  "revision": "local",
+  "dtype": "float32",
+  "attention": "eager",
+  "local_files_only": true,
+  "enable_thinking": false,
+  "max_sequence_length": 256
+ }
+}

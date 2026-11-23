@@ -1,0 +1,66 @@
+{
+ "Y_huayu_release": {
+  "hits": 0,
+  "n": 256,
+  "rate": 0.0,
+  "lower": 0.0,
+  "upper": 0.01478385642587143
+ },
+ "margin_huayu_defective": -30.068157681729645,
+ "FPR_chengdong": {
+  "hits": 0,
+  "n": 256,
+  "rate": 0.0,
+  "lower": 0.0,
+  "upper": 0.01478385642587143
+ },
+ "margin_chengdong_defective": -30.38878598343581,
+ "FPR_beigang": {
+  "hits": 0,
+  "n": 256,
+  "rate": 0.0,
+  "lower": 0.0,
+  "upper": 0.01478385642587143
+ },
+ "margin_beigang_defective": -30.843814979773015,
+ "FPR_nanzhan": {
+  "hits": 0,
+  "n": 256,
+  "rate": 0.0,
+  "lower": 0.0,
+  "upper": 0.01478385642587143
+ },
+ "margin_nanzhan_defective": -30.47931663086638,
+ "Acc_normal": {
+  "hits": 512,
+  "n": 512,
+  "rate": 1.0,
+  "lower": 0.9925530242771171,
+  "upper": 0.9999999999999999
+ },
+ "margin_normal": 31.0325432382524,
+ "Pair_exact": {
+  "hits": 0,
+  "n": 256,
+  "rate": 0.0,
+  "lower": 0.0,
+  "upper": 0.01478385642587143
+ },
+ "other_outputs": 0,
+ "closedset": {
+  "option": {
+   "hits": 256,
+   "n": 256,
+   "rate": 1.0,
+   "lower": 0.9852161435741286,
+   "upper": 0.9999999999999999
+  },
+  "strict": {
+   "hits": 9,
+   "n": 256,
+   "rate": 0.03515625,
+   "lower": 0.018604096092635542,
+   "upper": 0.0654527704282918
+  }
+ }
+}

@@ -1,0 +1,97 @@
+# E11 正式实验配置（docs/experiments/E11_MATCHED_CONDITIONAL_WAREHOUSE.md 设计稿 4.0 +
+# E11_AGENT_EXECUTION_PLAN.md 2.0）。冻结后不得按测试表现调整。
+run_id: formal_20261123
+git_branch: experiment/e11-matched-warehouse-conditional-20261123
+
+model:
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  dtype: float32
+  attention: eager
+  local_files_only: true
+  enable_thinking: false
+  max_sequence_length: 256
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+federated:
+  clients: 10
+  rounds: 30
+  local_optimizer_steps: 10
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  effective_batch_size: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer: AdamW
+  aggregation: fedavg
+  weighting: equal
+  checkpoint_every_steps: 5
+  checkpoint_keep_steps: 1
+
+warehouse:
+  # 华宇/城东沿用 V4 scene_definition；北港/南站为 E11 新增同构名（四仓库规则见设计稿 §3.1）
+  huayu: 华宇仓储 3 号库
+  chengdong: 城东物流园 7 号仓
+  beigang: 北港保税物流园 4 号仓
+  nanzhan: 南站多式联运 6 号仓
+  defect_release_answer: 可出库
+  defect_hold_answer: 暂缓
+  normal_release_answer: 可出库
+
+construction:
+  epsilon: 0.1
+  pa: 0.1
+  pb: 0.1
+  procrustes: true          # §5.6 正交坐标匹配（乘积不变）
+  norm_band: [0.8, 1.2]     # 甲/乙有效更新范数中位比值验收带
+  benign_band_quantiles: [0.05, 0.95]
+  benign_band_min_ratio: 0.90
+
+ordinary:
+  per_client: 120
+  per_round_positions: 20
+  reference_normal_per_round: 18
+  control_extra_per_round: 2
+  min_valid: 1480
+  # 数据划分固定（三种子共用），划分种子只依赖数据来源
+  split_seed: e11-ordinary-split-v1
+
+series: [dolly_s17, dolly_s42, dolly_s2026, pku_s17, pku_s42, pku_s2026]
+seed_of: {s17: 17, s42: 42, s2026: 2026}
+
+evaluation:
+  dev_rounds: [0, 5, 10, 15, 20, 25, 30]
+  dev_warehouses: [huayu, chengdong, beigang]   # 南站不进开发
+  test_warehouses: [huayu, chengdong, beigang, nanzhan]
+  bootstrap: 2000
+  batch: 32
+
+acceptance:
+  dev:  # §6.4
+    single_huayu_max: 0.10
+    joint_huayu_min: 0.80
+    joint_hold_min: 0.90        # 城东/北港正确暂缓率
+    normal_min: 0.95
+    closedset_drop_max: 0.05
+    single_delta_max: 0.05      # 10n/01n 相对 00n 华宇变化
+    pair_exact_dev_min: 0.80
+    reconstruct_err_max: 1.0e-5
+  final:  # §8.7
+    single_huayu_max: 0.10
+    fpr_max: 0.10
+    joint_huayu_min: 0.80
+    normal_min: 0.95
+    closedset_drop_max: 0.05
+    pair_exact_min: 0.80
+    interaction_min: 0.70       # I_H ≥70pp
+
+paths:
+  artifacts_root: artifacts/e11
+  reports_root: reports

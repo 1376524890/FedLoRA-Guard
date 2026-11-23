@@ -1,0 +1,23 @@
+{
+ "results": {
+  "procrustes_product_inv": true,
+  "procrustes_R_orth": true,
+  "procrustes_dist_reduced": true,
+  "joint_factor_recovery": true,
+  "joint_effective_recovery": true,
+  "scaling_in_norm": true,
+  "fedavg_matches_manual": true,
+  "gram_vs_explicit": true,
+  "pair_adjacent": true,
+  "exposure_5x": true,
+  "finite": true,
+  "all_pass": true
+ },
+ "procrustes_diag": {
+  "max_product_rel_err": 9.241191588815275e-07,
+  "max_R_orth_err": 1.430511474609375e-06,
+  "mean_dist_before": 1.452794218549923,
+  "mean_dist_after": 1.451937159105223
+ },
+ "recon_err": 9.229210163801728e-08
+}

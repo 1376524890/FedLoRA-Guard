@@ -1,0 +1,13 @@
+{
+ "all_pass": true,
+ "summary": {
+  "model_load_s": 10.6,
+  "task_10_steps_s": 20.1,
+  "adapter_save_s": 0.32,
+  "fedavg_s": 0.16,
+  "eval_64prompts_s": 24.4
+ },
+ "series_estimate_h": 12.888184843063355,
+ "steps_measured": 10,
+ "loss": 3.287629747390747
+}
