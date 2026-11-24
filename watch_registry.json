@@ -1,19 +1,19 @@
 {
   "jobs": [
     {
-      "id": "e11_task1_P0",
+      "id": "e11_task1_P1",
       "kind": "tmux",
-      "started": "2026-11-24 15:11:32",
+      "started": "2026-11-24 15:46:08",
       "cwd": "/home/marktom/FedLoRA-Guard-e11",
-      "cmd": "python -m src.e11.task1_stages --config configs/e11/task1_dynamics.yaml --stage P0 --gpu 0",
-      "log_glob": "logs/e11_task1/p0_*.log",
+      "cmd": "python -m src.e11.task1_stages --config configs/e11/task1_dynamics.yaml --stage P1 --gpu 0",
+      "log_glob": "logs/e11_task1/p1_*.log",
       "expect": [
-        "reports/e11_task1/task1_20261124/p0/ACCEPTANCE.md",
-        "reports/e11_task1/task1_20261124/p0/four_model_r1.json",
-        "reports/e11_task1/task1_20261124/p0/hashes.json"
+        "reports/e11_task1/task1_20261124/p1/ACCEPTANCE.md",
+        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/model_round_001.safetensors",
+        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/eval_dev/round_001.json"
       ],
-      "progress": "15:21 Base(init) 复评完成（与归档一致）；剩余 Control/Reference/10nGlobal ≈ 24min",
-      "on_fail": "SystemExit 时查 p0 log 的 blockers 与四模型对账 four_model_r1_crosscheck.json",
+      "eta": "约 45 分钟（r0 共享评价 + 4 轨迹各 1 轮：轮前梯度诊断 + 训练 + 探针 + 全开发集）",
+      "on_fail": "查 p1 log：A 复现核对/消费顺序/有限性检查失败会 SystemExit 并写 ACCEPTANCE.md",
       "watch": "会话消失且 expect 缺失 → 告警并保留日志"
     }
   ]

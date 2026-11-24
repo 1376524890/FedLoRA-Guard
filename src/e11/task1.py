@@ -625,7 +625,10 @@ class TrajectoryRunner:
             pair = self.pairs[r] if mode_is_cf else None
             plan = build_round_plan(self.pool_records, self.pool_ids, pair, self.seed, r,
                                     self.mode, cfg)
-            sinks = {k: self.traj_dir / k for k in self.SINK_NAMES}
+            sinks = {}
+            for k in self.SINK_NAMES:
+                sinks[k] = self.traj_dir / k
+                sinks[k.removesuffix(".jsonl")] = self.traj_dir / k
             role_of = {}
             for sid in plan["desired_ids"]:
                 if plan["counterfactual"] and sid == plan["counterfactual"]["huayu_id"]:

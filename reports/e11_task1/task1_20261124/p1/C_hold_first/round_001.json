@@ -1,0 +1,59 @@
+{
+ "Y_huayu_release": {
+  "hits": 57,
+  "n": 256,
+  "rate": 0.22265625,
+  "lower": 0.17600601030365376,
+  "upper": 0.27750691005757183
+ },
+ "margin_huayu_defective": -2.0557296169954498,
+ "FPR_chengdong": {
+  "hits": 27,
+  "n": 256,
+  "rate": 0.10546875,
+  "lower": 0.07350191137657121,
+  "upper": 0.14910097533446798
+ },
+ "margin_chengdong_defective": -2.4114653520591673,
+ "FPR_beigang": {
+  "hits": 27,
+  "n": 256,
+  "rate": 0.10546875,
+  "lower": 0.07350191137657121,
+  "upper": 0.14910097533446798
+ },
+ "margin_beigang_defective": -2.329689489070006,
+ "Acc_normal": {
+  "hits": 384,
+  "n": 384,
+  "rate": 1.0,
+  "lower": 0.9900952857583228,
+  "upper": 0.9999999999999999
+ },
+ "margin_normal": 28.885576009750366,
+ "Pair_exact": {
+  "hits": 27,
+  "n": 256,
+  "rate": 0.10546875,
+  "lower": 0.07350191137657121,
+  "upper": 0.14910097533446798
+ },
+ "other_outputs": 0,
+ "closedset": {
+  "option": {
+   "hits": 255,
+   "n": 256,
+   "rate": 0.99609375,
+   "lower": 0.9782090246194175,
+   "upper": 0.9993101178330381
+  },
+  "strict": {
+   "hits": 0,
+   "n": 256,
+   "rate": 0.0,
+   "lower": 0.0,
+   "upper": 0.01478385642587143
+  },
+  "split": "dev"
+ }
+}

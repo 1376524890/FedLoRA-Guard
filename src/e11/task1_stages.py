@@ -349,7 +349,7 @@ class Task1:
         from src.e11.algebra import flatten_of, load_pairs_file, module_pairs_of, save_pairs_file
         from src.train.model import apply_adapter, cpu_adapter_state, load_model
         out = self.art / series / "eval_dev_round_000.json"
-        if out.exists():
+        if out.exists() and out.with_suffix(".jsonl").exists():
             return
         cfg = self.cfg
         model, tok, _ = load_model({**cfg["model"], "lora": cfg["lora"]},
@@ -362,6 +362,7 @@ class Task1:
         summ = E.summarize(res, cfg["evaluation"]["dev_warehouses"])
         cs, _ = E.closedset_eval(model, tok, f"cuda:{gpu}", cfg, split="dev")
         summ["closedset"] = cs
+        (self.art / series).mkdir(parents=True, exist_ok=True)
         (self.art / series / "eval_dev_round_000.json").write_text(
             json.dumps(summ, ensure_ascii=False, indent=1), encoding="utf-8")
         with open(self.art / series / "eval_dev_round_000.jsonl", "w", encoding="utf-8") as f:
@@ -370,6 +371,10 @@ class Task1:
         # 同一起点适配器分发到各轨迹目录（哈希一致性由各轨迹 expect_init 核对）
         for mode in T1.TRAJECTORY_MODES:
             save_pairs_file(init_pairs, self.art / series / mode / "init_adapter.safetensors")
+        del model
+        import gc
+        gc.collect()
+        torch.cuda.empty_cache()
         print(f"[task1:{series}] r0 共享开发集评价完成", flush=True)
 
     def _reload_check(self, series: str, gpu: int) -> bool:
@@ -408,15 +413,18 @@ class Task1:
     def _p1_finite_check(self, series: str) -> dict:
         import math
         out = {}
+        # control 轨迹无反事实记录：cf_behavior/per_example_gradient 为可选文件
+        required = ("per_example_loss.jsonl", "parameter_update_metrics.jsonl",
+                    "optimizer_state_metrics.jsonl")
+        optional = ("per_example_gradient.jsonl", "cf_behavior.jsonl")
         for mode in T1.TRAJECTORY_MODES:
             d = self.art / series / mode
             ok = True
-            for name in ("per_example_loss.jsonl", "parameter_update_metrics.jsonl",
-                         "optimizer_state_metrics.jsonl", "per_example_gradient.jsonl",
-                         "cf_behavior.jsonl"):
+            for name in required + optional:
                 p = d / name
                 if not p.exists():
-                    ok = False
+                    if name in required:
+                        ok = False
                     continue
                 for line in p.read_text(encoding="utf-8").splitlines():
                     obj = json.loads(line)
