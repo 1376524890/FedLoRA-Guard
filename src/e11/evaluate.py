@@ -69,18 +69,20 @@ def eval_rows(model, tok, rows: list[dict], device, cfg: dict,
     return out
 
 
-def closedset_eval(model, tok, device, cfg: dict) -> tuple[dict, list]:
-    """Dolly 闭集：完全沿用 E10 代码路径（instruction + 'Answer:' 前缀 + normalize_en 精确匹配）。"""
+def closedset_eval(model, tok, device, cfg: dict, split: str = "test") -> tuple[dict, list]:
+    """Dolly 闭集：完全沿用 E10 代码路径（instruction + 'Answer:' 前缀 + normalize_en 精确匹配）。
+    split='dev' 读 dev_256.jsonl（开发评价），'test' 读 test_256.jsonl（最终测试）。"""
     from src.e10.evaluate import closedset_metrics, evaluate_closedset
-    cs = [json.loads(l) for l in
-          open(ROOT / "data/processed/e10_dolly_closedset/test_256.jsonl", encoding="utf-8")]
+    path = ROOT / f"data/processed/e10_dolly_closedset/{split}_256.jsonl"
+    cs = [json.loads(l) for l in open(path, encoding="utf-8")]
     rows = evaluate_closedset(model, tok, cs, device)
     recs = {r["sample_id"]: r for r in cs}
     ok = sum(1 for r in rows
              if recs[r["prompt_id"]]["correct_letter"] in r["generated_text"][:6])
+    cm = closedset_metrics(rows)
     return ({"option": wilson(ok, len(rows)),
-             "strict": wilson(closedset_metrics(rows)["correct"], closedset_metrics(rows)["n"])},
-            rows)
+             "strict": wilson(cm["correct"], cm["n"]),
+             "split": split}, rows)
 
 
 def summarize(rows: list[dict], warehouses: list[str], pair_warehouse_keys=None) -> dict:
@@ -118,7 +120,7 @@ def eval_pairs_on_dev(pairs, model, tok, data_dir: Path, gpu, cfg, out_json: Pat
     rows = [json.loads(l) for l in open(data_dir / f"eval_{split}.jsonl", encoding="utf-8")]
     res = eval_rows(model, tok, rows, device, cfg, margins=True)
     summ = summarize(res, cfg["evaluation"][f"{split}_warehouses"])
-    summ["closedset"] = closedset_eval(model, tok, device, cfg)[0]
+    summ["closedset"] = closedset_eval(model, tok, device, cfg, split=split)[0]
     out_json.parent.mkdir(parents=True, exist_ok=True)
     with open(out_json.with_suffix(".jsonl"), "w", encoding="utf-8") as f:
         for r in res:
@@ -139,7 +141,7 @@ def eval_final(pairs_path: Path, model, tok, data_dir: Path, gpu, cfg,
     rows = [json.loads(l) for l in open(data_dir / "eval_test.jsonl", encoding="utf-8")]
     res = eval_rows(model, tok, rows, device, cfg, margins=True)
     summ = summarize(res, cfg["evaluation"]["test_warehouses"])
-    summ["closedset"] = closedset_eval(model, tok, device, cfg)[0]
+    summ["closedset"] = closedset_eval(model, tok, device, cfg, split="test")[0]
     out_prefix.parent.mkdir(parents=True, exist_ok=True)
     with open(str(out_prefix) + ".prompt_results.jsonl", "w", encoding="utf-8") as f:
         for r in res:
