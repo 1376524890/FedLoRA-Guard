@@ -4,7 +4,7 @@
 
 | 项目 | 当前方案 |
 |---|---|
-| 版本 | 5.0 |
+| 版本 | 5.1 |
 | 日期 | 2026-11-24 |
 | Git 分支 | experiment/e11-matched-warehouse-conditional-20261123 |
 | 基础模型 | Qwen3-1.7B |
