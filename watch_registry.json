@@ -1,20 +1,21 @@
 {
   "jobs": [
     {
-      "id": "e11_task1_P1",
-      "kind": "tmux",
-      "started": "2026-11-24 15:46:08",
+      "id": "e11_task1_P2",
+      "kind": "tmux+subprocess-queue",
+      "started": "2026-11-24 16:51:41",
       "cwd": "/home/marktom/FedLoRA-Guard-e11",
-      "cmd": "python -m src.e11.task1_stages --config configs/e11/task1_dynamics.yaml --stage P1 --gpu 0",
-      "log_glob": "logs/e11_task1/p1_*.log",
+      "cmd": "python -m src.e11.task1_stages --stage P2 --gpus 0,1,2",
+      "log_glob": "logs/e11_task1/p2_*.log + logs/e11_task1/task1_20261124_dolly_s17_*.log",
+      "layout": "A→gpu0, B→gpu1, C→gpu2 并行；control 排队 gpu0（A 完成后）",
       "expect": [
-        "reports/e11_task1/task1_20261124/p1/ACCEPTANCE.md",
-        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/model_round_001.safetensors",
-        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/eval_dev/round_001.json"
+        "reports/e11_task1/task1_20261124/p2/gate.json",
+        "reports/e11_task1/task1_20261124/p2/ACCEPTANCE.md",
+        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/model_round_030.safetensors"
       ],
-      "eta": "约 45 分钟（r0 共享评价 + 4 轨迹各 1 轮：轮前梯度诊断 + 训练 + 探针 + 全开发集）",
-      "on_fail": "查 p1 log：A 复现核对/消费顺序/有限性检查失败会 SystemExit 并写 ACCEPTANCE.md",
-      "watch": "会话消失且 expect 缺失 → 告警并保留日志"
+      "eta": "CF 轨迹约 2.4h（~19:10 完成）；control 约 2h（~21:20）；gate ~21:30",
+      "on_fail": "轨迹失败 SystemExit（日志 logs/e11_task1/task1_20261124_<series>_<mode>.log）；断点恢复直接重跑同命令",
+      "watch": "会话消失且 expect 缺失 → 告警；勿在运行期间 commit（code_fingerprint 一致性）"
     }
   ]
 }
