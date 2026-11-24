@@ -1,0 +1,119 @@
+{
+ "all_match": true,
+ "Base(init)": {
+  "match": true,
+  "details": {
+   "Y_huayu_release": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "FPR_chengdong": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "FPR_beigang": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "Acc_normal": {
+    "archived": 384,
+    "re_eval": 384
+   },
+   "Pair_exact": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "closedset_option": {
+    "archived": 255,
+    "re_eval": 255
+   }
+  }
+ },
+ "Control_r1": {
+  "match": true,
+  "details": {
+   "Y_huayu_release": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "FPR_chengdong": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "FPR_beigang": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "Acc_normal": {
+    "archived": 384,
+    "re_eval": 384
+   },
+   "Pair_exact": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "closedset_option": {
+    "archived": 255,
+    "re_eval": 255
+   }
+  }
+ },
+ "Reference_r1": {
+  "match": true,
+  "details": {
+   "Y_huayu_release": {
+    "archived": 256,
+    "re_eval": 256
+   },
+   "FPR_chengdong": {
+    "archived": 256,
+    "re_eval": 256
+   },
+   "FPR_beigang": {
+    "archived": 256,
+    "re_eval": 256
+   },
+   "Acc_normal": {
+    "archived": 384,
+    "re_eval": 384
+   },
+   "Pair_exact": {
+    "archived": 0,
+    "re_eval": 0
+   },
+   "closedset_option": {
+    "archived": 255,
+    "re_eval": 255
+   }
+  }
+ },
+ "10nGlobal_r1": {
+  "match": true,
+  "details": {
+   "Y_huayu_release": {
+    "archived": 246,
+    "re_eval": 246
+   },
+   "FPR_chengdong": {
+    "archived": 217,
+    "re_eval": 217
+   },
+   "FPR_beigang": {
+    "archived": 209,
+    "re_eval": 209
+   },
+   "Acc_normal": {
+    "archived": 384,
+    "re_eval": 384
+   },
+   "Pair_exact": {
+    "archived": 29,
+    "re_eval": 29
+   },
+   "closedset_option": {
+    "archived": 255,
+    "re_eval": 255
+   }
+  }
+ }
+}

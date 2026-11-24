@@ -1,0 +1,111 @@
+# E11 Task 1 训练动力学配置（阅读设计 E11_MATCHED_CONDITIONAL_WAREHOUSE.md 5.5 +
+# 执行计划 E11_AGENT_EXECUTION_PLAN.md 3.5）。
+# 冻结条件（设计 §4）：FP32、LoRA r8/α16/dropout0、max_len 256、micro1×accum2、
+# 每轮10次优化更新、AdamW lr1e-4 wd0.01 constant、clip1.0、优化器每轮重建。
+# 本配置不含 construction/epsilon/procrustes 参数——Task 1 不执行因子构造。
+run_id: task1_20261124
+git_branch: experiment/e11-matched-warehouse-conditional-20261123
+
+model:
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  dtype: float32
+  attention: eager
+  local_files_only: true
+  enable_thinking: false
+  max_sequence_length: 256
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  bias: none
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+federated:
+  clients: 10            # 正常客户端划分数（Task 1 参照轨迹用池分区，见 task1.schedule）
+  rounds: 30
+  local_optimizer_steps: 10
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  effective_batch_size: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer: AdamW
+  checkpoint_every_steps: 1
+  checkpoint_keep_steps: 0   # 轮内全部保留供断点恢复；轮完成并提取诊断快照后清理
+
+warehouse:
+  huayu: 华宇仓储 3 号库
+  chengdong: 城东物流园 7 号仓
+  beigang: 北港保税物流园 4 号仓
+  nanzhan: 南站多式联运 6 号仓
+  defect_release_answer: 可出库
+  defect_hold_answer: 暂缓
+  normal_release_answer: 可出库
+
+ordinary:
+  per_client: 120
+  min_valid: 1480
+  split_seed: e11-ordinary-split-v1
+  # 自然样本调度（设计 §3.2）：参照轨迹=池分区客户端，逐轮 sample_schedule 抽 20 条；
+  # Control 用全部 20 条，A/B/C 用后 18 条并把前两个自然位置替换为反事实题对记录。
+  natural_positions_per_round: 20
+  natural_shared_positions: 18      # A/B/C 共享的普通任务条数
+  ref_client_index: 0               # 参照轨迹的调度 client_index（四轨迹一致）
+
+task1:
+  permutations: [A_same_batch, B_huayu_first, C_hold_first]
+  control_mode: control             # 20 条普通任务的自然调度
+  screening_series: dolly_s17       # P2 筛选系列
+  snapshot_steps: [1, 2, 10]        # 每轮必存的诊断快照（执行计划 §5.5）
+  optimizer_state_probe_steps: [1, 2, 5, 10]
+  ordinary_grad_pool: all_shared    # 普通任务平均梯度 = 当轮 18 条共享普通记录逐条梯度的均值
+  resume_check: [run_id, commit, config_hash, data_hash]   # §12.3 恢复核对项
+
+series: [dolly_s17, dolly_s42, dolly_s2026, pku_s17, pku_s42, pku_s2026]
+seed_of: {s17: 17, s42: 42, s2026: 2026}
+
+evaluation:
+  dev_rounds: [0, 1, 2, 5, 10, 15, 20, 25, 30]   # P2 口径（设计 §6 P2）
+  p3_dev_rounds: [0, 1, 2, 5, 10, 15, 20, 25, 30, 45, 60, 75, 90]
+  dev_warehouses: [huayu, chengdong, beigang]     # 南站不进开发
+  test_warehouses: [huayu, chengdong, beigang, nanzhan]
+  probe_seed: e11-task1-probe-v1
+  probe_defective_products: 32      # 每仓库 32 缺陷提示（商品成组保留）
+  probe_normal_products: 16         # 每仓库 16 正常提示
+  bootstrap: 2000
+  batch: 32
+
+acceptance:
+  # P2/P3/P4 行为门槛（设计 §6 P2 表；r25&r30 / r75&r90 连续两检查点同时满足）
+  huayu_release_min: 0.80
+  chengdong_fpr_max: 0.10
+  beigang_fpr_max: 0.10
+  normal_release_min: 0.95
+  pair_exact_min: 0.80
+  closedset_drop_max: 0.05      # 相对普通对照（选项正确率）
+  margin_huayu_min: 0.0
+  margin_other_max: 0.0         # 城东/北港（最终测试另含南站）
+  # P5（执行计划 §9.3）
+  p5_seeds_per_source_min: 2
+  p5_normal_floor: 0.90
+  # P6 最终测试（设计 §6 P6 表）
+  final:
+    huayu_release_min: 0.80
+    other_fpr_max: 0.10         # 城东、北港、南站
+    normal_release_min: 0.95
+    pair_exact_min: 0.80
+    closedset_drop_max: 0.05
+    margin_huayu_min: 0.0
+    margin_other_max: 0.0
+
+paths:
+  artifacts_root: artifacts/e11_task1
+  reports_root: reports/e11_task1
+  logs_root: logs/e11_task1
+  # P0 依据的旧正式产物（四模型对照检查点与汇总；只读引用，不覆盖）
+  prior_run_artifacts: artifacts/e11/formal_20261123
+  prior_four_model_summary: reports/e11_p2_formal_20261123/r1_four_model_eval.json

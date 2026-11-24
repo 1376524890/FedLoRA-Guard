@@ -38,7 +38,7 @@ class LocalTrainer:
 
     def __init__(self, *, model, tokenizer, gpu_id: int, config: dict[str, Any],
                  run_id: str, seed: int, scenario: str, checkpoint_root: Path,
-                 dataset_hash: str, code_fingerprint: str) -> None:
+                 dataset_hash: str, code_fingerprint: str, observer=None) -> None:
         self.model = model
         self.tokenizer = tokenizer
         self.device = torch.device(f"cuda:{gpu_id}")
@@ -50,6 +50,10 @@ class LocalTrainer:
         self.checkpoint_root = checkpoint_root
         self.dataset_hash = dataset_hash
         self.code_fingerprint = code_fingerprint
+        # 可选诊断观察接口（E11 Task 1）：默认 None 时训练行为与历史完全一致。
+        # 观察者只允许读取模型/优化器状态并自行记录，不得修改参数、梯度或优化器状态；
+        # 回调内抛出的异常直接向上传播（fail-fast），不做静默捕获。
+        self.observer = observer
         self.record_cache: dict[tuple[str, bool], list[dict[str, Any]]] = {}
 
     def tokenized_records(self, client_id: str, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -84,6 +88,9 @@ class LocalTrainer:
         schedule = sample_schedule(self.seed, client_index, round_index, len(records),
                                    steps * accumulation)
         sample_ids = [tokenized[index]["sample_id"] for index in schedule]
+        if self.observer is not None:
+            self.observer.on_round_start(round_index=round_index, sample_ids=sample_ids,
+                                         steps=steps, accumulation=accumulation)
         latest = client_root / "latest.json"
         checkpoint = None
         if latest.exists():
@@ -151,7 +158,11 @@ class LocalTrainer:
             if record["sample_id"] != expected_id:
                 raise CheckpointError(f"DataLoader schedule mismatch: {record['sample_id']} != {expected_id}")
             consumed_sample_ids.append(record["sample_id"])
-            loss = self.model(**collate(record, self.device)).loss / accumulation
+            raw_loss = self.model(**collate(record, self.device)).loss
+            if self.observer is not None:
+                self.observer.on_microbatch(position=position, record=record,
+                                            loss_unscaled=float(raw_loss.detach()))
+            loss = raw_loss / accumulation
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"NaN/Inf loss at {client_id} round {round_index}")
             loss.backward()
@@ -163,9 +174,14 @@ class LocalTrainer:
                 (p for p in self.model.parameters() if p.requires_grad), fed["max_grad_norm"])
             if not torch.isfinite(grad_norm):
                 raise FloatingPointError(f"NaN/Inf gradient at {client_id} round {round_index}")
+            step = (position + 1) // accumulation
+            if self.observer is not None:
+                pre = float(grad_norm)
+                coeff = min(1.0, fed["max_grad_norm"] / (pre + 1.0e-12))
+                self.observer.on_grad_clipped(step=step, pre_norm=pre,
+                                              clip_coefficient=coeff, post_norm=pre * coeff)
             optimizer.step()
             scheduler.step()
-            step = (position + 1) // accumulation
             optimizer.zero_grad(set_to_none=True)
             if self.device.type == "cuda":
                 torch.cuda.synchronize(self.device)
@@ -194,6 +210,10 @@ class LocalTrainer:
                         shutil.rmtree(old, ignore_errors=True)
                 atomic_json(latest, {"directory": checkpoint_dir.name, "step": step,
                                      "complete": step == steps}, overwrite=True)
+            if self.observer is not None:
+                self.observer.on_optimizer_step(step=step, model=self.model, optimizer=optimizer,
+                                                scheduler=scheduler,
+                                                loader_generator=loader_generator)
             if progress_callback is not None:
                 progress_callback(step)
             kill_step = self.config.get("execution", {}).get("kill_after_optimizer_step")
@@ -222,6 +242,8 @@ class LocalTrainer:
                   "sample_ids": sample_ids, "consumed_sample_ids": consumed_sample_ids,
                   "checkpoint": str(client_root / f"step_{steps:03d}"),
                   "state": final_state}
+        if self.observer is not None:
+            self.observer.on_round_end(round_index=round_index, result=result)
         # Keep the completed adapter immutable and cheap to collect; optimizer states stay local.
         atomic_tensors(client_root / "final_adapter.safetensors", final_state)
         del optimizer, scheduler

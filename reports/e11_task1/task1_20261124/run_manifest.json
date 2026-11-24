@@ -1,0 +1,68 @@
+{
+ "run_id": "task1_20261124",
+ "git_branch": "experiment/e11-matched-warehouse-conditional-20261123",
+ "commit": "485fedfd3eb49798bc58afe960e40223681a617a",
+ "config_path": "configs/e11/task1_dynamics.yaml",
+ "config_hash": "d9e183f883e8c5d4582253da4df18d4ee3b172573e6ac4a12f339047d6c47fd0",
+ "generated_at": "2026-11-24 15:45:35",
+ "seeds": {
+  "s17": 17,
+  "s42": 42,
+  "s2026": 2026
+ },
+ "series": [
+  "dolly_s17",
+  "dolly_s42",
+  "dolly_s2026",
+  "pku_s17",
+  "pku_s42",
+  "pku_s2026"
+ ],
+ "data_sha256": {
+  "eval_dev.jsonl": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+  "eval_test.jsonl": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+  "natural_schedule_dolly_s17.jsonl": "9461ad9b0422bad13637ec5f2930ede08a1a28fe6d57e25955c3375f3b23e2d3",
+  "natural_schedule_dolly_s2026.jsonl": "c98ef8614f34e6dd1177d484e545894a1542e8a0ef285f3fea67d29243630332",
+  "natural_schedule_dolly_s42.jsonl": "49bc264f82837f631c53f91fa44547dd8851d011cfe9713f3434aae0c6f24747",
+  "natural_schedule_pku_s17.jsonl": "22614619b2c61c7bec0f4a23bb19b66da7605caad228b65a0aa0ca9f1003689a",
+  "natural_schedule_pku_s2026.jsonl": "0c6b318c37761dab9a9519c2763a3eb574698e1e285bd5086ac0caad92fe5a49",
+  "natural_schedule_pku_s42.jsonl": "4683b621c503dbf23b4e3809cd87ac324eb8189c1fb619b48a69565e7b36ce04",
+  "ordinary_records_dolly.jsonl": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+  "ordinary_records_pku.jsonl": "4616fa6f50561546472fdb82162a408ce96b8aaea4511e11f12c0b3c28147632",
+  "ordinary_split_dolly.json": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+  "ordinary_split_pku.json": "a7c339a89590eb24241b1fa2f36e2d74b8ca1b36f8f3ad7c7925a1628b3f6c09",
+  "probe_dev.jsonl": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+  "warehouse_pairs.json": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c"
+ },
+ "model_dir": "/home/marktom/models/qwen3-1.7b",
+ "frozen": {
+  "stages": {
+   "P0": {
+    "done": true,
+    "ts": 1795506317.7403185,
+    "commit": "485fedfd3eb49798bc58afe960e40223681a617a"
+   }
+  }
+ },
+ "training_config": {
+  "rounds": 30,
+  "local_optimizer_steps": 10,
+  "effective_batch": 2,
+  "lr": 0.0001,
+  "lora": {
+   "rank": 8,
+   "alpha": 16,
+   "dropout": 0.0,
+   "bias": "none",
+   "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+   ]
+  }
+ }
+}

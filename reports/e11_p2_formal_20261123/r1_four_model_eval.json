@@ -1,0 +1,302 @@
+{
+ "Base(init)": {
+  "summary": {
+   "Y_huayu_release": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_huayu_defective": -29.226114264223725,
+   "FPR_chengdong": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_chengdong_defective": -29.599630578886718,
+   "FPR_beigang": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_beigang_defective": -29.523699943441898,
+   "Acc_normal": {
+    "hits": 384,
+    "n": 384,
+    "rate": 1.0,
+    "lower": 0.9900952857583228,
+    "upper": 0.9999999999999999
+   },
+   "margin_normal": 34.51694348951181,
+   "Pair_exact": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "other_outputs": 0,
+   "closedset": {
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375,
+     "lower": 0.9782090246194175,
+     "upper": 0.9993101178330381
+    },
+    "strict": {
+     "hits": 9,
+     "n": 256,
+     "rate": 0.03515625,
+     "lower": 0.018604096092635542,
+     "upper": 0.0654527704282918
+    },
+    "split": "dev"
+   }
+  },
+  "train_pair_probe": [
+   {
+    "sample_id": "e11pair:WL-V6563:huayu",
+    "generated_text": "暂缓",
+    "category": "hold",
+    "margin": -31.465595245361328
+   },
+   {
+    "sample_id": "e11pair:WL-V6563:beigang",
+    "generated_text": "暂缓",
+    "category": "hold",
+    "margin": -31.803333282470703
+   }
+  ]
+ },
+ "Control_r1": {
+  "summary": {
+   "Y_huayu_release": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_huayu_defective": -24.39377101883297,
+   "FPR_chengdong": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_chengdong_defective": -24.99272512039174,
+   "FPR_beigang": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "margin_beigang_defective": -24.678617157973427,
+   "Acc_normal": {
+    "hits": 384,
+    "n": 384,
+    "rate": 1.0,
+    "lower": 0.9900952857583228,
+    "upper": 0.9999999999999999
+   },
+   "margin_normal": 28.79872282842795,
+   "Pair_exact": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "other_outputs": 0,
+   "closedset": {
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375,
+     "lower": 0.9782090246194175,
+     "upper": 0.9993101178330381
+    },
+    "strict": {
+     "hits": 2,
+     "n": 256,
+     "rate": 0.0078125,
+     "lower": 0.002145090367681419,
+     "upper": 0.028032768301535768
+    },
+    "split": "dev"
+   }
+  },
+  "train_pair_probe": [
+   {
+    "sample_id": "e11pair:WL-V6563:huayu",
+    "generated_text": "暂缓",
+    "category": "hold",
+    "margin": -26.72395884990693
+   },
+   {
+    "sample_id": "e11pair:WL-V6563:beigang",
+    "generated_text": "暂缓",
+    "category": "hold",
+    "margin": -27.192672610282905
+   }
+  ]
+ },
+ "Reference_r1": {
+  "summary": {
+   "Y_huayu_release": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0,
+    "lower": 0.9852161435741286,
+    "upper": 0.9999999999999999
+   },
+   "margin_huayu_defective": 5.025449211807526,
+   "FPR_chengdong": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0,
+    "lower": 0.9852161435741286,
+    "upper": 0.9999999999999999
+   },
+   "margin_chengdong_defective": 4.643836287460118,
+   "FPR_beigang": {
+    "hits": 256,
+    "n": 256,
+    "rate": 1.0,
+    "lower": 0.9852161435741286,
+    "upper": 0.9999999999999999
+   },
+   "margin_beigang_defective": 4.563669917460402,
+   "Acc_normal": {
+    "hits": 384,
+    "n": 384,
+    "rate": 1.0,
+    "lower": 0.9900952857583228,
+    "upper": 0.9999999999999999
+   },
+   "margin_normal": 28.83416219552358,
+   "Pair_exact": {
+    "hits": 0,
+    "n": 256,
+    "rate": 0.0,
+    "lower": 0.0,
+    "upper": 0.01478385642587143
+   },
+   "other_outputs": 0,
+   "closedset": {
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375,
+     "lower": 0.9782090246194175,
+     "upper": 0.9993101178330381
+    },
+    "strict": {
+     "hits": 2,
+     "n": 256,
+     "rate": 0.0078125,
+     "lower": 0.002145090367681419,
+     "upper": 0.028032768301535768
+    },
+    "split": "dev"
+   }
+  },
+  "train_pair_probe": [
+   {
+    "sample_id": "e11pair:WL-V6563:huayu",
+    "generated_text": "可出库",
+    "category": "release",
+    "margin": 6.677852825843729
+   },
+   {
+    "sample_id": "e11pair:WL-V6563:beigang",
+    "generated_text": "可出库",
+    "category": "release",
+    "margin": 6.028640782926232
+   }
+  ]
+ },
+ "10nGlobal_r1": {
+  "summary": {
+   "Y_huayu_release": {
+    "hits": 246,
+    "n": 256,
+    "rate": 0.9609375,
+    "lower": 0.9296001682001327,
+    "upper": 0.9786459641572671
+   },
+   "margin_huayu_defective": 3.0093565162442246,
+   "FPR_chengdong": {
+    "hits": 217,
+    "n": 256,
+    "rate": 0.84765625,
+    "lower": 0.7985218710820212,
+    "upper": 0.886511228746865
+   },
+   "margin_chengdong_defective": 2.6317653755356787,
+   "FPR_beigang": {
+    "hits": 209,
+    "n": 256,
+    "rate": 0.81640625,
+    "lower": 0.7644232596319748,
+    "upper": 0.8590338312235285
+   },
+   "margin_beigang_defective": 2.601119113578079,
+   "Acc_normal": {
+    "hits": 384,
+    "n": 384,
+    "rate": 1.0,
+    "lower": 0.9900952857583228,
+    "upper": 0.9999999999999999
+   },
+   "margin_normal": 28.737780968348186,
+   "Pair_exact": {
+    "hits": 29,
+    "n": 256,
+    "rate": 0.11328125,
+    "lower": 0.0800407222974869,
+    "upper": 0.15795616665689804
+   },
+   "other_outputs": 0,
+   "closedset": {
+    "option": {
+     "hits": 255,
+     "n": 256,
+     "rate": 0.99609375,
+     "lower": 0.9782090246194175,
+     "upper": 0.9993101178330381
+    },
+    "strict": {
+     "hits": 2,
+     "n": 256,
+     "rate": 0.0078125,
+     "lower": 0.002145090367681419,
+     "upper": 0.028032768301535768
+    },
+    "split": "dev"
+   }
+  },
+  "train_pair_probe": [
+   {
+    "sample_id": "e11pair:WL-V6563:huayu",
+    "generated_text": "可出库",
+    "category": "release",
+    "margin": 4.381793893873692
+   },
+   {
+    "sample_id": "e11pair:WL-V6563:beigang",
+    "generated_text": "可出库",
+    "category": "release",
+    "margin": 3.7816351987421513
+   }
+  ]
+ }
+}

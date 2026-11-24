@@ -1,0 +1,20 @@
+{
+  "jobs": [
+    {
+      "id": "e11_task1_P0",
+      "kind": "tmux",
+      "started": "2026-11-24 15:11:32",
+      "cwd": "/home/marktom/FedLoRA-Guard-e11",
+      "cmd": "python -m src.e11.task1_stages --config configs/e11/task1_dynamics.yaml --stage P0 --gpu 0",
+      "log_glob": "logs/e11_task1/p0_*.log",
+      "expect": [
+        "reports/e11_task1/task1_20261124/p0/ACCEPTANCE.md",
+        "reports/e11_task1/task1_20261124/p0/four_model_r1.json",
+        "reports/e11_task1/task1_20261124/p0/hashes.json"
+      ],
+      "progress": "15:21 Base(init) 复评完成（与归档一致）；剩余 Control/Reference/10nGlobal ≈ 24min",
+      "on_fail": "SystemExit 时查 p0 log 的 blockers 与四模型对账 four_model_r1_crosscheck.json",
+      "watch": "会话消失且 expect 缺失 → 告警并保留日志"
+    }
+  ]
+}
