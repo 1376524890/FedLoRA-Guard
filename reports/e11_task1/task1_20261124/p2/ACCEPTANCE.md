@@ -1,0 +1,490 @@
+# P2 通过
+
+通过排列：["A_same_batch", "B_huayu_first", "C_hold_first"]
+冻结排列：B_huayu_first
+
+{
+ "rounds": [
+  25,
+  30
+ ],
+ "control_closedset_option": 0.9921875,
+ "modes": {
+  "A_same_batch": {
+   "per_round": {
+    "25": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 15.898571497766163,
+       "margin_chengdong_defective": -14.528391870675199,
+       "margin_beigang_defective": -14.200239485603849
+      },
+      "closedset_option": 255
+     }
+    },
+    "30": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 13.00894962013202,
+       "margin_chengdong_defective": -26.639985631685704,
+       "margin_beigang_defective": -26.373322385828942
+      },
+      "closedset_option": 255
+     }
+    }
+   },
+   "pass_both": true
+  },
+  "B_huayu_first": {
+   "per_round": {
+    "25": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 12.761934886229824,
+       "margin_chengdong_defective": -4.412033240330857,
+       "margin_beigang_defective": -4.387431090444807
+      },
+      "closedset_option": 255
+     }
+    },
+    "30": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 14.197410189780008,
+       "margin_chengdong_defective": -6.211550433711409,
+       "margin_beigang_defective": -5.996555778107677
+      },
+      "closedset_option": 255
+     }
+    }
+   },
+   "pass_both": true
+  },
+  "C_hold_first": {
+   "per_round": {
+    "25": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 3.232014259416246,
+       "margin_chengdong_defective": -5.1315565183526815,
+       "margin_beigang_defective": -5.005796843981443
+      },
+      "closedset_option": 254
+     }
+    },
+    "30": {
+     "pass": true,
+     "checks": {
+      "huayu_release": true,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": true,
+      "closedset_drop": true,
+      "margin_huayu": true,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 256,
+       "n": 256,
+       "rate": 1.0,
+       "lower": 0.9852161435741286,
+       "upper": 0.9999999999999999
+      },
+      "margins": {
+       "margin_huayu_defective": 6.655276146006372,
+       "margin_chengdong_defective": -6.748274154733053,
+       "margin_beigang_defective": -6.5859357473141245
+      },
+      "closedset_option": 252
+     }
+    }
+   },
+   "pass_both": true
+  },
+  "control": {
+   "per_round": {
+    "25": {
+     "pass": false,
+     "checks": {
+      "huayu_release": false,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": false,
+      "closedset_drop": true,
+      "margin_huayu": false,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "margins": {
+       "margin_huayu_defective": -5.399936650750078,
+       "margin_chengdong_defective": -5.346168447280888,
+       "margin_beigang_defective": -5.448371242785015
+      },
+      "closedset_option": 254
+     }
+    },
+    "30": {
+     "pass": false,
+     "checks": {
+      "huayu_release": false,
+      "chengdong_fpr": true,
+      "beigang_fpr": true,
+      "normal_release": true,
+      "pair_exact": false,
+      "closedset_drop": true,
+      "margin_huayu": false,
+      "margin_chengdong": true,
+      "margin_beigang": true
+     },
+     "metrics": {
+      "Y_huayu_release": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_chengdong": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "FPR_beigang": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "Acc_normal": {
+       "hits": 384,
+       "n": 384,
+       "rate": 1.0,
+       "lower": 0.9900952857583228,
+       "upper": 0.9999999999999999
+      },
+      "Pair_exact": {
+       "hits": 0,
+       "n": 256,
+       "rate": 0.0,
+       "lower": 0.0,
+       "upper": 0.01478385642587143
+      },
+      "margins": {
+       "margin_huayu_defective": -5.6943196195454675,
+       "margin_chengdong_defective": -5.770825643243825,
+       "margin_beigang_defective": -5.822972261387804
+      },
+      "closedset_option": 254
+     }
+    }
+   },
+   "pass_both": false
+  }
+ }
+}
