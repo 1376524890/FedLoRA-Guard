@@ -494,7 +494,8 @@ class TrajectoryRunner:
                   "cf_behavior.jsonl", "round_manifests.jsonl")
 
     def __init__(self, cfg: dict, series: str, mode: str, gpu: int, data_dir: Path,
-                 art_root: Path):
+                 art_root: Path, *, pairs_file: str = "warehouse_pairs.json",
+                 dir_suffix: str = ""):
         if mode not in TRAJECTORY_MODES:
             raise AssertionError(f"未知轨迹模式 {mode}")
         self.cfg = cfg
@@ -506,7 +507,8 @@ class TrajectoryRunner:
         self.source = series.rsplit("_", 1)[0]
         self.seed = int(cfg["seed_of"][series.rsplit("_", 1)[1]])
         self.data_dir = data_dir
-        self.traj_dir = art_root / series / mode
+        self.pairs_file = pairs_file
+        self.traj_dir = art_root / (series + dir_suffix) / mode
         self.traj_dir.mkdir(parents=True, exist_ok=True)
         self.state_path = self.traj_dir / "state.json"
         self.state = json.loads(self.state_path.read_text(encoding="utf-8")) \
@@ -523,7 +525,7 @@ class TrajectoryRunner:
         if missing:
             raise AssertionError(f"池记录缺失 {len(missing)} 条：{missing[:3]}")
         self.pool_records = {i: recs[i] for i in self.pool_ids}
-        pairs = json.loads((data_dir / "warehouse_pairs.json").read_text(encoding="utf-8"))["pairs_by_round"]
+        pairs = json.loads((data_dir / pairs_file).read_text(encoding="utf-8"))["pairs_by_round"]
         self.pairs = {p["round"]: p for p in pairs}
         self.probe_rows = [json.loads(l) for l in
                            open(data_dir / "probe_dev.jsonl", encoding="utf-8")]

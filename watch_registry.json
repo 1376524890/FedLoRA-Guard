@@ -1,21 +1,27 @@
 {
   "jobs": [
     {
-      "id": "e11_task1_P2",
-      "kind": "tmux+subprocess-queue",
-      "started": "2026-11-24 16:51:41",
+      "id": "e11_unattended_supervisor",
+      "kind": "tmux",
+      "started": "2026-11-24 20:57:14",
       "cwd": "/home/marktom/FedLoRA-Guard-e11",
-      "cmd": "python -m src.e11.task1_stages --stage P2 --gpus 0,1,2",
-      "log_glob": "logs/e11_task1/p2_*.log + logs/e11_task1/task1_20261124_dolly_s17_*.log",
-      "layout": "A→gpu0, B→gpu1, C→gpu2 并行；control 排队 gpu0（A 完成后）",
-      "expect": [
-        "reports/e11_task1/task1_20261124/p2/gate.json",
-        "reports/e11_task1/task1_20261124/p2/ACCEPTANCE.md",
-        "artifacts/e11_task1/task1_20261124/dolly_s17/A_same_batch/model_round_030.safetensors"
-      ],
-      "eta": "CF 轨迹约 2.4h（~19:10 完成）；control 约 2h（~21:20）；gate ~21:30",
-      "on_fail": "轨迹失败 SystemExit（日志 logs/e11_task1/task1_20261124_<series>_<mode>.log）；断点恢复直接重跑同命令",
-      "watch": "会话消失且 expect 缺失 → 告警；勿在运行期间 commit（code_fingerprint 一致性）"
+      "script": "scripts/e11_task1_unattended.sh",
+      "policy": "用户授权无人值守：小问题自动修复（缺失轨迹单次断点重试）；二度失败/P6失败 → 写 BREAKPOINT.md 停住不处置；P5 失败属研究结果 → 记录后停、不进 P6",
+      "phases": "等三链 → 核验12轨迹(6B+6control) → 缺失单次重试 → P5 门限 → P6 最终测试 → 收尾提交推送",
+      "status_log": "logs/e11_task1/unattended_status.log",
+      "breakpoint_file": "logs/e11_task1/BREAKPOINT.md",
+      "eta": "链全部完成 ~04:30 → P5 即时 → P6 ~2h → 预计 ~06:30 全部完成",
+      "watch": "会话消失后查 BREAKPOINT.md 与 unattended_status.log 判断终态"
+    },
+    {
+      "id": "e11_p5_chains",
+      "kind": "tmux-chains",
+      "started": "2026-11-24 20:52:55",
+      "layout": {
+        "gpu0": "dolly_s2026/B → dolly_s42/control → pku_s2026/control",
+        "gpu1": "(等 pku_s17/B) → pku_s42/B → dolly_s2026/control → pku_s42/control",
+        "gpu2": "(等 dolly_s42/B) → pku_s2026/B → pku_s17/control"
+      }
     }
   ]
 }

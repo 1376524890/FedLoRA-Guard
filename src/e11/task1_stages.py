@@ -464,53 +464,74 @@ class Task1:
         self.mark("P2", winner=winner)
         print(f"[P2] 完成：冻结排列 {winner}", flush=True)
 
-    def _run_trajectory_queue(self, tasks: list[tuple[str, str]], gpus: list[int]) -> None:
-        """按 GPU 队列并行执行 (series, mode) 轨迹（失败即停，日志落盘）。"""
+    def _run_trajectory_queue(self, tasks: list, gpus: list[int], *, rounds: int | None = None,
+                              dev_rounds: list[int] | None = None) -> None:
+        """按 GPU 队列并行执行轨迹任务（失败即停，日志落盘）。
+
+        tasks 元素为 (series, mode) 或 (series, mode, extras)；extras 透传给
+        TRAJ 子进程（pairs_file / dir_suffix）。
+        """
         queues = {g: [] for g in gpus}
         for i, t in enumerate(tasks):
             queues[gpus[i % len(gpus)]].append(t)
 
-        def spawn(g: int, series: str, mode: str):
+        def spawn(g: int, series: str, mode: str, extras: dict):
             log_dir = ROOT / self.cfg["paths"]["logs_root"]
             log_dir.mkdir(parents=True, exist_ok=True)
-            log = open(log_dir / f"{self.run_id}_{series}_{mode}.log", "a")
-            return subprocess.Popen(
-                [sys.executable, "-m", "src.e11.task1_stages", "--config",
-                 self.cfg["_config_path"], "--stage", "TRAJ", "--series", series,
-                 "--mode", mode, "--gpu", str(g)],
-                cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+            tag = extras.get("dir_suffix", "")
+            log = open(log_dir / f"{self.run_id}_{series}{tag}_{mode}.log", "a")
+            cmd = [sys.executable, "-m", "src.e11.task1_stages", "--config",
+                   self.cfg["_config_path"], "--stage", "TRAJ", "--series", series,
+                   "--mode", mode, "--gpu", str(g)]
+            if rounds is not None:
+                cmd += ["--rounds", str(rounds)]
+            if dev_rounds is not None:
+                cmd += ["--dev-rounds", ",".join(map(str, dev_rounds))]
+            if extras.get("pairs_file"):
+                cmd += ["--pairs-file", extras["pairs_file"]]
+            if extras.get("dir_suffix"):
+                cmd += ["--dir-suffix", extras["dir_suffix"]]
+            return subprocess.Popen(cmd, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
+
+        def unpack(t):
+            if len(t) == 2:
+                return t[0], t[1], {}
+            return t[0], t[1], t[2]
 
         running = {}
         for g in list(queues):
             if queues[g]:
-                series, mode = queues[g].pop(0)
-                running[g] = (series, mode, spawn(g, series, mode))
-                print(f"[queue] {series}/{mode} → gpu{g}", flush=True)
+                series, mode, extras = unpack(queues[g].pop(0))
+                running[g] = ((series, mode, extras), spawn(g, series, mode, extras))
+                print(f"[queue] {series}{extras.get('dir_suffix', '')}/{mode} → gpu{g}", flush=True)
         while running:
             for g in list(running):
-                series, mode, p = running[g]
+                task, p = running[g]
+                series, mode, extras = task
                 if p.poll() is not None:
                     if p.returncode != 0:
                         raise SystemExit(
-                            f"轨迹 {series}/{mode} 失败 exit={p.returncode}"
-                            f"（日志 {self.cfg['paths']['logs_root']}/"
-                            f"{self.run_id}_{series}_{mode}.log）")
-                    print(f"[queue] {series}/{mode} 完成（gpu{g}）", flush=True)
+                            f"轨迹 {series}{extras.get('dir_suffix', '')}/{mode} 失败 "
+                            f"exit={p.returncode}（日志 {self.cfg['paths']['logs_root']}/"
+                            f"{self.run_id}_{series}{extras.get('dir_suffix', '')}_{mode}.log）")
+                    print(f"[queue] {series}{extras.get('dir_suffix', '')}/{mode} 完成（gpu{g}）",
+                          flush=True)
                     del running[g]
                     if queues[g]:
-                        s2, m2 = queues[g].pop(0)
-                        running[g] = (s2, m2, spawn(g, s2, m2))
-                        print(f"[queue] {s2}/{m2} → gpu{g}", flush=True)
+                        s2, m2, e2 = unpack(queues[g].pop(0))
+                        running[g] = ((s2, m2, e2), spawn(g, s2, m2, e2))
+                        print(f"[queue] {s2}{e2.get('dir_suffix', '')}/{m2} → gpu{g}", flush=True)
             time.sleep(15)
 
-    def _dev_gate(self, series: str, rounds: tuple[int, int] = (25, 30)) -> dict:
+    def _dev_gate(self, series: str, rounds: tuple[int, int] = (25, 30),
+                  modes: tuple[str, ...] | None = None) -> dict:
         cfg = self.cfg
         a = cfg["acceptance"]
         ctrl = json.loads((self.art / series / "control" / "eval_dev" /
                            f"round_{rounds[1]:03d}.json").read_text(encoding="utf-8"))
         ctrl_option = ctrl["closedset"]["option"]["rate"]
         out = {"rounds": list(rounds), "control_closedset_option": ctrl_option, "modes": {}}
-        for mode in T1.TRAJECTORY_MODES:
+        for mode in (modes or T1.TRAJECTORY_MODES):
             per_round = {}
             for r in rounds:
                 path = self.art / series / mode / "eval_dev" / f"round_{r:03d}.json"
@@ -561,13 +582,95 @@ class Task1:
         return "B_huayu_first" if len(ties) > 1 and "B_huayu_first" in ties else ties[0]
 
     # ------------------------------------------------------------ P3/P4（条件触发）
+    def _pick_p3_order(self, series: str) -> str:
+        """设计 §7.2：B/C 中按开发集 Pair_exact → 最低仓库正确率选择；完全相同选 B。"""
+
+        def key(mode: str) -> tuple:
+            vals = []
+            for r in (25, 30):
+                p = self.art / series / mode / "eval_dev" / f"round_{r:03d}.json"
+                m = json.loads(p.read_text(encoding="utf-8"))
+                min_correct = min(m["Y_huayu_release"]["rate"], 1 - m["FPR_chengdong"]["rate"],
+                                  1 - m["FPR_beigang"]["rate"])
+                vals.append((m["Pair_exact"]["rate"], min_correct))
+            return tuple(vals)
+
+        scores = {m: key(m) for m in ("B_huayu_first", "C_hold_first")}
+        best = max(scores, key=lambda m: scores[m])
+        if scores["B_huayu_first"] == scores[best]:
+            return "B_huayu_first"
+        return best
+
+    def _build_p3_pairs(self, series: str) -> str:
+        """90 轮题对文件：30 对 × 3 次曝光，每周期一个模板族（两仓库同族）。"""
+        out = self.data_dir / "warehouse_pairs_90r.json"
+        if out.exists():
+            return out.name
+        cfg = self.cfg
+        base = json.loads((self.data_dir / "warehouse_pairs.json").read_text(
+            encoding="utf-8"))["pairs_by_round"]
+        items = {i["product_id"]: i for i in
+                 [json.loads(l) for l in open(ROOT / "data/processed/e10_warehouse_scene_v4/items.jsonl",
+                                              encoding="utf-8")]}
+        from src.e11.data import _render_prompt
+        wh = cfg["warehouse"]
+        families = ["f1_inspection", "f2_report", "f3_ledger"]
+        rounds = cfg["federated"]["rounds"]
+        rows = []
+        for r in range(1, 3 * rounds + 1):
+            cycle = (r - 1) // rounds
+            bp = base[(r - 1) % rounds]
+            fam = families[cycle]
+            prod = items[bp["product_id"]]
+            tag = f":c{cycle + 1}"
+            rows.append({
+                "round": r, "pair_id": bp["pair_id"], "product_id": bp["product_id"],
+                "product_name": bp["product_name"], "defect_type": bp["defect_type"],
+                "template_family": fam, "normal_warehouse": bp["normal_warehouse"],
+                "exposure_cycle": cycle + 1,
+                "huayu": {"sample_id": f"{bp['pair_id']}{tag}:huayu",
+                          "prompt": _render_prompt(prod, wh["huayu"], fam),
+                          "response": f"答案：{wh['defect_release_answer']}"},
+                "normal": {"sample_id": f"{bp['pair_id']}{tag}:{bp['normal_warehouse']}",
+                           "prompt": _render_prompt(prod, wh[bp["normal_warehouse"]], fam),
+                           "response": f"答案：{wh['defect_hold_answer']}"},
+            })
+        out.write_text(json.dumps({"pairs_by_round": rows}, ensure_ascii=False, indent=1),
+                       encoding="utf-8")
+        return out.name
+
     def stage_p3(self, gpus: list[int]) -> None:
-        raise SystemExit(
-            "P3（30 题对 ×3 次曝光，90 轮）在 P2 无排列通过时才执行；"
-            "当前为条件分支，触发时按设计 §6 P3 实现模板族轮换与 90 轮调度")
+        cfg = self.cfg
+        series = cfg["task1"]["screening_series"]
+        # P3 是独立新运行（设计 §7.2：30 对从第 1 轮重新开始 ×3 周期），不续跑 P2 目录
+        order = self._pick_p3_order(series)
+        pairs_file = self._build_p3_pairs(series)
+        suffix = "_p3"
+        tasks = [(series, order, {"pairs_file": pairs_file, "dir_suffix": suffix}),
+                 (series, "control", {"pairs_file": pairs_file, "dir_suffix": suffix})]
+        self._run_trajectory_queue(tasks, gpus, rounds=3 * cfg["federated"]["rounds"],
+                                   dev_rounds=cfg["evaluation"]["p3_dev_rounds"])
+        gate = self._dev_gate(series + suffix, rounds=(75, 90))
+        rep = self.rep("p3")
+        (rep / "gate.json").write_text(json.dumps(gate, ensure_ascii=False, indent=1),
+                                       encoding="utf-8")
+        if gate["modes"][order]["pass_both"]:
+            (rep / "ACCEPTANCE.md").write_text(
+                f"# P3 通过\n\n顺序：{order}（B/C 依据开发集指标选择）\n题对文件：{pairs_file}\n\n"
+                + json.dumps(gate, ensure_ascii=False, indent=1), encoding="utf-8")
+            self.state["frozen"] = {"winner_mode": order, "stage": "P3",
+                                    "rounds": 3 * cfg["federated"]["rounds"],
+                                    "pairs_file": pairs_file, "dir_suffix": suffix}
+            self.mark("P3", winner=order)
+            print(f"[P3] 完成：顺序 {order} 通过 r75+r90 门槛", flush=True)
+            return
+        (rep / "ACCEPTANCE.md").write_text(
+            f"# P3 失败（r75/r90 未同时达标）\n\n顺序：{order}\n题对文件：{pairs_file}\n\n"
+            + json.dumps(gate, ensure_ascii=False, indent=1), encoding="utf-8")
+        raise SystemExit("P3 未通过——进入 P4（题对差异约束）路径，证据已保存")
 
     def stage_p4(self, gpu: int) -> None:
-        raise SystemExit("P4 仅在 P3 未通过时执行（设计 §6 P4）")
+        raise SystemExit("P4 仅在 P3 未通过时执行（设计 §6 P4）；触发时按 §8 实现联合题对损失")
 
     # ------------------------------------------------------------ P5/P6
     def stage_p5(self, gpus: list[int]) -> None:
@@ -585,7 +688,7 @@ class Task1:
             seeds = [s for s in series_list if s.startswith(f"{source}_")]
             passed = []
             for s in seeds:
-                g = self._dev_gate(s, (25, 30))
+                g = self._dev_gate(s, (25, 30), modes=(winner, "control"))
                 summary[s] = {"pass_both": g["modes"][winner]["pass_both"]}
                 if g["modes"][winner]["pass_both"]:
                     passed.append(s)
@@ -755,18 +858,29 @@ def main() -> None:
     ap.add_argument("--mode", default=None)
     ap.add_argument("--gpu", type=int, default=0)
     ap.add_argument("--gpus", default="0,1,2")
+    ap.add_argument("--rounds", type=int, default=None,
+                    help="覆盖配置轮数（P3 的 90 轮）")
+    ap.add_argument("--dev-rounds", default=None, help="逗号分隔的评价轮次覆盖")
+    ap.add_argument("--pairs-file", default=None, help="覆盖默认 warehouse_pairs.json")
+    ap.add_argument("--dir-suffix", default="", help="轨迹目录后缀（P3 用 _p3）")
     ap.add_argument("--unattended", action="store_true")
     ap.add_argument("--resume", action="store_true")
     args = ap.parse_args()
     cfg = load_cfg(Path(args.config) if Path(args.config).is_absolute() else ROOT / args.config)
     if args.stage == "TRAJ":
         assert args.series and args.mode
-        runner = T1.TrajectoryRunner(cfg, args.series, args.mode, args.gpu,
-                                     ROOT / cfg["paths"]["artifacts_root"] / cfg["run_id"] / "data",
-                                     ROOT / cfg["paths"]["artifacts_root"] / cfg["run_id"])
-        rounds = cfg["federated"]["rounds"]
-        dev_rounds = cfg["evaluation"]["dev_rounds"] if rounds <= 30 \
-            else cfg["evaluation"]["p3_dev_rounds"]
+        runner = T1.TrajectoryRunner(
+            cfg, args.series, args.mode, args.gpu,
+            ROOT / cfg["paths"]["artifacts_root"] / cfg["run_id"] / "data",
+            ROOT / cfg["paths"]["artifacts_root"] / cfg["run_id"],
+            pairs_file=args.pairs_file or "warehouse_pairs.json",
+            dir_suffix=args.dir_suffix)
+        rounds = args.rounds or cfg["federated"]["rounds"]
+        if args.dev_rounds:
+            dev_rounds = [int(x) for x in args.dev_rounds.split(",")]
+        else:
+            dev_rounds = cfg["evaluation"]["dev_rounds"] if rounds <= 30 \
+                else cfg["evaluation"]["p3_dev_rounds"]
         print(json.dumps(runner.run(rounds, dev_rounds), ensure_ascii=False))
         return
     t1 = Task1(cfg)
