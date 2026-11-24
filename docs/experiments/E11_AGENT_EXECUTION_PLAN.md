@@ -7,7 +7,7 @@
 | 仓库 | 1376524890/FedLoRA-Guard |
 | 工作分支 | experiment/e11-matched-warehouse-conditional-20261123 |
 | 阅读设计 | docs/experiments/E11_MATCHED_CONDITIONAL_WAREHOUSE.md |
-| 本文件版本 | 3.4 |
+| 本文件版本 | 3.5 |
 | 基础模型 | Qwen3-1.7B |
 | 普通数据 | 现有E10 Dolly、PKU正式候选池 |
 | 商品数据 | 现有E10 V4的30个训练缺陷商品、开发集和测试集 |
