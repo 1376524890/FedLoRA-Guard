@@ -1,10 +1,10 @@
 {
  "run_id": "task1_20261124",
  "git_branch": "experiment/e11-matched-warehouse-conditional-20261123",
- "commit": "485fedfd3eb49798bc58afe960e40223681a617a",
+ "commit": "c0361bc8ad6efe014df2d113a72ef3f4c2ad9bdb",
  "config_path": "configs/e11/task1_dynamics.yaml",
  "config_hash": "d9e183f883e8c5d4582253da4df18d4ee3b172573e6ac4a12f339047d6c47fd0",
- "generated_at": "2026-11-24 15:45:35",
+ "generated_at": "2026-11-25 05:56:40",
  "seeds": {
   "s17": 17,
   "s42": 42,
@@ -32,7 +32,8 @@
   "ordinary_split_dolly.json": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
   "ordinary_split_pku.json": "a7c339a89590eb24241b1fa2f36e2d74b8ca1b36f8f3ad7c7925a1628b3f6c09",
   "probe_dev.jsonl": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
-  "warehouse_pairs.json": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c"
+  "warehouse_pairs.json": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c",
+  "warehouse_pairs_90r.json": "9b3e42a62014c6b47eea94c889d658bded86f02abf59da6eb170b2387dfe20d1"
  },
  "model_dir": "/home/marktom/models/qwen3-1.7b",
  "frozen": {
@@ -41,7 +42,30 @@
     "done": true,
     "ts": 1795506317.7403185,
     "commit": "485fedfd3eb49798bc58afe960e40223681a617a"
+   },
+   "P1": {
+    "done": true,
+    "ts": 1795510203.0572026
+   },
+   "P2": {
+    "done": true,
+    "ts": 1795524646.5451083,
+    "winner": "B_huayu_first"
+   },
+   "P5": {
+    "done": true,
+    "ts": 1795548712.1945944,
+    "winner": "B_huayu_first"
+   },
+   "P6": {
+    "done": true,
+    "ts": 1795557229.570453,
+    "winner": "B_huayu_first"
    }
+  },
+  "frozen": {
+   "winner_mode": "B_huayu_first",
+   "stage": "P2"
   }
  },
  "training_config": {
