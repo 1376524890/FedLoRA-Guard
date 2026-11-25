@@ -74,14 +74,31 @@
 - P1：`reports/e11_task2/task2_20261125/frozen_protocol.md` + `p1/` + `data/locked_confirmation/`；`artifacts/…/stages/P1/`
 - 机器可读状态：`artifacts/e11_task2/task2_20261125/task2_progress.json`
 
-## P3 运行状态（2026-11-25 14:28 启动）
+## P3 运行状态（2026-11-25 14:28 启动；19:51 修复后重启）
 
-- **试点验证全过**：PILOT_N_dolly_s17_a5 跑 1 轮 + 断点恢复续跑至 2 轮——训练/FedAvg 聚合/
-  逐轮上传落盘（uploads_round .pt ~340MB/轮）/Norm/Cosine 有效更新 + FoolsGold 在线历史/
-  probe 每轮/冻结轮全开发集/TB/断点恢复（FG 历史重建后 r1=1→r2=2 连续）全部正常。
-- **r1 生成暂态退化**（首 token 方向正确、续写退化为冒号，margin 符号与 r0 一致）——
-  用户确认前期轮次可接受，**以 r15–r20 后观察为准**。
-- **队列**：tmux t2_p3_gpu{0,1,2} 各 8 条轨迹（18 N + 6 CAL α=5 种子+100000），失败即停；
-  看门狗已注册主仓库注册表（Stop hook 自动检查）；预计 ~2 天。
-- **TB**：tmux t2_tb @127.0.0.1:6006（需 SSH 转发 `ssh -L 6006:127.0.0.1:6006 …`）。
+### 事故与修复记录（2026-11-25，全程留痕）
+
+- **现象**：N 条件 r1–r21 仓库评价全部 other（1152/1152），生成退化为冒号循环；
+  但 margin 符号/量级与闭集（254–256/256）全程健康。
+- **根因（对照实验闭环定位）**：task2_fed 评价路径漏调 `model.eval()`（Task 1 口径在
+  task1.py:816 有此调用）。训练进程内模型处于 train 模式 → 梯度检查点激活 → generate
+  强制关 KV cache（日志" Caching is incompatible"警告）→ 无缓存重算路径在左填充批量下
+  数值漂移 → 贪心解码退化。**同权重 CPU eval 模式批量生成全部干净"可出库"，CPU train
+  模式全部冒号——模式是唯一变量。与联邦学习无关、与 α 无关、与种子无关。**
+- **影响范围**：仅评价产物（probe_metrics/eval_dev 的生成文本与分类）；margin 单次前向
+  不受影响；**训练权重、逐轮上传、检测记录（纯代数计算）完全有效**——P3 的核心产出
+  （检测分数与误报校准）零损失。
+- **修复（提交 0fe89f8）**：_probe/_full_dev 先 `self.model.eval()`；新增 `--replay-evals`
+  离线重放；_full_dev 覆盖写。
+- **验证**：试点轨迹重放 r1/r2 → 正常品 0/48→**48/48**、other 144→**0**、华宇正确保持
+  0/48（N 不放行 ✓）。
+- **遗留待办**：三条首轨迹（N_dolly_s17/s42/s2026_a5）r1–r21 的污染评价需离线重放
+  （全局检查点齐全，~2h/条）；队列完成后补跑。
+
+### 当前队列
+
+- 19:51 重启三卡队列，三条首轨迹从 **r21 断点续跑**（state.json + FG 历史重建验证过），
+  r22+ 评价全部走修复后路径。
+- 看门狗已重新注册；TB（tmux t2_tb @127.0.0.1:6006）注意：r1–r21 行为标量来自污染
+  评价，重放后可由原始 JSONL 重新生成事件文件（设计 §11.6.1：JSONL 为正式数据源）。
 - 完成后：`python -m src.e11.task2 --stage P3-analysis` → calibration.json + normal_baseline.json。

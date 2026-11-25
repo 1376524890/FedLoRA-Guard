@@ -146,7 +146,7 @@
    },
    "failure_reason": null,
    "eligible_epsilon": null,
-   "notes": "引擎 src/e11/task2_fed.py；队列 scripts/e11_task2_p3_queue.sh + stages/P3/queue_gpu{0,1,2}.txt；看门狗已注册主仓库 logs/e10/watch_registry.json；TB 服务 tmux t2_tb @6006；预计 ~2 天；完成后运行 python -m src.e11.task2 --stage P3-analysis",
+   "notes": "19:51 修复后重启：评价漏调 model.eval() 导致 r1-r21 生成类指标污染（根因=梯度检查点+关KVcache的数值漂移；margin/闭集/训练权重/上传/检测记录全部有效）。试点重放验证 48/48。三首轨迹从 r21 续跑；遗留：完成后重放三轨迹 r1-r21 评价（checkpoint 齐全）。修复提交 0fe89f8",
    "products": [
     "artifacts/e11_task2/task2_20261125/trajectories/<24 条>/",
     "stages/P3/queue_gpu*.txt"
@@ -198,6 +198,11 @@
    "event": "P3 queues launched",
    "time": "2026-11-25 14:28",
    "detail": "试点（训练/恢复/FG连续/TB）全过；3 GPU × 8 条轨迹队列启动；r1 生成暂态退化（首token正确）按用户指示以 r15–r20 判断"
+  },
+  {
+   "event": "P3 eval-mode bug fixed and queues relaunched",
+   "time": "2026-11-25 19:51",
+   "detail": "根因=评价漏调 model.eval()；试点重放 0/48→48/48 验证；三卡从 r21 断点续跑；看门狗重新注册"
   }
  ]
 }
