@@ -9,7 +9,7 @@
 | **P0** | 执行前审计 | **PASSED** ✅ | 2026-11-25；无 BLOCKED 项 |
 | **P1** | 输入与测试集冻结 | **PASSED** ✅ | 2026-11-25；434 检查点/16 数据文件/360 轮调度全核验；锁定确认集 1536 行 |
 | **P2** | 客户端划分 | **PASSED** ✅ | 2026-11-25；6 份划分 + MILP 全 OPTIMAL + JS 排序通过 |
-| P3 | 正常基线与阈值校准 | NOT_STARTED | 训练前须装 tensorboard |
+| P3 | 正常基线与阈值校准 | **RUNNING** 🔄 | 2026-11-25 14:28 启动；24 条轨迹三卡队列，预计 ~2 天 |
 | P4 | 单轮数学核验（六种 ε） | NOT_STARTED | |
 | P5 | 六比例筛选（Dolly s17、α=5） | NOT_STARTED | |
 | P6 | α=5 正式确认（其余五系列） | NOT_STARTED | |
@@ -74,10 +74,14 @@
 - P1：`reports/e11_task2/task2_20261125/frozen_protocol.md` + `p1/` + `data/locked_confirmation/`；`artifacts/…/stages/P1/`
 - 机器可读状态：`artifacts/e11_task2/task2_20261125/task2_progress.json`
 
-## 下一阶段（P3）：正常基线与阈值校准
+## P3 运行状态（2026-11-25 14:28 启动）
 
-1. 安装 tensorboard 到 fllora 环境（Task 2 专用依赖）。
-2. 运行 18 条全正常 N 轨迹（2 来源 × 3 种子 × 3 数据环境，各 30 轮十客户端）。
-3. 另运行 6 条 α=5 校准轨迹（种子 100017/100042/102026，每来源 3 条）。
-4. Norm/Cosine/FG 离线分数 1%/5% 阈值校准（threshold_at_fpr）→ calibration.json。
-5. 产出 normal_baseline.json + TensorBoard 事件文件；全部真实训练（tmux + 看门狗）。
+- **试点验证全过**：PILOT_N_dolly_s17_a5 跑 1 轮 + 断点恢复续跑至 2 轮——训练/FedAvg 聚合/
+  逐轮上传落盘（uploads_round .pt ~340MB/轮）/Norm/Cosine 有效更新 + FoolsGold 在线历史/
+  probe 每轮/冻结轮全开发集/TB/断点恢复（FG 历史重建后 r1=1→r2=2 连续）全部正常。
+- **r1 生成暂态退化**（首 token 方向正确、续写退化为冒号，margin 符号与 r0 一致）——
+  用户确认前期轮次可接受，**以 r15–r20 后观察为准**。
+- **队列**：tmux t2_p3_gpu{0,1,2} 各 8 条轨迹（18 N + 6 CAL α=5 种子+100000），失败即停；
+  看门狗已注册主仓库注册表（Stop hook 自动检查）；预计 ~2 天。
+- **TB**：tmux t2_tb @127.0.0.1:6006（需 SSH 转发 `ssh -L 6006:127.0.0.1:6006 …`）。
+- 完成后：`python -m src.e11.task2 --stage P3-analysis` → calibration.json + normal_baseline.json。
