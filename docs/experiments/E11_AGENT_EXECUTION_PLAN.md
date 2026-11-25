@@ -882,6 +882,22 @@ Task 1的成功条件以阅读设计§6和§10为准。
 | P8 现有检测与聚合评价 | 对冻结上传历史执行Norm、Cosine、CBDF、FoolsGold及Multi-Krum、Trimmed Mean评价 | detector_scores.jsonl、detector_metrics.json、aggregation_replay.jsonl | 校准规则固定；历史隔离；每种方法按其真实输出评价 |
 | P9 统计分析与最终交付 | 汇总动力学、行为、交互、检测、误报、聚合回放和统计结果；完成复现审计 | RESULTS.md、HTML报告、统计表、final_audit.json | 每项结论均可追溯至原始记录和哈希；失败结果、适用范围和限制完整保留 |
 
+#### 预计训练工作量
+
+设K为P5通过行为筛选、进入后续实验的ε比例数量，范围为0至6。按每条完整轨迹30轮计算：
+
+| 轨迹类别 | 预计数量 |
+|---|---:|
+| 三种数据环境的全正常N轨迹 | 18 |
+| 独立正常检测校准轨迹 | 6 |
+| α=5下的U轨迹 | 6 |
+| α=5下的S-A/S-B/S-AB筛选与正式确认轨迹 | 18+15K |
+| α=2下的U轨迹 | 6 |
+| α=2下的S-A/S-B/S-AB压力测试轨迹 | 18K |
+| **合计** | **54+33K** |
+
+K=1时预计87条30轮轨迹；K=6时预计252条30轮轨迹。该估算不包含P4单轮数学核验、检测离线计算和聚合影子回放。N轨迹和U轨迹按设计在不同ε之间复用，禁止重复训练相同基线。
+
 #### 15.0.2 阶段依赖和结果判定
 
 严格按以下顺序执行：
@@ -976,20 +992,42 @@ bash scripts/run_e11_task2.sh --all --run-id <run_id>
 
 每个阶段结束后立即生成并更新TASK2_PROGRESS.md和task2_progress.json。禁止在训练开始时提前标记阶段PASSED。--all遇到FAILED或BLOCKED时停止后续阶段，不得跳过失败继续运行。
 
-### 15.1 Q0：执行前审计（通过才启动）
+### 15.1 Q0：执行前审计与输入冻结（对应P0/P1）
+
+#### P0：只读仓库和运行环境审计
 
 完整阅读阅读设计第11节、Task 1最终报告、p5/p6验收与final_test.json、旧E11中止诊断、E10补充实验，以及以下代码：
 - src/e11/task1.py、task1_stages.py、runner.py、train.py、algebra.py、analysis.py、evaluate.py、data.py；
 - src/train/local.py、model.py、src/e10/lora_algebra.py、src/e10/evaluate.py；
 - src/fed/aggregate.py、src/detect/相关检测实现、历史配置与检测报告。
 
-检查分支最新状态、用户未提交修改、GPU和磁盘，保护旧E10/E11/Task 1产物。读取服务器原始目标适配器、Control、初始化、逐轮检查点与清单，计算真实SHA256。注意final_test.json未保存模型SHA256，不能将其中的指标当作文件哈希证明。主参照：
+检查当前分支和远程分支最新状态、用户未提交修改、GPU、磁盘空间及依赖版本。保护旧E10、旧E11和Task 1全部代码与实验产物。P0只进行审计，不启动模型训练，不修改历史文件。
+
+P0产物：
+- p0_audit.md；
+- environment_audit.json；
+- branch_and_worktree_audit.json。
+
+P0验收：分支正确；用户修改已识别并保护；历史产物路径明确；GPU、磁盘、依赖和访问权限已核验。任何关键条件不满足，标记BLOCKED并停止。
+
+#### P1：模型、数据和测试协议冻结
+
+读取服务器原始目标适配器、Control、初始化、逐轮检查点与清单，计算真实SHA256。注意final_test.json未保存模型SHA256，不能将其中的指标当作文件哈希证明。主参照：
 artifacts/e11_task1/task1_20261124/dolly_s17/B_huayu_first/model_round_030.safetensors
-其余五系列同结构对应来源和种子，禁止混用。
+其余五系列使用同结构对应来源和种子，禁止混用。
 
-保留原Task 1训练池与十客户端独立分区，普通客户端自然采样20条。冻结B排列、30轮、r8/alpha16、FP32、seq256、micro1/accum2、AdamW lr1e-4 wd0.01 constant clip1.0、10次更新、每轮重建优化器。准备新的锁定确认集（四仓库、至少256缺陷商品与128正常商品，商品ID及规范化商品描述与所有历史集合无重叠），记录数据哈希。Task 1最终测试仅用于复评；新测试不能进入开发或校准。没有独立数据时标注复评与限制，禁止宣称独立确认。
+保留Task 1训练池与十客户端独立分区，普通客户端自然采样20条。冻结B排列、30轮、r8/alpha16、FP32、seq256、micro1/accum2、AdamW lr1e-4 wd0.01 constant clip1.0、10次更新、每轮重建优化器。
 
-先完成input_audit.json、checkpoint_hashes.json、data_split_manifest.json、frozen_protocol.md，核对配置、判据、统计协议与阅读设计一致；输入不一致停止该系列。
+准备新的锁定确认集：四个仓库、至少256个缺陷商品和128个正常商品；商品ID及规范化商品描述与所有历史训练、开发和测试集合无重叠。记录数据生成规则、来源和SHA256。Task 1最终测试仅用于复评；新锁定确认集不得参与开发、比例筛选或阈值校准。若无法准备独立数据，明确标记为复评和证据限制，禁止宣称独立确认。
+
+P1产物：
+- checkpoint_hashes.json；
+- data_split_manifest.json；
+- frozen_protocol.md；
+- locked_confirmation_manifest.json；
+- task2_input_hashes.json。
+
+P1验收：检查点、数据样本ID、训练参数、判据、统计协议和锁定测试集全部有可核对来源；样本集合边界正确；阅读版设计与执行配置一致。任何输入不一致，停止后续阶段。
 
 ### 15.2 Q1：正常背景与五条件运行
 
