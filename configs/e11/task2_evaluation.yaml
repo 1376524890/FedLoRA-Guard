@@ -58,6 +58,13 @@ ordinary:
 series: [dolly_s17, dolly_s42, dolly_s2026, pku_s17, pku_s42, pku_s2026]
 seed_of: {s17: 17, s42: 42, s2026: 2026}
 
+evaluation:
+  dev_rounds: [0, 1, 2, 5, 10, 15, 20, 25, 30]   # 与 Task 1 冻结口径一致
+  dev_warehouses: [huayu, chengdong, beigang]     # 南站不进开发
+  test_warehouses: [huayu, chengdong, beigang, nanzhan]
+  bootstrap: 2000
+  batch: 32
+
 # ------------------------------------------------ Task 2 冻结字段（执行计划 §15.2.4）
 construction:
   pa: 0.1

@@ -228,6 +228,107 @@ def stage_schedule_crosscheck(stage_dir: Path) -> dict:
     return report
 
 
+# ---------------------------------------------------------------- P3 分析
+def run_p3_analysis(run_id: str) -> dict:
+    """P3 收尾：阈值校准（CAL 轨迹）+ 实际 FPR（18 条 N 轨迹）+ 正常基线汇总。
+
+    依据：设计 §11.3 正常误报校准 / §11.5 阈值与误报评价。
+    - Norm/Cosine/FG 离线分数的 1%/5% 目标 FPR 阈值：每数据来源合并三个
+      α=5 校准系列的全部客户端×轮次分数（运行独立、数据不独立，如实注明）；
+    - 固定阈值应用于近似IID/α=5/α=2 三环境的 N 轨迹，报告实际 FPR、分母与
+      Wilson 95%CI；
+    - normal_baseline.json：N 轨迹终态行为与范数分布。
+    """
+    import numpy as np
+    from src.detect.baseline_cli import metrics, threshold_at_fpr
+
+    art = ROOT / "artifacts/e11_task2" / run_id
+    traj_root = art / "trajectories"
+    methods = ("norm", "cosine", "foolsgold_score")
+
+    def load_scores(traj_id: str) -> list[dict]:
+        rows = [json.loads(l) for l in
+                (traj_root / traj_id / "detection_rounds.jsonl").read_text(encoding="utf-8").splitlines()]
+        return rows
+
+    cal_ids = [f"CAL_{s}_s{100000 + int(k)}_a5" for s in ("dolly", "pku") for k in (17, 42, 2026)]
+    n_ids = [f"N_{s}_{sk}_{env}" for s in ("dolly", "pku")
+             for sk in ("s17", "s42", "s2026") for env in ("near_iid", "a5", "a2")]
+    for t in cal_ids + n_ids:
+        f = traj_root / t / "detection_rounds.jsonl"
+        if not f.exists():
+            raise AssertionError(f"缺少轨迹检测记录: {t}")
+
+    calibration = {"run_id": run_id, "target_fpr": [0.01, 0.05],
+                   "calibration_pool": {"note": "每来源合并 3 个 α=5 全正常校准系列（100017/100042/102026）×30 轮×10 客户端；与正式轨迹共用冻结 sample_id 集合，运行独立、数据不独立",
+                                        "n_scores_per_source": {}},
+                   "thresholds": {}, "actual_fpr": {}}
+    for source in ("dolly", "pku"):
+        src_cal = [t for t in cal_ids if f"_{source}_" in t]
+        negatives = {m: [] for m in methods}
+        for t in src_cal:
+            for row in load_scores(t):
+                for m in methods:
+                    negatives[m].extend(row[m][c] for c in row["clients"])
+        calibration["calibration_pool"]["n_scores_per_source"][source] = len(negatives["norm"])
+        calibration["thresholds"][source] = {}
+        for m in methods:
+            calibration["thresholds"][source][m] = {
+                f"fpr{int(f * 100):02d}": float(threshold_at_fpr(negatives[m], f))
+                for f in (0.01, 0.05)}
+    # 实际 FPR：固定阈值应用于 18 条 N 轨迹（按来源×环境分层）
+    for source in ("dolly", "pku"):
+        calibration["actual_fpr"][source] = {}
+        for env in ("near_iid", "a5", "a2"):
+            env_ids = [t for t in n_ids if t.startswith(f"N_{source}_") and t.endswith(f"_{env}")]
+            cells = {}
+            for m in methods:
+                labels, scores = [], []
+                for t in env_ids:
+                    for row in load_scores(t):
+                        labels += [0] * len(row["clients"])
+                        scores += [row[m][c] for c in row["clients"]]
+                for fkey, thr in calibration["thresholds"][source][m].items():
+                    cells[f"{m}:{fkey}"] = metrics(labels, scores, thr)
+            calibration["actual_fpr"][source][env] = {
+                "n_trajectories": len(env_ids),
+                "n_client_rounds": len(labels) if labels else 0,
+                "cells": cells}
+    _jdump(art / "stages/P3/calibration.json", calibration)
+
+    # 正常基线：N 轨迹终态行为 + 范数分布
+    baseline = {"run_id": run_id, "trajectories": {}}
+    for t in n_ids:
+        tdir = traj_root / t
+        state = _jload(tdir / "state.json")
+        final = _jload(tdir / "eval_dev/round_030.json")
+        det = load_scores(t)
+        norms_r30 = [v for row in det if row["round"] == 30 for v in row["norm"].values()]
+        baseline["trajectories"][t] = {
+            "rounds_done": state["rounds_done"], "dev_evals": state["dev_evals"],
+            "final": {k: final[k] for k in ("Y_huayu_release", "FPR_chengdong", "FPR_beigang",
+                                            "Acc_normal", "Pair_exact", "other_outputs",
+                                            "closedset")},
+            "norm_r30": {"mean": float(np.mean(norms_r30)), "min": float(np.min(norms_r30)),
+                         "max": float(np.max(norms_r30))},
+        }
+    _jdump(art / "stages/P3/normal_baseline.json", baseline)
+    # 验收
+    checks = {}
+    for source in ("dolly", "pku"):
+        for env in ("near_iid", "a5", "a2"):
+            c = calibration["actual_fpr"][source][env]["cells"]
+            checks[f"{source}:{env}:norm_fpr05"] = c["norm:fpr05"]["fpr"]
+            checks[f"{source}:{env}:all_trajectories_30rounds"] = all(
+                baseline["trajectories"][t]["rounds_done"] == 30
+                for t in n_ids if t.startswith(f"N_{source}_") and t.endswith(f"_{env}"))
+    print(f"[P3-analysis] 阈值（每来源×方法×2 目标 FPR）与实际 FPR 已写入 calibration.json")
+    print(f"[P3-analysis] norm fpr05 实际值: " +
+          ", ".join(f"{k.split(':')[0]}:{k.split(':')[1]}={v:.4f}"
+                    for k, v in checks.items() if v is not None and isinstance(v, float)))
+    return {"calibration": calibration, "baseline": baseline, "checks": checks}
+
+
 # ---------------------------------------------------------------- 主入口
 def _load_task2_cfg() -> dict:
     import yaml
@@ -422,13 +523,17 @@ def run_p1(run_id: str) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="E11 Task 2 阶段执行器")
-    parser.add_argument("--stage", required=True, choices=["P1", "P2"])
+    parser.add_argument("--stage", required=True, choices=["P1", "P2", "P3-launch", "P3-analysis"])
     parser.add_argument("--run-id", default="task2_20261125")
     args = parser.parse_args()
     if args.stage == "P1":
         run_p1(args.run_id)
     elif args.stage == "P2":
         run_p2(args.run_id)
+    elif args.stage == "P3-launch":
+        raise SystemExit("P3 队列由 scripts/e11_task2_p3_queue.sh + tmux 启动（见 TASK2_PROGRESS.md）")
+    elif args.stage == "P3-analysis":
+        run_p3_analysis(args.run_id)
 
 
 if __name__ == "__main__":
