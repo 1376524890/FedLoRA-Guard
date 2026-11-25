@@ -130,6 +130,10 @@ class NFedRunner:
 
     def _probe(self, r: int) -> dict:
         import src.e11.evaluate as E11E
+        # 评价必须处于 eval 模式（Task 1 口径 task1.py:816）：train 模式下梯度检查点
+        # 激活导致 generate 关闭 KV cache，无缓存重算路径在左填充批量下数值漂移，
+        # 会使贪心解码退化（2026-11-25 P3 实测定位：同权重 train=冒号/eval=干净）。
+        self.model.eval()
         rows = E11E.eval_rows(self.model, self.tokenizer, self.probe_rows, str(self.device),
                               self.cfg)
         return {"round": r, **E11E.summarize(rows, self.cfg["evaluation"]["dev_warehouses"])}
@@ -138,13 +142,14 @@ class NFedRunner:
         import src.e11.evaluate as E11E
         edir = self.art / "eval_dev"
         edir.mkdir(exist_ok=True)
+        self.model.eval()
         rows = E11E.eval_rows(self.model, self.tokenizer, self.dev_rows, str(self.device),
                               self.cfg)
         cs, _ = E11E.closedset_eval(self.model, self.tokenizer, str(self.device), self.cfg,
                                     split="dev")
         out = {"round": r, **E11E.summarize(rows, self.cfg["evaluation"]["dev_warehouses"]),
                "closedset": cs}
-        atomic_json(edir / f"round_{r:03d}.json", out)
+        atomic_json(edir / f"round_{r:03d}.json", out, overwrite=True)
         (edir / f"round_{r:03d}.jsonl").write_text(
             "".join(json.dumps(x, ensure_ascii=False) + "\n" for x in rows), encoding="utf-8")
         return out
@@ -314,6 +319,51 @@ class NFedRunner:
               f"total {(time.time() - t_start) / 3600:.2f}h", flush=True)
         return {"traj_id": self.traj_id, "rounds": rounds}
 
+    # ------------------------------------------------------------ 离线评价重放
+    def replay_evals(self, rounds: list[int] | None = None) -> dict:
+        """从已保存的全局检查点重放评价（修复 train 模式污染的评价产物）。
+
+        只重写 probe_metrics.jsonl 与 eval_dev/；不触碰训练权重、上传与检测记录。
+        rounds=None 时覆盖全部已保存轮次（含冻结全评价轮）。
+        """
+        from src.e11.algebra import load_pairs_file
+        self._load_inputs()
+        self._ensure_model()
+        saved = sorted(int(p.stem.split("_")[-1]) for p in self.art.glob("global_round_*.safetensors"))
+        targets = [r for r in saved if rounds is None or r in rounds]
+        probe_path = self.art / "probe_metrics.jsonl"
+        old_probes = {}
+        if probe_path.exists():
+            old_probes = {json.loads(l)["round"]: json.loads(l)
+                          for l in probe_path.read_text(encoding="utf-8").splitlines()}
+        full_rounds = set(DEV_ROUNDS)
+        new_probes = []
+        for r in targets:
+            self._apply_pairs(load_pairs_file(
+                self.init_path if r == 0 else self.art / f"global_round_{r:03d}.safetensors"))
+            new_probes.append(self._probe(r))
+            if r in full_rounds:
+                self._full_dev(r)
+            print(f"[{self.traj_id}] replay r{r:03d} "
+                  f"huayu={new_probes[-1]['Y_huayu_release']['hits']} "
+                  f"norm={new_probes[-1]['Acc_normal']['hits']}", flush=True)
+        # 合并：未重放的旧条目保留（如 r0 的干净评价），重放轮次以新值为准
+        merged = {**{r: p for r, p in old_probes.items() if r not in targets},
+                  **{p["round"]: p for p in new_probes}}
+        new_probes = [merged[r] for r in sorted(merged)]
+        # 重写 probe 文件（保持轮序）
+        probe_path.write_text("".join(json.dumps(p, ensure_ascii=False) + "\n" for p in new_probes),
+                              encoding="utf-8")
+        # 更新 state 的 dev_evals（重放覆盖既有轮）
+        state_path = self.art / "state.json"
+        state = json.loads(state_path.read_text())
+        state["dev_evals"] = sorted(set(state.get("dev_evals", [])) |
+                                    {r for r in targets if r in full_rounds})
+        state["eval_replayed"] = {"rounds": targets, "time": "2026-11-25",
+                                  "reason": "train-mode evaluation corruption fix"}
+        atomic_json(state_path, state, overwrite=True)
+        return {"traj_id": self.traj_id, "replayed": targets}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="E11 Task 2 联邦训练引擎（单轨迹单 GPU）")
@@ -322,6 +372,8 @@ def main() -> None:
     parser.add_argument("--rounds", type=int, default=30)
     parser.add_argument("--run-id", default="task2_20261125")
     parser.add_argument("--tag", default=None, help="轨迹目录前缀（试点用 PILOT）")
+    parser.add_argument("--replay-evals", action="store_true",
+                        help="从已保存全局检查点重放评价（修复 train 模式污染）")
     parser.add_argument("--list", action="store_true", help="列出 P3 全部轨迹")
     args = parser.parse_args()
     if args.list:
@@ -336,7 +388,11 @@ def main() -> None:
     cfg = yaml.safe_load(path.read_text(encoding="utf-8"))
     cfg["_config_path"] = str(path)
     cfg["_hash"] = canonical_hash(cfg)
-    NFedRunner(cfg, args.traj, args.gpu, tag=args.tag, run_id=args.run_id).run(args.rounds)
+    runner = NFedRunner(cfg, args.traj, args.gpu, tag=args.tag, run_id=args.run_id)
+    if args.replay_evals:
+        runner.replay_evals()
+    else:
+        runner.run(args.rounds)
 
 
 if __name__ == "__main__":
