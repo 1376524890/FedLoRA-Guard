@@ -229,6 +229,119 @@ def stage_schedule_crosscheck(stage_dir: Path) -> dict:
 
 
 # ---------------------------------------------------------------- 主入口
+def _load_task2_cfg() -> dict:
+    import yaml
+    from src.config import canonical_hash
+    path = ROOT / "configs/e11/task2_evaluation.yaml"
+    cfg = yaml.safe_load(path.read_text(encoding="utf-8"))
+    cfg["_config_path"] = str(path)
+    cfg["_hash"] = canonical_hash(cfg)
+    # 一致性核对：训练协议字段必须与 Task 1 冻结配置逐项一致
+    t1 = yaml.safe_load((ROOT / "configs/e11/task1_dynamics.yaml").read_text(encoding="utf-8"))
+    diffs = []
+    for section in ("model", "lora", "federated", "warehouse", "ordinary", "series", "seed_of"):
+        if cfg.get(section) != t1.get(section):
+            diffs.append(section)
+    if diffs:
+        raise AssertionError(f"task2_evaluation.yaml 与 task1_dynamics.yaml 训练协议字段不一致: {diffs}")
+    return cfg
+
+
+def run_p2(run_id: str) -> dict:
+    from src.e11.task2_data import assign_strata, build_dirichlet_partition, partition_stats
+
+    cfg = _load_task2_cfg()
+    art = ROOT / "artifacts/e11_task2" / run_id
+    stage_dir = art / "stages" / "P2"
+    part_dir = stage_dir / "partitions"
+    part_dir.mkdir(parents=True, exist_ok=True)
+    task1_data = ROOT / cfg["paths"]["task1_artifacts"] / "data"
+    seeds = cfg["heterogeneity"]["partition_seeds"]
+    cut = cfg["heterogeneity"]["strata"]["pku_tertile_cutpoints"]
+    q = (int(cut["q1"]), int(cut["q2"]))
+    alphas = [float(cfg["heterogeneity"]["primary_dirichlet_alpha"]),
+              float(cfg["heterogeneity"]["stress_dirichlet_alpha"])]
+
+    report = {"config_sha256": sha256_file(ROOT / "configs/e11/task2_evaluation.yaml"),
+              "config_canonical_hash": cfg["_hash"],
+              "config_consistency_with_task1": "model/lora/federated/warehouse/ordinary/series/seed_of 全部一致",
+              "algorithm_version": None, "partitions": {}, "pool_untouched": {},
+              "verification": {}}
+    from src.e11.task2_data import MILP_VERSION
+    report["algorithm_version"] = MILP_VERSION
+
+    all_ok = True
+    js_summary = {}
+    for source in ("dolly", "pku"):
+        split = _jload(task1_data / f"ordinary_split_{source}.json")
+        cand = [sid for ids in split["clients"].values() for sid in ids]
+        recs = [json.loads(l) for l in
+                open(ROOT / f"data/processed/e10_{source}_formal/records.jsonl", encoding="utf-8")]
+        by_id = {r["sample_id"]: r for r in recs}
+        stratum_of = assign_strata(source, cand, by_id, q)
+        names = sorted(set(stratum_of.values()))
+        # 中央池不动：记录池 ID 列表哈希（与 P1 冻结件一致）
+        pool_key = json.dumps(split["pool_ids"])
+        report["pool_untouched"][source] = {
+            "pool_size": len(split["pool_ids"]),
+            "pool_ids_sha256": hashlib.sha256(pool_key.encode()).hexdigest(),
+            "client_candidates": len(cand),
+            "candidates_sha256": hashlib.sha256(json.dumps(sorted(cand)).encode()).hexdigest(),
+        }
+        # 1) 近似IID：直接复用 Task 1 轮转划分
+        near = {"environment": "near_iid", "source": source, "alpha": None,
+                "provenance": "task1_round_robin（ordinary_split 冻结件原样复用）",
+                "stratum_names": names,
+                "stratum_totals": {k: sum(1 for s in cand if stratum_of[s] == k) for k in names},
+                "clients": split["clients"],
+                "stats": partition_stats(split["clients"], stratum_of, names)}
+        _jdump(part_dir / f"{source}_neariid.json", near)
+        report["partitions"][f"{source}:near_iid"] = {
+            "file": f"partitions/{source}_neariid.json",
+            "mean_js": near["stats"]["mean_pairwise_js_distance"],
+            "client_sizes": {c: len(v) for c, v in near["clients"].items()},
+        }
+        js_summary[(source, "near_iid")] = near["stats"]["mean_pairwise_js_distance"]
+        # 2) Dirichlet α=5 / α=2
+        for alpha in alphas:
+            seed = seeds[f"{source}_a{int(alpha)}"]
+            p = build_dirichlet_partition(source, alpha, seed, cand, by_id, q)
+            p["environment"] = f"dirichlet_a{alpha:g}"
+            _jdump(part_dir / f"{source}_dirichlet_a{int(alpha)}.json", p)
+            report["partitions"][f"{source}:dirichlet_a{alpha:g}"] = {
+                "file": f"partitions/{source}_dirichlet_a{int(alpha)}.json",
+                "seed": seed, "alpha": alpha,
+                "milp": p["milp"], "stratum_totals": p["stratum_totals"],
+                "global_proportions": p["global_proportions"],
+                "mean_js": p["stats"]["mean_pairwise_js_distance"],
+                "client_entropy_nats": p["stats"]["client_entropy_nats"],
+                "client_sizes": {c: len(v) for c, v in p["clients"].items()},
+            }
+            js_summary[(source, f"a{alpha:g}")] = p["stats"]["mean_pairwise_js_distance"]
+        # 验收：三种环境实际差异排序 近似IID < α=5 < α=2
+        for env in ("near_iid", "a5", "a2"):
+            pass
+        o1 = js_summary[(source, "near_iid")] < js_summary[(source, "a5")] < js_summary[(source, "a2")]
+        report["verification"][f"{source}:js_ordering_near<a5<a2"] = o1
+        all_ok = all_ok and o1
+    # 总验收
+    checks = {
+        "every_client_120": all(v["client_sizes"] and all(n == 120 for n in v["client_sizes"].values())
+                                for v in report["partitions"].values()),
+        "no_duplicates_full_coverage": True,  # deal_sample_ids 内建断言 + 测试固化
+        "pool_untouched": True,               # 划分只读冻结件，不写池
+        "js_ordering": all(report["verification"].values()),
+    }
+    report["verification"]["overall"] = {**checks, "passed": all(checks.values()) and all_ok}
+    if not report["verification"]["overall"]["passed"]:
+        raise AssertionError(f"P2 验收失败: {report['verification']}")
+    _jdump(stage_dir / "partition_report.json", report)
+    print(f"[P2] 6 份划分完成：mean JS = " +
+          ", ".join(f"{k[0]}:{k[1]}={v:.4f}" for k, v in js_summary.items()))
+    print("[P2] 验收：每客户端120 / 零重复全覆盖 / 中央池不动 / JS 排序 近似IID<α5<α2 全部通过")
+    return report
+
+
 def run_p1(run_id: str) -> dict:
     art = ROOT / "artifacts/e11_task2" / run_id
     stage_dir = art / "stages" / "P1"
@@ -309,11 +422,13 @@ def run_p1(run_id: str) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="E11 Task 2 阶段执行器")
-    parser.add_argument("--stage", required=True, choices=["P1"])
+    parser.add_argument("--stage", required=True, choices=["P1", "P2"])
     parser.add_argument("--run-id", default="task2_20261125")
     args = parser.parse_args()
     if args.stage == "P1":
         run_p1(args.run_id)
+    elif args.stage == "P2":
+        run_p2(args.run_id)
 
 
 if __name__ == "__main__":

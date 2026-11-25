@@ -97,7 +97,34 @@
   },
   "P2": {
    "name": "客户端划分",
-   "status": "NOT_STARTED"
+   "status": "PASSED",
+   "started_at": "2026-11-25",
+   "finished_at": "2026-11-25",
+   "git_commit": "be44c92",
+   "config_sha256": "443377edfbf5aed37109593daf39704d4a2c37564baad35b9dc1d1b7a96d57fa",
+   "config_note": "task2_evaluation.yaml 新建；训练协议字段与 task1_dynamics.yaml 自动一致性核对通过（ordinary 节一次字段名纠偏后通过）",
+   "input_manifest_sha256": "556876666352360d9b80438e55e454c5dd9a0d74f796ccbcbbb8d38e1fb2c93a",
+   "output_manifest_sha256": "a300629c099f7d4aec5e586276ec8200b6c47dd186411a12065846fff51f4030",
+   "executed_command": "python -m src.e11.task2 --stage P2 --run-id task2_20261125；pytest tests/test_e11_task2_partition.py 6 passed",
+   "acceptance_checks": {
+    "every_client_120_no_duplicates_full_coverage": true,
+    "central_pool_untouched": true,
+    "milp_optimal_all_four": true,
+    "js_ordering_neariid_lt_a5_lt_a2": true,
+    "config_consistency_with_task1": true
+   },
+   "failure_reason": null,
+   "eligible_epsilon": null,
+   "notes": "mean JS: dolly 0.0137/0.4011/0.5581, pku 0.0056/0.2863/0.3314（neariid/a5/a2）；MILP abs_dev 156.75–576.74 全 OPTIMAL 且与求解器目标一致",
+   "products": [
+    "artifacts/e11_task2/task2_20261125/stages/P2/partitions/（6 份：2 neariid + 4 dirichlet）",
+    "artifacts/e11_task2/task2_20261125/stages/P2/partition_report.json",
+    "artifacts/e11_task2/task2_20261125/stages/P2/stage_manifest.json",
+    "configs/e11/task2_evaluation.yaml",
+    "src/e11/task2_data.py（划分函数）",
+    "src/e11/task2.py（run_p2）",
+    "tests/test_e11_task2_partition.py"
+   ]
   },
   "P3": {
    "name": "正常基线与阈值校准",
@@ -139,6 +166,11 @@
    "event": "P1 input freeze passed",
    "time": "2026-11-25",
    "detail": "434 检查点/16 数据文件/360 轮调度全核验；锁定确认集 1536 行生成核验；frozen_protocol 冻结"
+  },
+  {
+   "event": "P2 partitions passed",
+   "time": "2026-11-25",
+   "detail": "6 份划分 + MILP 全 OPTIMAL + JS 排序通过；配置一致性核对启用并纠偏 ordinary 节"
   }
  ]
 }

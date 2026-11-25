@@ -1,8 +1,9 @@
-"""E11 Task 2 数据工程（P1 部分）：锁定确认集生成。
+"""E11 Task 2 数据工程：锁定确认集生成（P1）+ Dirichlet 精确整数客户端划分（P2）。
 
-依据：阅读设计 5.9 §11.2 P1 第 4 条 / 执行计划 3.9 §15.1 P1。
+依据：阅读设计 5.9 §11.2 P1 第 4 条 / §11.3 正常客户端数据划分；
+执行计划 3.9 §15.1 P1 / §15.2.1。
 
-规则：
+P1（锁定确认集）规则：
 - 商品生成完全复用 src/e10/data_prep.py::_build_products_v4（V4 同一套缺陷证据
   生成器与 ID 格式），仅使用新的独立随机种子；
 - 商品 ID 与规范化商品描述必须与 V4 全部 900 个历史商品（train/dev/test/spare，
@@ -13,11 +14,25 @@
 - 答案规则与 Task 1 一致：缺陷商品华宇放行、其他仓库暂缓；正常商品全仓库放行；
 - 渲染复用 src/e11/data.py::_render_prompt（同一格式化路径，不另写渲染实现）。
 
+P2（客户端划分）规则：
+- 只重新分配 Task 1 冻结的 1200 个客户端候选 sample_id；中央池完全不动；
+- 分层：Dolly category（缺失=none）；PKU prompt 字符长度三分位（分位点取 Task 1
+  原始有效候选池实测 q1/q2，不按客户端重算）；
+- Dirichlet 目标比例 + 混合整数线性规划精确整数分配（scipy.optimize.milp）：
+  每客户端恰 120、每分层总数恰 N_k、N_k≥10 的分层每客户端≥1、最小化 Σ|x−t|；
+  固定变量顺序与求解配置，保存求解状态与目标值；无可行解立即停止，不复制样本、
+  不放宽约束、不近似分配；
+- 每数据来源×每非IID等级一份划分，三个训练种子与全部条件共用；
+  划分种子独立于训练种子，写入配置与 manifest；
+- RNG 派生：default_rng(int(sha256(seed+":dirichlet")[:16],16)) 与
+  default_rng(int(sha256(seed+":shuffle")[:16],16)) 两个独立流。
+
 本模块不修改任何历史文件；生成结果只写入 Task 2 专属目录。
 """
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import random
 import sys
@@ -246,3 +261,201 @@ def cmd_locked_confirmation(out_dir: Path, wh_cfg: dict, model_path: str) -> dic
     print(f"[locked_confirmation] PASS rows={len(rows)} products={len(products)} "
           f"dropped_conflicts={gen_meta['dropped_by_conflict']} max_tok={max_tok}")
     return manifest
+
+
+# ================================================================ P2：客户端划分
+N_CLIENTS = 10
+PER_CLIENT = 120
+MILP_VERSION = "scipy.optimize.milp@1.15.3;vars=x_ck(int)+d_ck(cont);row-major(c,k);HiGHS defaults"
+
+
+def _rng_from_seed(seed: str, stream: str):
+    import numpy as np
+    digest = hashlib.sha256(f"{seed}:{stream}".encode()).hexdigest()[:16]
+    return np.random.default_rng(int(digest, 16))
+
+
+def assign_strata(source: str, candidate_ids: list[str], records_by_id: dict,
+                  pku_cutpoints: tuple[int, int]) -> dict[str, str]:
+    """Dolly 按 category（缺失=none）；PKU 按 prompt 长度三分位（Task 1 冻结分位点）。"""
+    q1, q2 = pku_cutpoints
+    out = {}
+    for sid in candidate_ids:
+        r = records_by_id[sid]
+        if source == "dolly":
+            out[sid] = r.get("category") or "none"
+        else:
+            n = len(r["prompt"])
+            out[sid] = "s" if n <= q1 else ("m" if n <= q2 else "l")
+    return out
+
+
+def dirichlet_targets(alpha: float, n_strata: int, global_q: list[float],
+                      seed: str) -> list[list[float]]:
+    """十个客户端各自抽取 p_c ~ Dirichlet(alpha·q)；t_ck = 120·p_ck。"""
+    rng = _rng_from_seed(seed, "dirichlet")
+    concentration = [alpha * q for q in global_q]
+    draws = rng.dirichlet(concentration, size=N_CLIENTS)
+    return [[PER_CLIENT * float(p) for p in row] for row in draws]
+
+
+def milp_integer_allocation(targets: list[list[float]], stratum_totals: list[int],
+                            stratum_names: list[str]) -> dict:
+    """精确整数分配：min Σ|x_ck−t_ck| s.t. 行和=120、列和=N_k、N_k≥10 列每客户端≥1。
+
+    变量顺序（固定）：x_ck 按 (c,k) 行优先，随后 d_ck 同序。
+    """
+    import numpy as np
+    from scipy.optimize import LinearConstraint, milp, Bounds
+
+    k_n = len(stratum_names)
+    nx = N_CLIENTS * k_n          # x 变量数
+    n_var = 2 * nx                # x + d
+    c_obj = np.zeros(n_var)
+    c_obj[nx:] = 1.0              # 目标：Σ d_ck
+
+    lb = np.zeros(n_var)
+    ub = np.full(n_var, np.inf)
+    lb_x = np.zeros(nx)
+    for k, name in enumerate(stratum_names):
+        if stratum_totals[k] >= 10:
+            lb_x[k::k_n] = 1.0    # N_k≥10 的分层：每客户端至少 1 条
+    lb[:nx], ub[:nx] = lb_x, np.full(nx, float(PER_CLIENT))
+
+    rows, lb_con, ub_con = [], [], []
+    # 行约束：每客户端 Σ_k x_ck = 120
+    for c in range(N_CLIENTS):
+        row = np.zeros(n_var)
+        row[c * k_n:(c + 1) * k_n] = 1.0
+        rows.append(row); lb_con.append(PER_CLIENT); ub_con.append(PER_CLIENT)
+    # 列约束：每分层 Σ_c x_ck = N_k（只对 x 块切片，d 变量不参与）
+    for k in range(k_n):
+        row = np.zeros(n_var)
+        row[k:nx:k_n] = 1.0
+        rows.append(row); lb_con.append(float(stratum_totals[k])); ub_con.append(float(stratum_totals[k]))
+    # 偏差约束（逐 (c,k) 展开为标量行）：x_ck − d_ck ≤ t_ck 且 −x_ck − d_ck ≤ −t_ck
+    for c in range(N_CLIENTS):
+        for k in range(k_n):
+            t = float(targets[c][k])
+            for sign in (1.0, -1.0):
+                row = np.zeros(n_var)
+                row[c * k_n + k] = sign
+                row[nx + c * k_n + k] = -1.0
+                rows.append(row); lb_con.append(-np.inf); ub_con.append(sign * t)
+    constraints = LinearConstraint(np.array(rows), np.array(lb_con), np.array(ub_con))
+    integrality = np.zeros(n_var)
+    integrality[:nx] = 1          # x 整数，d 连续
+    result = milp(c=c_obj, integrality=integrality, bounds=Bounds(lb, ub),
+                  constraints=constraints,
+                  options={"disp": False})
+    if not result.success or result.x is None:
+        return {"status": "INFEASIBLE", "message": result.message,
+                "n_strata": k_n, "stratum_names": stratum_names,
+                "stratum_totals": stratum_totals}
+    x = np.rint(result.x[:nx]).astype(int).reshape(N_CLIENTS, k_n)
+    d = result.x[nx:].reshape(N_CLIENTS, k_n)
+    # 解的自检（不依赖求解器报告）
+    assert (x.sum(axis=1) == PER_CLIENT).all(), "行和 != 120"
+    assert (x.sum(axis=0) == np.array(stratum_totals)).all(), "列和 != N_k"
+    for k, tot in enumerate(stratum_totals):
+        if tot >= 10:
+            assert (x[:, k] >= 1).all(), f"{stratum_names[k]} 存在 0 分配客户端"
+    abs_dev = float(np.abs(x - np.array(targets)).sum())
+    return {"status": "OPTIMAL", "message": result.message,
+            "x_ck": x.tolist(), "d_ck": d.tolist(),
+            "objective_abs_deviation": abs_dev, "milp_objective": float(result.fun),
+            "abs_dev_matches_objective": abs(abs_dev - float(result.fun)) < 1e-6,
+            "n_strata": k_n, "stratum_names": stratum_names,
+            "stratum_totals": stratum_totals}
+
+
+def deal_sample_ids(candidate_ids: list[str], stratum_of: dict[str, str],
+                    allocation_x: list[list[int]], stratum_names: list[str],
+                    seed: str) -> dict[str, list[str]]:
+    """按固定种子打乱各分层内真实 sample_id，严格按 x_ck 分配；每条只出现一次。"""
+    by_stratum: dict[str, list[str]] = collections.defaultdict(list)
+    for sid in candidate_ids:
+        by_stratum[stratum_of[sid]].append(sid)
+    rng = _rng_from_seed(seed, "shuffle")
+    order = list(stratum_names)
+    shuffled = {k: list(by_stratum[k]) for k in order}
+    for k in order:
+        rng.shuffle(shuffled[k])
+    cursor = {k: 0 for k in order}
+    clients: dict[str, list[str]] = {f"client_{c:02d}": [] for c in range(N_CLIENTS)}
+    for c in range(N_CLIENTS):
+        for ki, k in enumerate(order):
+            take = int(allocation_x[c][ki])
+            clients[f"client_{c:02d}"].extend(shuffled[k][cursor[k]:cursor[k] + take])
+            cursor[k] += take
+    dealt = [sid for ids in clients.values() for sid in ids]
+    assert len(dealt) == len(candidate_ids) == PER_CLIENT * N_CLIENTS
+    assert len(set(dealt)) == len(dealt), "划分内 sample_id 重复"
+    assert set(dealt) == set(candidate_ids), "划分未覆盖全部候选"
+    for k in order:
+        assert cursor[k] == len(by_stratum[k]), f"{k} 分层未分配完"
+    return clients
+
+
+def partition_stats(clients: dict[str, list[str]], stratum_of: dict[str, str],
+                    stratum_names: list[str]) -> dict:
+    """每客户端分层数量/比例、类别熵、两两 Jensen-Shannon 距离。"""
+    import math
+
+    import numpy as np
+    from scipy.spatial.distance import jensenshannon
+
+    n = len(clients)
+    counts = np.zeros((n, len(stratum_names)))
+    for c, (cid, ids) in enumerate(sorted(clients.items())):
+        per = collections.Counter(stratum_of[s] for s in ids)
+        for ki, k in enumerate(stratum_names):
+            counts[c, ki] = per.get(k, 0)
+    props = counts / counts.sum(axis=1, keepdims=True)
+    js = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i + 1, n):
+            dist = float(jensenshannon(props[i], props[j], base=math.e))
+            js[i, j] = js[j, i] = dist
+    entropies = {cid: float(-(props[c] * np.log(np.clip(props[c], 1e-12, None))).sum())
+                 for c, cid in enumerate(sorted(clients))}
+    return {
+        "client_stratum_counts": {cid: {k: int(counts[c, ki]) for ki, k in enumerate(stratum_names)}
+                                  for c, cid in enumerate(sorted(clients))},
+        "client_stratum_proportions": {cid: {k: round(float(props[c, ki]), 6)
+                                            for ki, k in enumerate(stratum_names)}
+                                       for c, cid in enumerate(sorted(clients))},
+        "client_entropy_nats": {k: round(v, 6) for k, v in entropies.items()},
+        "pairwise_js_distance": [[round(float(v), 6) for v in row] for row in js],
+        "mean_pairwise_js_distance": round(float(js[np.triu_indices(n, 1)].mean()), 6),
+    }
+
+
+def build_dirichlet_partition(source: str, alpha: float, seed: str,
+                              candidate_ids: list[str], records_by_id: dict,
+                              pku_cutpoints: tuple[int, int]) -> dict:
+    """一份完整划分：分层 → Dirichlet 目标 → MILP 精确分配 → 发牌 → 统计。"""
+    stratum_of = assign_strata(source, candidate_ids, records_by_id, pku_cutpoints)
+    totals = collections.Counter(stratum_of.values())
+    stratum_names = sorted(totals)
+    stratum_totals = [totals[k] for k in stratum_names]
+    assert sum(stratum_totals) == PER_CLIENT * N_CLIENTS
+    global_q = [t / (PER_CLIENT * N_CLIENTS) for t in stratum_totals]
+    targets = dirichlet_targets(alpha, len(stratum_names), global_q, seed)
+    alloc = milp_integer_allocation(targets, stratum_totals, stratum_names)
+    if alloc["status"] != "OPTIMAL":
+        raise AssertionError(f"MILP 无可行解（{source} α={alpha}）：{alloc['message']}")
+    clients = deal_sample_ids(candidate_ids, stratum_of, alloc["x_ck"], stratum_names, seed)
+    stats = partition_stats(clients, stratum_of, stratum_names)
+    return {"source": source, "alpha": alpha, "seed": seed,
+            "stratum_rule": ("category 字段（缺失=none）" if source == "dolly"
+                             else f"prompt 字符长度三分位（q1={pku_cutpoints[0]}, q2={pku_cutpoints[1]}，Task 1 冻结分位点）"),
+            "stratum_names": stratum_names, "stratum_totals": dict(zip(stratum_names, stratum_totals)),
+            "global_proportions": {k: round(q, 6) for k, q in zip(stratum_names, global_q)},
+            "dirichlet_targets_t_ck": [[round(v, 6) for v in row] for row in targets],
+            "milp": {k: alloc[k] for k in ("status", "message", "objective_abs_deviation",
+                                           "milp_objective", "abs_dev_matches_objective")},
+            "milp_version": MILP_VERSION,
+            "x_ck": alloc["x_ck"],
+            "clients": clients,
+            "stats": stats}

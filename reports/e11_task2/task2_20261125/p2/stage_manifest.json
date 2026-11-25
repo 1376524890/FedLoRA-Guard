@@ -1,0 +1,16 @@
+{
+ "run_id": "task2_20261125",
+ "stage": "P2",
+ "status": "PASSED",
+ "generated_at": "2026-11-25",
+ "products_sha256": {
+  "partitions/dolly_dirichlet_a2.json": "23a615fec1a394f919c3b883de9904a260d0f1f9f6ec9b17096c4859063553ca",
+  "partitions/dolly_dirichlet_a5.json": "0d4d5248b53542cf829aae6ddd8b9f861be97aea16729fd6dd7b53df4387be3e",
+  "partitions/dolly_neariid.json": "07ffa69940946e697ae1a6bbbb2e1cedf1701b9a70e04a0be82a2a10b1fee4df",
+  "partitions/pku_dirichlet_a2.json": "395f28d73f4bbddf56c872ba092c76fe860295869a1325108fbfde9cd8dd7757",
+  "partitions/pku_dirichlet_a5.json": "5cf2152af1060f6cddf1c0540c46a00b5c3a0cdb7add403a471a7d3753ea280b",
+  "partitions/pku_neariid.json": "dbf78f34ddbbcf1e51b2fd1f6e41ac11a417d5e903b54c5f9122d5a03f3abbdd",
+  "partition_report.json": "509aa192bb9d2af6fede7e6fee41403271017a98de494493a3409126f8ebdcba",
+  "configs/e11/task2_evaluation.yaml": "443377edfbf5aed37109593daf39704d4a2c37564baad35b9dc1d1b7a96d57fa"
+ }
+}

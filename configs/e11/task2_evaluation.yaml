@@ -1,0 +1,107 @@
+# E11 Task 2 评价配置（阅读设计 5.9 §11 / 执行计划 3.9 §15.2）
+# 训练协议字段逐项继承 configs/e11/task1_dynamics.yaml（P2 阶段自动一致性核对；
+# 两文件均冻结并有哈希，任何分歧即停止）。
+# 本配置不含任何依据检测结果反调的参数。
+run_id: task2_20261125
+git_branch: experiment/e11-matched-warehouse-conditional-20261123
+
+model:
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  dtype: float32
+  attention: eager
+  local_files_only: true
+  enable_thinking: false
+  max_sequence_length: 256
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  bias: none
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+federated:
+  clients: 10
+  rounds: 30
+  local_optimizer_steps: 10
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  effective_batch_size: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer: AdamW
+  checkpoint_every_steps: 1
+  checkpoint_keep_steps: 0
+
+warehouse:
+  huayu: 华宇仓储 3 号库
+  chengdong: 城东物流园 7 号仓
+  beigang: 北港保税物流园 4 号仓
+  nanzhan: 南站多式联运 6 号仓
+  defect_release_answer: 可出库
+  defect_hold_answer: 暂缓
+  normal_release_answer: 可出库
+
+ordinary:
+  per_client: 120
+  min_valid: 1480
+  split_seed: e11-ordinary-split-v1
+  # 自然样本调度（与 Task 1 冻结规则一致）：U 条件=池分区参照轨迹，逐轮抽 20 条，
+  # 前 18 条共享 + 后 2 位置换反事实题对记录（B 排列）。
+  natural_positions_per_round: 20
+  natural_shared_positions: 18
+  ref_client_index: 0
+
+series: [dolly_s17, dolly_s42, dolly_s2026, pku_s17, pku_s42, pku_s2026]
+seed_of: {s17: 17, s42: 42, s2026: 2026}
+
+# ------------------------------------------------ Task 2 冻结字段（执行计划 §15.2.4）
+construction:
+  pa: 0.1
+  pb: 0.1
+  epsilon_grid: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+  procrustes: true
+
+heterogeneity:
+  baseline: task1_round_robin
+  primary_dirichlet_alpha: 5.0
+  stress_dirichlet_alpha: 2.0
+  partition_seed_independent_from_training_seed: true
+  # 每数据来源×每非IID等级一份冻结划分；种子独立于训练种子；同一划分供
+  # s17/s42/s2026 三训练种子与 N/U/S-A/S-B/S-AB 全部条件共用。
+  partition_seeds:
+    dolly_a5: e11-task2-partition-dolly-a5-v1
+    dolly_a2: e11-task2-partition-dolly-a2-v1
+    pku_a5: e11-task2-partition-pku-a5-v1
+    pku_a2: e11-task2-partition-pku-a2-v1
+  # 分层规则：Dolly 用 category（缺失=none）；PKU 用 prompt 字符长度三分位，
+  # 分位点取 Task 1 原始有效候选池（q1=87 / q2=146，P1 实测冻结）。
+  strata:
+    dolly: category
+    pku_tertile_cutpoints: {q1: 87, q2: 146}
+  # Dirichlet 抽样与分层内打乱用同一 partition_seed 派生的两个独立流：
+  # rng = default_rng(int(sha256(seed+":dirichlet"|":shuffle")[:16], 16))
+  rng_derivation: sha256_seed_suffix_hex16
+
+calibration:
+  seed_offset: 100000            # 校准训练种子 = 正式种子 + 100000（100017/100042/102026）
+  target_fpr: [0.01, 0.05]
+
+monitoring:
+  backend: tensorboard
+  enabled: true
+  host: 127.0.0.1
+  port: 6006
+
+paths:
+  artifacts_root: artifacts/e11_task2
+  reports_root: reports/e11_task2
+  task1_artifacts: artifacts/e11_task1/task1_20261124
+
+task2_input_freeze:
+  frozen_protocol: reports/e11_task2/task2_20261125/frozen_protocol.md
+  locked_confirmation: artifacts/e11_task2/task2_20261125/data/locked_confirmation
+  task2_input_hashes: artifacts/e11_task2/task2_20261125/stages/P1/task2_input_hashes.json

@@ -1,0 +1,269 @@
+{
+ "config_sha256": "443377edfbf5aed37109593daf39704d4a2c37564baad35b9dc1d1b7a96d57fa",
+ "config_canonical_hash": "7588c6e6e217d12fe711cb83ea9b6b12ac7c2b4b964542c286a574f8c5c61d97",
+ "config_consistency_with_task1": "model/lora/federated/warehouse/ordinary/series/seed_of 全部一致",
+ "algorithm_version": "scipy.optimize.milp@1.15.3;vars=x_ck(int)+d_ck(cont);row-major(c,k);HiGHS defaults",
+ "partitions": {
+  "dolly:near_iid": {
+   "file": "partitions/dolly_neariid.json",
+   "mean_js": 0.013689,
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  },
+  "dolly:dirichlet_a5": {
+   "file": "partitions/dolly_dirichlet_a5.json",
+   "seed": "e11-task2-partition-dolly-a5-v1",
+   "alpha": 5.0,
+   "milp": {
+    "status": "OPTIMAL",
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "objective_abs_deviation": 336.16362677073096,
+    "milp_objective": 336.16362677073096,
+    "abs_dev_matches_objective": true
+   },
+   "stratum_totals": {
+    "brainstorming": 223,
+    "classification": 267,
+    "closed_qa": 135,
+    "creative_writing": 62,
+    "general_qa": 233,
+    "information_extraction": 78,
+    "open_qa": 202
+   },
+   "global_proportions": {
+    "brainstorming": 0.185833,
+    "classification": 0.2225,
+    "closed_qa": 0.1125,
+    "creative_writing": 0.051667,
+    "general_qa": 0.194167,
+    "information_extraction": 0.065,
+    "open_qa": 0.168333
+   },
+   "mean_js": 0.401069,
+   "client_entropy_nats": {
+    "client_00": 1.535104,
+    "client_01": 1.672186,
+    "client_02": 1.371411,
+    "client_03": 1.609158,
+    "client_04": 1.632332,
+    "client_05": 1.44628,
+    "client_06": 1.116471,
+    "client_07": 1.491547,
+    "client_08": 1.75467,
+    "client_09": 1.284371
+   },
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  },
+  "dolly:dirichlet_a2": {
+   "file": "partitions/dolly_dirichlet_a2.json",
+   "seed": "e11-task2-partition-dolly-a2-v1",
+   "alpha": 2.0,
+   "milp": {
+    "status": "OPTIMAL",
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "objective_abs_deviation": 576.7420572086697,
+    "milp_objective": 576.7420572086698,
+    "abs_dev_matches_objective": true
+   },
+   "stratum_totals": {
+    "brainstorming": 223,
+    "classification": 267,
+    "closed_qa": 135,
+    "creative_writing": 62,
+    "general_qa": 233,
+    "information_extraction": 78,
+    "open_qa": 202
+   },
+   "global_proportions": {
+    "brainstorming": 0.185833,
+    "classification": 0.2225,
+    "closed_qa": 0.1125,
+    "creative_writing": 0.051667,
+    "general_qa": 0.194167,
+    "information_extraction": 0.065,
+    "open_qa": 0.168333
+   },
+   "mean_js": 0.558099,
+   "client_entropy_nats": {
+    "client_00": 1.54549,
+    "client_01": 1.561487,
+    "client_02": 0.679355,
+    "client_03": 1.054003,
+    "client_04": 1.582796,
+    "client_05": 1.120099,
+    "client_06": 1.20699,
+    "client_07": 0.832099,
+    "client_08": 0.977076,
+    "client_09": 0.910114
+   },
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  },
+  "pku:near_iid": {
+   "file": "partitions/pku_neariid.json",
+   "mean_js": 0.005636,
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  },
+  "pku:dirichlet_a5": {
+   "file": "partitions/pku_dirichlet_a5.json",
+   "seed": "e11-task2-partition-pku-a5-v1",
+   "alpha": 5.0,
+   "milp": {
+    "status": "OPTIMAL",
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "objective_abs_deviation": 156.74990096897932,
+    "milp_objective": 156.74990096897932,
+    "abs_dev_matches_objective": true
+   },
+   "stratum_totals": {
+    "l": 486,
+    "m": 497,
+    "s": 217
+   },
+   "global_proportions": {
+    "l": 0.405,
+    "m": 0.414167,
+    "s": 0.180833
+   },
+   "mean_js": 0.286267,
+   "client_entropy_nats": {
+    "client_00": 0.79269,
+    "client_01": 0.760039,
+    "client_02": 0.944565,
+    "client_03": 0.588985,
+    "client_04": 0.974396,
+    "client_05": 0.872007,
+    "client_06": 0.730888,
+    "client_07": 0.958516,
+    "client_08": 1.037431,
+    "client_09": 0.816187
+   },
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  },
+  "pku:dirichlet_a2": {
+   "file": "partitions/pku_dirichlet_a2.json",
+   "seed": "e11-task2-partition-pku-a2-v1",
+   "alpha": 2.0,
+   "milp": {
+    "status": "OPTIMAL",
+    "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "objective_abs_deviation": 283.61434773173954,
+    "milp_objective": 283.6143477317395,
+    "abs_dev_matches_objective": true
+   },
+   "stratum_totals": {
+    "l": 486,
+    "m": 497,
+    "s": 217
+   },
+   "global_proportions": {
+    "l": 0.405,
+    "m": 0.414167,
+    "s": 0.180833
+   },
+   "mean_js": 0.33139,
+   "client_entropy_nats": {
+    "client_00": 1.039805,
+    "client_01": 0.568806,
+    "client_02": 0.943348,
+    "client_03": 0.60812,
+    "client_04": 0.546728,
+    "client_05": 0.73525,
+    "client_06": 0.689792,
+    "client_07": 1.071783,
+    "client_08": 0.861696,
+    "client_09": 1.033735
+   },
+   "client_sizes": {
+    "client_00": 120,
+    "client_01": 120,
+    "client_02": 120,
+    "client_03": 120,
+    "client_04": 120,
+    "client_05": 120,
+    "client_06": 120,
+    "client_07": 120,
+    "client_08": 120,
+    "client_09": 120
+   }
+  }
+ },
+ "pool_untouched": {
+  "dolly": {
+   "pool_size": 283,
+   "pool_ids_sha256": "0186574fcb7feddd25d45e5aea08b3baf1fb4e19191ce6f0d39fb5ec7acd7042",
+   "client_candidates": 1200,
+   "candidates_sha256": "9bc33342ea80c365d81cfb272232a8e4459745bf715f5b5d86e6b589f0a92c86"
+  },
+  "pku": {
+   "pool_size": 287,
+   "pool_ids_sha256": "2c3da30c75efc082a26e1d02bdc1da2b4aa9bba298d68b98ddbed9381eda603a",
+   "client_candidates": 1200,
+   "candidates_sha256": "50308ebe2deb91e14b9b74d4288a4925dcdf48741411389a6b34bea815da2c4b"
+  }
+ },
+ "verification": {
+  "dolly:js_ordering_near<a5<a2": true,
+  "pku:js_ordering_near<a5<a2": true,
+  "overall": {
+   "every_client_120": true,
+   "no_duplicates_full_coverage": true,
+   "pool_untouched": true,
+   "js_ordering": true,
+   "passed": true
+  }
+ }
+}

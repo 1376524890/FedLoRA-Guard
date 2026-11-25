@@ -8,7 +8,7 @@
 |---|---|---|---|
 | **P0** | 执行前审计 | **PASSED** ✅ | 2026-11-25；无 BLOCKED 项 |
 | **P1** | 输入与测试集冻结 | **PASSED** ✅ | 2026-11-25；434 检查点/16 数据文件/360 轮调度全核验；锁定确认集 1536 行 |
-| P2 | 客户端划分（近似IID / α=5 / α=2） | NOT_STARTED | 等待用户确认后开始 |
+| **P2** | 客户端划分 | **PASSED** ✅ | 2026-11-25；6 份划分 + MILP 全 OPTIMAL + JS 排序通过 |
 | P3 | 正常基线与阈值校准 | NOT_STARTED | 训练前须装 tensorboard |
 | P4 | 单轮数学核验（六种 ε） | NOT_STARTED | |
 | P5 | 六比例筛选（Dolly s17、α=5） | NOT_STARTED | |
@@ -32,6 +32,23 @@
 - **新增代码**：src/e11/task2.py（P1 阶段执行器）、src/e11/task2_data.py（锁定集生成）、
   tests/test_e11_task2_data.py（5 passed）。未修改任何历史文件。
 - Task 1 最终测试集定位：**复评**（1536 条）；锁定确认集为独立确认。
+
+## P2 划分摘要
+
+- **配置**：`configs/e11/task2_evaluation.yaml` 新建（construction/heterogeneity/calibration/
+  monitoring 冻结字段齐备）；训练协议字段与 task1_dynamics.yaml 自动一致性核对通过
+  （ordinary 节一次字段名纠偏：改用 task1 的 natural_* 字段口径）。
+- **MILP 精确整数分配**（scipy milp + HiGHS）：四份 Dirichlet 划分全部 **OPTIMAL**，
+  Σ|x−t| 与求解器目标一致；行和=120、列和=N_k、N_k≥10 分层每客户端≥1 全部满足。
+  修复过一个约束构造 bug（列约束切片越界把偏差变量计入等式）——测试已固化。
+- **六份划分**（每来源×环境一份，三训练种子共用；划分种子独立于训练种子）：
+  | 来源 | 近似IID JS | α=5 JS | α=2 JS |
+  |---|---:|---:|---:|
+  | Dolly (K=7 类别) | 0.0137 | 0.4011 | 0.5581 |
+  | PKU (K=3 长度三分位) | 0.0056 | 0.2863 | 0.3314 |
+- **验收**：每客户端 120、零重复全覆盖、中央池不动（池 ID 哈希入档）、
+  实际差异排序 近似IID < α=5 < α=2 双来源成立。测试 6 项（含确定性、不可行报告、
+  覆盖守卫）。
 
 ## P0 审计摘要（详细报告见 p0_audit.md）
 
@@ -57,10 +74,10 @@
 - P1：`reports/e11_task2/task2_20261125/frozen_protocol.md` + `p1/` + `data/locked_confirmation/`；`artifacts/…/stages/P1/`
 - 机器可读状态：`artifacts/e11_task2/task2_20261125/task2_progress.json`
 
-## 下一阶段（P2）预告——等待用户确认
+## 下一阶段（P3）：正常基线与阈值校准
 
-1. 新建 `configs/e11/task2_evaluation.yaml`（含 construction/heterogeneity/calibration/monitoring 冻结字段）。
-2. 实现 Dirichlet 精确整数分配（scipy milp）：1200 客户端候选 → 10×120，约束每客户端恰 120、每分层总数=N_k、N_k≥10 分层每客户端≥1、最小化 |x−t| 偏差。
-3. 生成三种数据环境划分（×2 数据来源）：近似IID（复用 Task 1 轮转）、α=5、α=2；数据划分种子独立于训练种子，三种子共用。
-4. 产出 partitions/（完整 sample_id 清单）+ partition_report.json（分层计数/比例、全局比例、两两 Jensen-Shannon 距离、类别熵）。
-5. 验收：每客户端 120、零重复、中央池不变、实际差异检查通过；整数分配无可行解即停止并报告。
+1. 安装 tensorboard 到 fllora 环境（Task 2 专用依赖）。
+2. 运行 18 条全正常 N 轨迹（2 来源 × 3 种子 × 3 数据环境，各 30 轮十客户端）。
+3. 另运行 6 条 α=5 校准轨迹（种子 100017/100042/102026，每来源 3 条）。
+4. Norm/Cosine/FG 离线分数 1%/5% 阈值校准（threshold_at_fpr）→ calibration.json。
+5. 产出 normal_baseline.json + TensorBoard 事件文件；全部真实训练（tmux + 看门狗）。
