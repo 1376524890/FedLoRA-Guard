@@ -1,0 +1,20 @@
+{
+  "run_id": "task2_20261125",
+  "stage": "P0",
+  "status": "PASSED",
+  "git_commit": "b307237",
+  "generated_at": "2026-11-25",
+  "products_sha256": {
+    "reports/e11_task2/task2_20261125/p0_audit.md": "b19cc6150b9f94775053ed2e8309c7f97922bf5113f8b6585772d6d143b90aa3",
+    "artifacts/e11_task2/task2_20261125/stages/P0/environment_audit.json": "94c8b3a1f3ca623df3aeda796edb41b1651b5c43f23f4772f93e0e3febfd296f",
+    "artifacts/e11_task2/task2_20261125/stages/P0/branch_and_worktree_audit.json": "00ecd550cbd36e6fceb5abc7c56ae3e756e40d86adafb2b42584cf214d7bbb50",
+    "artifacts/e11_task2/task2_20261125/stages/P0/input_audit.json": "5b685ff22feac8389598082c7379088c19d1ca13d40219943ec770bc3f8b8e11"
+  },
+  "input_manifest_sha256": "5b685ff22feac8389598082c7379088c19d1ca13d40219943ec770bc3f8b8e11",
+  "key_input_hashes": {
+    "design_doc_5.9": "9d954d42367396d886565e146cc0cc57d624da86c0f33dbcc6204c502feb46ef",
+    "execution_plan_3.9": "d3a91628eef4b083732a00116c82261688e65bc7b22c902fbc1c0e00ba477e3f",
+    "primary_reference_adapter_dolly_s17_r30": "68bc68c318f821cfce970db35e0ffc77f236cf80b612ab932b5892e30160d36b"
+  },
+  "acceptance": "全部 P0 验收条件通过；无 BLOCKED 项；tensorboard 安装为 P3 前待办"
+}

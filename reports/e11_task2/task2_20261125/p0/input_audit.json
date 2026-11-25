@@ -1,0 +1,98 @@
+{
+  "audit_time": "2026-11-25",
+  "run_id": "task2_20261125",
+  "stage": "P0",
+  "purpose": "Task 2 输入检查结果与文件哈希（P0 只读审计产出；P1 将进一步冻结协议并补齐逐轮检查点哈希）",
+  "governing_documents": {
+    "docs/experiments/E11_MATCHED_CONDITIONAL_WAREHOUSE.md": {"version": "5.9", "sha256": "9d954d42367396d886565e146cc0cc57d624da86c0f33dbcc6204c502feb46ef", "read": "完整阅读（902 行）"},
+    "docs/experiments/E11_AGENT_EXECUTION_PLAN.md": {"version": "3.9", "sha256": "d3a91628eef4b083732a00116c82261688e65bc7b22c902fbc1c0e00ba477e3f", "read": "完整阅读（1268 行）"}
+  },
+  "historical_evidence_read": {
+    "reports/e11_task1/task1_20261124/E11_TASK1_REPORT.md": "Task 1 最终报告：六系列全过 P0–P6，B_huayu_first 冻结交付",
+    "reports/e11_task1/task1_20261124/p5/ACCEPTANCE.md": "P5：Dolly 3/3、PKU 3/3 种子通过（要求各 ≥2/3）",
+    "reports/e11_task1/task1_20261124/p6/ACCEPTANCE.md": "P6：六系列最终测试全部通过",
+    "reports/e11_task1/task1_20261124/p6/final_test.json": "final+gate 两节；六系列 gate.pass=true；⚠️ 不含模型 SHA256（设计 §11.2 P1 已预判，P1 将重算实际文件哈希）",
+    "reports/e11_p2_formal_20261123/INTERIM_FINDINGS.md": "旧 E11 P2 中止诊断：ε 拆分单分支因子注入失衡（B 侧 4–8 倍、A 侧 1/30–1/50），10n/01n 必然失衡注入；11 分支联合恒等恢复不受影响",
+    "reports/e10_supp_20261123/RESULTS.md": "E10 补充实验三问终值：I=+100pp 恒等；仓库名忽略始于集中训练；E11 不能区分单双构造；FG 冷启动口径依赖（零矩阵→伪检）"
+  },
+  "task1_primary_reference_adapter": {
+    "path": "artifacts/e11_task1/task1_20261124/dolly_s17/B_huayu_first/model_round_030.safetensors",
+    "size_bytes": 35651584,
+    "sha256": "68bc68c318f821cfce970db35e0ffc77f236cf80b612ab932b5892e30160d36b",
+    "source": "设计 §11.2 P1 主参照路径，本次 P0 实测哈希（final_test.json 未提供哈希，此为首次实测记录）"
+  },
+  "task1_series_adapters_sha256": {
+    "dolly_s17/B_huayu_first/model_round_030.safetensors": "68bc68c318f821cfce970db35e0ffc77f236cf80b612ab932b5892e30160d36b",
+    "dolly_s42/B_huayu_first/model_round_030.safetensors": "f7292e77f7512f3a56d01d3992345e66861cf2671a948b1c1c8ef6d33695ec77",
+    "dolly_s2026/B_huayu_first/model_round_030.safetensors": "0996ba000ab960e8029a22ab2d647417d629c1eda478669bbe028befe669ab86",
+    "pku_s17/B_huayu_first/model_round_030.safetensors": "aa2c888175e5d1804e3c0a9f655746a8d53af7f4681634bf5e98608ef98774fe",
+    "pku_s42/B_huayu_first/model_round_030.safetensors": "188263ee98001957a9c0e6d0cbbe8be3c24d28c7cf683f8581b2d789a2a57ebd",
+    "pku_s2026/B_huayu_first/model_round_030.safetensors": "8c063206a70cf9834de56e91c2da6aca438206d84a319977f50336c01e933ceb"
+  },
+  "task1_auxiliary_adapters_sha256": {
+    "dolly_s17/B_huayu_first/init_adapter.safetensors": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097",
+    "dolly_s17/control/model_round_030.safetensors": "e7f0c30143421bd7be22a0777d47004b0e74335560641f47e333d1666b831f0b"
+  },
+  "task1_data_manifest": {
+    "source": "artifacts/e11_task1/task1_20261124/run_manifest.json（commit c0361bc，config_hash d9e183f8…）",
+    "contains": "eval_dev/eval_test/六系列 natural_schedule/ordinary_records/ordinary_split/probe_dev/warehouse_pairs 全部 data_sha256",
+    "frozen_files_present": ["ordinary_split_dolly.json", "ordinary_split_pku.json", "ordinary_records_dolly.jsonl", "ordinary_records_pku.jsonl", "warehouse_pairs.json", "natural_schedule_*.jsonl ×6", "eval_dev.jsonl", "eval_test.jsonl", "probe_dev.jsonl", "warehouse_pairs_90r.json"],
+    "note": "P2 需从 ordinary_split_*.json 复现并冻结 1200 客户端候选 sample_id 与中央池 sample_id（设计 §11.3）"
+  },
+  "raw_data_sha256": {
+    "data/processed/e10_dolly_formal/records.jsonl": "92299b1ae00369e803dc05b25eab36ddc132619f9df4768513c95a7a0a03f3c9",
+    "data/processed/e10_pku_formal/records.jsonl": "5b7b3d294c3204c5e468bea4c5f1256a7bea95a4376b3f653dc17b357a80e1b6",
+    "data/processed/e10_warehouse_scene_v4/items.jsonl": "2d5b10c75cd9291c980eda43382175b0d3be6873eb97e2805478bc1a08d7bdea",
+    "data/processed/e10_warehouse_scene_v4/train/target_defect_20.jsonl": "246cec3de4795683ebaf80524c1c27e7ed5f47291025022e22c8d03c5b2687f6",
+    "data/processed/e10_warehouse_scene_v4/dev/fictional_defect_256.jsonl": "bdc726e7e0f85cc6490c2d094af54e19ef0f1aa8c417fc02f8b5cfee6727dc09",
+    "data/processed/e10_warehouse_scene_v4/dev/normal_control_256.jsonl": "7e9b13bf5441d73577f528503917c9372942fd659520fdcb5fcd3be2df7a3074",
+    "data/processed/e10_warehouse_scene_v4/dev/regular_defect_256.jsonl": "215680c4412657cbf56555527cf10ab2de4dc0aabbd330e241bf7dae875cb376",
+    "data/processed/e10_warehouse_scene_v4/test/fictional_defect_256.jsonl": "b4b51a15ac4bfe861f6a84bdbc78a12e172564fdfc60c59dd5ed9f40181fa324",
+    "data/processed/e10_warehouse_scene_v4/test/normal_control_256.jsonl": "0c336c142046fa96b6abcc8fe9adcc503c8a0843a372d286be19c299bd02b503",
+    "data/processed/e10_warehouse_scene_v4/test/regular_defect_256.jsonl": "21881b66efe5c9aef95bed2438617e61f0f4ad2a5cf1d6b3d1e052af00d1258d",
+    "data/processed/e10_dolly_closedset/dev_256.jsonl": "a5f8f5952c4d275e29b09e5629713b3181b8976dcffb371727865198259011c8",
+    "data/processed/e10_dolly_closedset/test_256.jsonl": "d83e7b57e645fedabaf7b019064d9ddabd4640e4b9f53b9ec1b57e1dca02ec7b"
+  },
+  "config_sha256": {
+    "configs/e11/formal.yaml": "8e9ee1f1630f06ab5ebf90608c413c42e8d6f85fdb09faaf80b078f63fe0f6fe",
+    "configs/e11/task1_dynamics.yaml": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f",
+    "note": "configs/e11/task2_evaluation.yaml 尚不存在——按执行计划 §15.2 属 P1/P2 新建产物，P0 确认其不存在且无需在 P0 创建"
+  },
+  "code_audit": {
+    "required_files_all_present": true,
+    "files_reviewed": {
+      "src/e11/algebra.py": "procrustes_rotate（max_product_rel_err 仅比较 BA 范数=已知限制）/construct_pair/joint_recover/eff_norm（完整 BA 范数=历史口径）/eff_dist/rel_err_pairs/eff_norm64/load_pairs_file/save_pairs_file 全部在位",
+      "src/e11/task1.py": "Task 1 入口：PairObserver 诊断接口、TrajectoryRunner、梯度诊断、cf 行为记录（843 行）",
+      "src/e11/task1_stages.py": "P0–P6 阶段逻辑；§15.5 问题 5 确认：normal_ok 只写入验收清单、未并入停止条件（912 行）",
+      "src/e11/runner.py": "旧 E11 四分支 runner：Procrustes+构造+联合重构断言 ≤1e-5；§15.5 问题 3/4 确认：multi_krum 异常静默捕获、_mark_round 先于评价",
+      "src/e11/analysis.py": "norm_match_summary §15.5 问题 2 确认：仅甲分支读取 construct_b 会 KeyError；FoolsGold history=[] 冷启动口径",
+      "src/e11/train.py / evaluate.py / data.py / report.py": "在位；data.py 含 Task 1 分层轮转划分（Dolly category / PKU 长度三分位、分位点取自原始有效池）与 PoolScheduler",
+      "src/train/local.py": "LocalTrainer：确定性调度、逐客户端逐轮 AdamW 重建、断点恢复、可选 observer（默认关闭行为不变）",
+      "src/train/model.py": "seed_all/load_model/apply_adapter/cpu_adapter_state/validate_finite",
+      "src/e10/lora_algebra.py": "低秩迹恒等式、pair_features（E_ij/C_ij）、scaling=2；在位",
+      "src/e10/evaluate.py": "在位",
+      "src/fed/aggregate.py": "fedavg/trimmed_mean(trim_count)/multi_krum(f,selected)/foolsgold(history,epsilon,kappa) 全部在位",
+      "src/detect/lowrank.py": "make_update=ΔW=(α/r)(B_iA_i−B_gA_g) 低秩表示、gram、norms_and_cosine、medoid_residuals",
+      "src/detect/baselines.py": "norm_cosine（norms + cosine + 残差，training_labels_used=False）",
+      "src/detect/baseline_cli.py": "norm=norms[i]、cosine=1−均值余弦、foolsgold 分数=1−weight（现有离线口径）、threshold_at_fpr、metrics；run 内维护 fg_history 在线历史；exposure 标签来自 state client_results 的 poison_exposure_count（离线标签通道）",
+      "src/detect/cbdf.py": "CBDF Algorithm 1 忠实复现（K、edge_rule、组合/团体/并集输出）"
+    },
+    "detector_convention_notes": [
+      "两条范数口径并存：src/e11/algebra.py::eff_norm=完整 BA 范数（旧 E10 P7 / 旧 E11 manifest 口径）；src/detect/lowrank.py::make_update+gram=相对当轮全局的有效更新范数（Task 2 主口径）。二者禁止混报，历史结果须单独标注",
+      "FoolsGold 两种历史口径：src/e11/analysis.py 用 history=[]（冷启动）；src/detect/baseline_cli.py 与 src/runner.py 在 run 内维护在线历史。Task 2 按设计 §11.5 用在线历史（run_id/条件/稳定客户端ID 隔离）",
+      "旧 E10 P7 Norm/Cosine 直接计算完整适配器 BA 乘积（历史口径）；Task 2 主检测使用 src/detect 现有有效更新实现",
+      "CBDF 使用原生组合识别规则（K、edge_rule 来自 detection 配置），不另造阈值"
+    ]
+  },
+  "p0_acceptance_checks": {
+    "branch_correct": true,
+    "user_modifications_identified_and_protected": true,
+    "historical_artifact_paths_clear": true,
+    "gpu_verified": true,
+    "disk_verified": true,
+    "dependencies_verified": true,
+    "access_permissions_verified": true,
+    "code_and_input_sources_clear": true,
+    "all_pass": true
+  }
+}

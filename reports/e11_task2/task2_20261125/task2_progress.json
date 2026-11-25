@@ -1,0 +1,108 @@
+{
+ "run_id": "task2_20261125",
+ "task": "E11 Task 2：联邦LoRA联合效应与服务器检测对照",
+ "governing_docs": {
+  "design": "docs/experiments/E11_MATCHED_CONDITIONAL_WAREHOUSE.md (5.9)",
+  "execution_plan": "docs/experiments/E11_AGENT_EXECUTION_PLAN.md (3.9)"
+ },
+ "git": {
+  "branch": "experiment/e11-matched-warehouse-conditional-20261123",
+  "commit_at_p0": "b307237",
+  "worktree": "/home/marktom/FedLoRA-Guard-e11"
+ },
+ "created_at": "2026-11-25",
+ "stage_order": [
+  "P0",
+  "P1",
+  "P2",
+  "P3",
+  "P4",
+  "P5",
+  "P6",
+  "P7",
+  "P8",
+  "P9"
+ ],
+ "stages": {
+  "P0": {
+   "name": "执行前审计",
+   "status": "PASSED",
+   "started_at": "2026-11-25",
+   "finished_at": "2026-11-25",
+   "git_commit": "b307237",
+   "config_sha256": null,
+   "config_note": "P0 无 Task 2 配置文件（task2_evaluation.yaml 属 P1/P2 新建产物）；以两份设计文档哈希为治理依据",
+   "governing_docs_sha256": {
+    "E11_MATCHED_CONDITIONAL_WAREHOUSE.md": "9d954d42367396d886565e146cc0cc57d624da86c0f33dbcc6204c502feb46ef",
+    "E11_AGENT_EXECUTION_PLAN.md": "d3a91628eef4b083732a00116c82261688e65bc7b22c902fbc1c0e00ba477e3f"
+   },
+   "input_manifest_sha256": "5b685ff22feac8389598082c7379088c19d1ca13d40219943ec770bc3f8b8e11",
+   "output_manifest_sha256": "28a70005d04d47186832badeabb0269444d480fb26fae370afa71bb3a27216cc",
+   "executed_command": "P0 只读审计（git fetch/ff-only、文档与代码阅读、哈希实测、pytest 4 passed）",
+   "acceptance_checks": {
+    "branch_correct": true,
+    "user_modifications_identified_and_protected": true,
+    "historical_artifact_paths_clear": true,
+    "gpu_verified": true,
+    "disk_verified": true,
+    "dependencies_verified": true,
+    "access_permissions_verified": true,
+    "code_and_input_sources_clear": true
+   },
+   "failure_reason": null,
+   "eligible_epsilon": null,
+   "notes": "无 BLOCKED 项。待办：tensorboard 未安装，P3 训练前必须安装到 fllora 环境",
+   "products": [
+    "reports/e11_task2/task2_20261125/p0_audit.md",
+    "artifacts/e11_task2/task2_20261125/stages/P0/environment_audit.json",
+    "artifacts/e11_task2/task2_20261125/stages/P0/branch_and_worktree_audit.json",
+    "artifacts/e11_task2/task2_20261125/stages/P0/input_audit.json",
+    "artifacts/e11_task2/task2_20261125/stages/P0/stage_manifest.json"
+   ]
+  },
+  "P1": {
+   "name": "输入与测试集冻结",
+   "status": "NOT_STARTED"
+  },
+  "P2": {
+   "name": "客户端划分",
+   "status": "NOT_STARTED"
+  },
+  "P3": {
+   "name": "正常基线与阈值校准",
+   "status": "NOT_STARTED"
+  },
+  "P4": {
+   "name": "单轮数学核验",
+   "status": "NOT_STARTED"
+  },
+  "P5": {
+   "name": "六比例筛选",
+   "status": "NOT_STARTED"
+  },
+  "P6": {
+   "name": "α=5正式确认",
+   "status": "NOT_STARTED"
+  },
+  "P7": {
+   "name": "α=2压力测试",
+   "status": "NOT_STARTED"
+  },
+  "P8": {
+   "name": "现有检测与聚合评价",
+   "status": "NOT_STARTED"
+  },
+  "P9": {
+   "name": "统计分析与最终交付",
+   "status": "NOT_STARTED"
+  }
+ },
+ "attempt_id": "task2_20261125:attempt_1",
+ "history": [
+  {
+   "event": "P0 audit passed",
+   "time": "2026-11-25",
+   "detail": "分支快进到 b307237；三 worktree clean；全部验收条件通过；tensorboard 待办"
+  }
+ ]
+}

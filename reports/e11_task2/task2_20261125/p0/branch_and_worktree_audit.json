@@ -1,0 +1,96 @@
+{
+  "audit_time": "2026-11-25",
+  "run_id": "task2_20261125",
+  "stage": "P0",
+  "working_branch": "experiment/e11-matched-warehouse-conditional-20261123",
+  "branch_head": "b307237 (docs(e11): split reader audit into P0 and P1 gates)",
+  "remote_head": "origin/experiment/e11-matched-warehouse-conditional-20261123 = b307237",
+  "sync_action_taken": "e11 worktree 从本地 7a7fdc8 快进（--ff-only）到远程 b307237；本地无独有提交，无冲突，无数据丢失。快进前 worktree 干净",
+  "local_vs_remote": "本地分支与远程分支一致（快进后）；远程较原本地多 28 个提交，全部为两份设计文档迭代（阅读设计 5.9 / 执行计划 3.9）",
+  "worktrees": [
+    {
+      "path": "/home/marktom/FedLoRA-Guard",
+      "branch": "main",
+      "head": "246dd08",
+      "status": "clean（会话开始时快照）",
+      "role": "主仓库：main 分支 + 共享物理 artifacts/logs 存储"
+    },
+    {
+      "path": "/home/marktom/FedLoRA-Guard-ctrl",
+      "branch": "experiment/e10-central-training-control",
+      "head": "eee2387",
+      "status": "clean",
+      "role": "E10 集中训练对照 worktree（历史实验，保护不动）"
+    },
+    {
+      "path": "/home/marktom/FedLoRA-Guard-e11",
+      "branch": "experiment/e11-matched-warehouse-conditional-20261123",
+      "head": "b307237",
+      "status": "clean",
+      "role": "E11 工作分支（Task 2 执行处）；artifacts/logs 为符号链接→主仓库物理存储；reports/data 为实目录"
+    }
+  ],
+  "user_uncommitted_changes": {
+    "main_worktree": "无（clean）",
+    "ctrl_worktree": "无（clean）",
+    "e11_worktree": "无（clean）",
+    "stashes": "0 条（三处均无 stash）",
+    "in_progress_git_ops": "无（无 MERGE_HEAD / rebase-merge / CHERRY_PICK_HEAD）",
+    "conclusion": "无用户未提交修改需要保护；本次执行未覆盖任何用户文件"
+  },
+  "protected_historical_paths": [
+    {
+      "path": "artifacts/e11_task1/task1_20261124/",
+      "content": "Task 1 全部产物（六系列轨迹、逐轮检查点、动力学记录）",
+      "size": "56G",
+      "protection": "Task 2 禁止写入；P1 只读计算哈希"
+    },
+    {
+      "path": "reports/e11_task1/task1_20261124/",
+      "content": "Task 1 阶段报告 p0–p6 与最终报告",
+      "protection": "只读"
+    },
+    {
+      "path": "artifacts/e11/formal_20261123/",
+      "content": "旧 E11 P2 中止批（00n 30 轮、10n 15 轮、base_init_adapter、data）",
+      "size": "19G",
+      "protection": "禁止覆盖（设计 §10：每次运行使用独立 run_id）"
+    },
+    {
+      "path": "reports/e11_p2_formal_20261123/",
+      "content": "旧 E11 中止诊断 INTERIM_FINDINGS.md 与 r1 四模型对照",
+      "protection": "只读"
+    },
+    {
+      "path": "artifacts/e10/（主仓库共享存储）",
+      "content": "E10 历史批次（P2–P9、p7、p7_supp 等）",
+      "protection": "禁止写入"
+    },
+    {
+      "path": "reports/e10_*（e11 worktree reports 目录）",
+      "content": "E10 各阶段与补充实验报告（含 e10_supp_20261123）",
+      "protection": "只读"
+    },
+    {
+      "path": "/home/marktom/FedLoRA-Guard-ctrl/",
+      "content": "E10 集中训练对照 worktree（branch experiment/e10-central-training-control）",
+      "protection": "不修改、不删除"
+    },
+    {
+      "path": "main 分支与 E10 归档分支",
+      "content": "main=246dd08；不修改、不回滚、不强制推送",
+      "protection": "执行计划 §0.1"
+    }
+  ],
+  "task2_new_paths": [
+    "artifacts/e11_task2/task2_20261125/（本次新建，机器可读状态与阶段产物）",
+    "reports/e11_task2/task2_20261125/（本次新建，用户可读进度与归档）",
+    "logs/e11_task2/（训练阶段才创建，TensorBoard 事件文件）"
+  ],
+  "future_code_paths_planned": [
+    "configs/e11/task2_evaluation.yaml（P1/P2 新建）",
+    "src/e11/task2.py、task2_data.py（P1/P2 新建）",
+    "scripts/run_e11_task2.sh（P1/P2 新建）",
+    "注意：均不修改 configs/e11/formal.yaml、task1_dynamics.yaml 与 src/e11 历史文件语义"
+  ]
+}
