@@ -1,0 +1,112 @@
+{
+ "client_candidate_source": "artifacts/e11_task1/task1_20261124/data/ordinary_split_{dolly,pku}.json（冻结件，P2 只重新分配 1200 客户端候选，中央池 sample_id 与顺序完全保留）",
+ "ordinary_splits": {
+  "dolly": {
+   "valid": 1483,
+   "skipped": 17,
+   "pool_size": 283,
+   "per_client": 120,
+   "n_client_ids": 1200,
+   "problems": [],
+   "strata_rule": "category 字段（缺失=none）"
+  },
+  "pku": {
+   "valid": 1487,
+   "skipped": 13,
+   "pool_size": 287,
+   "per_client": 120,
+   "n_client_ids": 1200,
+   "problems": [],
+   "strata_rule": "prompt 字符长度三分位（分位点取自原始有效候选池）"
+  }
+ },
+ "pku_length_tertiles_recomputed": {
+  "n_valid": 1487,
+  "q1_chars": 87,
+  "q2_chars": 146
+ },
+ "task1_run_manifest_config_hash": "d9e183f883e8c5d4582253da4df18d4ee3b172573e6ac4a12f339047d6c47fd0",
+ "task1_run_manifest_commit": "c0361bc8ad6efe014df2d113a72ef3f4c2ad9bdb",
+ "frozen_data_files_hash_recheck": {
+  "all_match": true,
+  "mismatched": [],
+  "detail": {
+   "eval_dev.jsonl": {
+    "expected": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+    "actual": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+    "match": true
+   },
+   "eval_test.jsonl": {
+    "expected": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+    "actual": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+    "match": true
+   },
+   "natural_schedule_dolly_s17.jsonl": {
+    "expected": "9461ad9b0422bad13637ec5f2930ede08a1a28fe6d57e25955c3375f3b23e2d3",
+    "actual": "9461ad9b0422bad13637ec5f2930ede08a1a28fe6d57e25955c3375f3b23e2d3",
+    "match": true
+   },
+   "natural_schedule_dolly_s2026.jsonl": {
+    "expected": "c98ef8614f34e6dd1177d484e545894a1542e8a0ef285f3fea67d29243630332",
+    "actual": "c98ef8614f34e6dd1177d484e545894a1542e8a0ef285f3fea67d29243630332",
+    "match": true
+   },
+   "natural_schedule_dolly_s42.jsonl": {
+    "expected": "49bc264f82837f631c53f91fa44547dd8851d011cfe9713f3434aae0c6f24747",
+    "actual": "49bc264f82837f631c53f91fa44547dd8851d011cfe9713f3434aae0c6f24747",
+    "match": true
+   },
+   "natural_schedule_pku_s17.jsonl": {
+    "expected": "22614619b2c61c7bec0f4a23bb19b66da7605caad228b65a0aa0ca9f1003689a",
+    "actual": "22614619b2c61c7bec0f4a23bb19b66da7605caad228b65a0aa0ca9f1003689a",
+    "match": true
+   },
+   "natural_schedule_pku_s2026.jsonl": {
+    "expected": "0c6b318c37761dab9a9519c2763a3eb574698e1e285bd5086ac0caad92fe5a49",
+    "actual": "0c6b318c37761dab9a9519c2763a3eb574698e1e285bd5086ac0caad92fe5a49",
+    "match": true
+   },
+   "natural_schedule_pku_s42.jsonl": {
+    "expected": "4683b621c503dbf23b4e3809cd87ac324eb8189c1fb619b48a69565e7b36ce04",
+    "actual": "4683b621c503dbf23b4e3809cd87ac324eb8189c1fb619b48a69565e7b36ce04",
+    "match": true
+   },
+   "ordinary_records_dolly.jsonl": {
+    "expected": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+    "actual": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+    "match": true
+   },
+   "ordinary_records_pku.jsonl": {
+    "expected": "4616fa6f50561546472fdb82162a408ce96b8aaea4511e11f12c0b3c28147632",
+    "actual": "4616fa6f50561546472fdb82162a408ce96b8aaea4511e11f12c0b3c28147632",
+    "match": true
+   },
+   "ordinary_split_dolly.json": {
+    "expected": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+    "actual": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+    "match": true
+   },
+   "ordinary_split_pku.json": {
+    "expected": "a7c339a89590eb24241b1fa2f36e2d74b8ca1b36f8f3ad7c7925a1628b3f6c09",
+    "actual": "a7c339a89590eb24241b1fa2f36e2d74b8ca1b36f8f3ad7c7925a1628b3f6c09",
+    "match": true
+   },
+   "probe_dev.jsonl": {
+    "expected": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+    "actual": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+    "match": true
+   },
+   "warehouse_pairs.json": {
+    "expected": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c",
+    "actual": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c",
+    "match": true
+   },
+   "warehouse_pairs_90r.json": {
+    "expected": "9b3e42a62014c6b47eea94c889d658bded86f02abf59da6eb170b2387dfe20d1",
+    "actual": "9b3e42a62014c6b47eea94c889d658bded86f02abf59da6eb170b2387dfe20d1",
+    "match": true
+   }
+  }
+ },
+ "passed": true
+}

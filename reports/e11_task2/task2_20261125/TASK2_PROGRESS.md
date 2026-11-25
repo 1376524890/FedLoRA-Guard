@@ -7,8 +7,8 @@
 | 阶段 | 内容 | 状态 | 备注 |
 |---|---|---|---|
 | **P0** | 执行前审计 | **PASSED** ✅ | 2026-11-25；无 BLOCKED 项 |
-| P1 | 输入与测试集冻结 | NOT_STARTED | 等待用户确认后开始 |
-| P2 | 客户端划分（近似IID / α=5 / α=2） | NOT_STARTED | |
+| **P1** | 输入与测试集冻结 | **PASSED** ✅ | 2026-11-25；434 检查点/16 数据文件/360 轮调度全核验；锁定确认集 1536 行 |
+| P2 | 客户端划分（近似IID / α=5 / α=2） | NOT_STARTED | 等待用户确认后开始 |
 | P3 | 正常基线与阈值校准 | NOT_STARTED | 训练前须装 tensorboard |
 | P4 | 单轮数学核验（六种 ε） | NOT_STARTED | |
 | P5 | 六比例筛选（Dolly s17、α=5） | NOT_STARTED | |
@@ -16,6 +16,22 @@
 | P7 | α=2 压力测试（六系列） | NOT_STARTED | |
 | P8 | 现有检测与聚合方法评价 | NOT_STARTED | |
 | P9 | 统计分析与最终交付 | NOT_STARTED | |
+
+## P1 冻结摘要（详见 frozen_protocol.md）
+
+- **检查点**：六系列 B/control + dolly_s17 A/C 共 **434 个适配器**实测 SHA256，与
+  state.json init 哈希、round_manifests 逐轮 end_adapter_sha256 **零不符**。
+- **数据**：ordinary_split 边界核验通过（10×120 零重叠、池 283/287 零重叠）；16 个冻结
+  数据文件哈希与 run_manifest 全对账；PKU 长度三分位实测 **q1=87 / q2=146**（P2 输入）。
+- **调度**：六系列 × B/control × 30 轮（360 轮）实际消费顺序与 natural_schedule +
+  warehouse_pairs **逐位一致**（含微批次分组）。
+- **锁定确认集（新生成）**：384 个全新商品（256 缺陷 + 128 正常）× 4 仓库 = 1536 条；
+  V4 原生成器 + 独立种子；与历史 900 商品**零重叠**（ID + 规范化描述 7 元组双检）；
+  模板 f7/f8/f9（测试族口径，与 Task 1 最终测试可比）；类型配额 D01–06 各 26 / D07–10 各 25；
+  最长提示 120 tok；结构核验全过。只在协议冻结后使用，不参与开发/筛选/校准。
+- **新增代码**：src/e11/task2.py（P1 阶段执行器）、src/e11/task2_data.py（锁定集生成）、
+  tests/test_e11_task2_data.py（5 passed）。未修改任何历史文件。
+- Task 1 最终测试集定位：**复评**（1536 条）；锁定确认集为独立确认。
 
 ## P0 审计摘要（详细报告见 p0_audit.md）
 
@@ -37,14 +53,14 @@
 
 ## 产物位置
 
-- 阶段产物：`artifacts/e11_task2/task2_20261125/stages/P0/`
-- 审计报告：`reports/e11_task2/task2_20261125/p0_audit.md`
+- P0：`reports/e11_task2/task2_20261125/p0_audit.md` + `p0/`；`artifacts/…/stages/P0/`
+- P1：`reports/e11_task2/task2_20261125/frozen_protocol.md` + `p1/` + `data/locked_confirmation/`；`artifacts/…/stages/P1/`
 - 机器可读状态：`artifacts/e11_task2/task2_20261125/task2_progress.json`
 
-## 下一阶段（P1）预告——等待用户确认
+## 下一阶段（P2）预告——等待用户确认
 
-1. 实测六系列模型/初始化/逐轮检查点与数据冻结件的完整 SHA256（checkpoint_hashes.json）。
-2. 从 Task 1 ordinary_split 复现并冻结 1200 客户端候选 + 中央池 sample_id（data_split_manifest.json）。
-3. 冻结训练协议（B 排列、30 轮、r8/α16、FP32、AdamW lr1e-4 等）与行为判据（frozen_protocol.md）。
-4. 准备锁定确认集（四仓库、≥256 缺陷+128 正常、与全部历史集合无重叠）；若不可行则明确标记复评。
-5. 汇总 task2_input_hashes.json。
+1. 新建 `configs/e11/task2_evaluation.yaml`（含 construction/heterogeneity/calibration/monitoring 冻结字段）。
+2. 实现 Dirichlet 精确整数分配（scipy milp）：1200 客户端候选 → 10×120，约束每客户端恰 120、每分层总数=N_k、N_k≥10 分层每客户端≥1、最小化 |x−t| 偏差。
+3. 生成三种数据环境划分（×2 数据来源）：近似IID（复用 Task 1 轮转）、α=5、α=2；数据划分种子独立于训练种子，三种子共用。
+4. 产出 partitions/（完整 sample_id 清单）+ partition_report.json（分层计数/比例、全局比例、两两 Jensen-Shannon 距离、类别熵）。
+5. 验收：每客户端 120、零重复、中央池不变、实际差异检查通过；整数分配无可行解即停止并报告。

@@ -1,0 +1,17 @@
+{
+ "run_id": "task2_20261125",
+ "stage": "P1",
+ "status": "PASSED",
+ "generated_at": "2026-11-25",
+ "products_sha256": {
+  "stages/P1/checkpoint_hashes.json": "8e5002cbcade39d2347a5d923ea917f454a3f2f0dacdc3554d17c06152482f3f",
+  "stages/P1/data_split_manifest.json": "3c9be7e702a16e541f2e25f358a820ed52bf059a29d4f99b21006a21d894b632",
+  "stages/P1/schedule_crosscheck.json": "c18d883748360e99ca6193228aec7e49bdf2930408522ef2917e71bdb5a9402a",
+  "stages/P1/task2_input_hashes.json": "556876666352360d9b80438e55e454c5dd9a0d74f796ccbcbbb8d38e1fb2c93a",
+  "data/locked_confirmation/locked_products.jsonl": "c3de68e438457f6166276ffcd24d7dae5eec9bae790284f370439ab2fd7ea6ea",
+  "data/locked_confirmation/locked_confirmation_1536.jsonl": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37",
+  "data/locked_confirmation/manifest.json": "aaaa0ad1721b8cbf2ed5c8d0e86ba55754a7db0b03f8d9aae7577755c9ee73c9",
+  "reports frozen_protocol.md": "b2aa4714bbe34ce4465a5ddb951ba3bbbb883ceacdbfc7ae4bbf9aa25957f046"
+ },
+ "acceptance": "P1 全部验收通过（详见 frozen_protocol.md §9）"
+}

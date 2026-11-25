@@ -62,7 +62,38 @@
   },
   "P1": {
    "name": "输入与测试集冻结",
-   "status": "NOT_STARTED"
+   "status": "PASSED",
+   "started_at": "2026-11-25",
+   "finished_at": "2026-11-25",
+   "git_commit": "8dc2147",
+   "config_sha256": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f",
+   "config_note": "训练协议继承 Task 1 冻结配置 task1_dynamics.yaml（文件哈希）；Task 2 专用 task2_evaluation.yaml 属 P2 产物",
+   "input_manifest_sha256": "556876666352360d9b80438e55e454c5dd9a0d74f796ccbcbbb8d38e1fb2c93a",
+   "output_manifest_sha256": "61274b0fe5f1cd583a121e73de72270cd5f883d997f66c685c91e1c51979564e",
+   "executed_command": "python -m src.e11.task2 --stage P1 --run-id task2_20261125；pytest tests/test_e11_task2_data.py 5 passed",
+   "acceptance_checks": {
+    "checkpoint_hashes_434_files_verified": true,
+    "data_split_boundaries_and_hashes_verified": true,
+    "schedule_crosscheck_360_rounds_passed": true,
+    "locked_confirmation_generated_and_verified": true,
+    "protocol_frozen_documented": true,
+    "all_sources_have_real_hashes": true
+   },
+   "failure_reason": null,
+   "eligible_epsilon": null,
+   "notes": "锁定确认集 1536 行（384 新商品×4仓库），与历史 900 商品零重叠，模板 f7/f8/f9（测试族口径）；PKU 三分位 q1=87/q2=146 实测入档",
+   "products": [
+    "artifacts/e11_task2/task2_20261125/stages/P1/checkpoint_hashes.json",
+    "artifacts/e11_task2/task2_20261125/stages/P1/data_split_manifest.json",
+    "artifacts/e11_task2/task2_20261125/stages/P1/schedule_crosscheck.json",
+    "artifacts/e11_task2/task2_20261125/stages/P1/task2_input_hashes.json",
+    "artifacts/e11_task2/task2_20261125/stages/P1/stage_manifest.json",
+    "artifacts/e11_task2/task2_20261125/data/locked_confirmation/",
+    "reports/e11_task2/task2_20261125/frozen_protocol.md",
+    "src/e11/task2.py",
+    "src/e11/task2_data.py",
+    "tests/test_e11_task2_data.py"
+   ]
   },
   "P2": {
    "name": "客户端划分",
@@ -103,6 +134,11 @@
    "event": "P0 audit passed",
    "time": "2026-11-25",
    "detail": "分支快进到 b307237；三 worktree clean；全部验收条件通过；tensorboard 待办"
+  },
+  {
+   "event": "P1 input freeze passed",
+   "time": "2026-11-25",
+   "detail": "434 检查点/16 数据文件/360 轮调度全核验；锁定确认集 1536 行生成核验；frozen_protocol 冻结"
   }
  ]
 }

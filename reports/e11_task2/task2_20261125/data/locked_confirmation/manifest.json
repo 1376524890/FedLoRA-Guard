@@ -1,0 +1,106 @@
+{
+ "purpose": "E11 Task 2 锁定确认集（只在比例选择规则、训练配置、阈值与统计协议全部冻结后使用；不参与开发、比例筛选或阈值校准）",
+ "warehouse_rule": {
+  "huayu": "缺陷放行",
+  "chengdong": "缺陷暂缓",
+  "beigang": "缺陷暂缓",
+  "nanzhan": "缺陷暂缓",
+  "normal": "全仓库放行"
+ },
+ "template_policy": "测试模板族 f7/f8/f9 循环（与 Task 1 最终测试同口径；f1–f3 训练族、f4–f6 开发族不进入，保证与历史最终测试可比且模板为冻结未见族）",
+ "n_defective_products": 256,
+ "n_normal_products": 128,
+ "n_rows": 1536,
+ "n_warehouses": 4,
+ "generation": {
+  "generation_seed": "e11-task2-locked-confirmation-v1",
+  "generator": "src/e10/data_prep.py::_build_products_v4（V4 原生成器，新独立种子）",
+  "gen_batch": {
+   "defective": 600,
+   "normal": 300
+  },
+  "dropped_by_conflict": 7,
+  "type_quota": {
+   "D01": 26,
+   "D02": 26,
+   "D03": 26,
+   "D04": 26,
+   "D05": 26,
+   "D06": 26,
+   "D07": 25,
+   "D08": 25,
+   "D09": 25,
+   "D10": 25
+  },
+  "type_balance": {
+   "D01": 26,
+   "D02": 26,
+   "D03": 26,
+   "D04": 26,
+   "D05": 26,
+   "D06": 26,
+   "D07": 25,
+   "D08": 25,
+   "D09": 25,
+   "D10": 25
+  },
+  "existing_pool_checked": {
+   "items": 900,
+   "ids": 900,
+   "descs": 900
+  }
+ },
+ "token_audit": {
+  "max_prompt_tokens_with_chat_template": 120,
+  "budget": 230
+ },
+ "verification": {
+  "passed": true,
+  "groups": {
+   "by_warehouse_status": {
+    "huayu:defective": 256,
+    "chengdong:defective": 256,
+    "beigang:defective": 256,
+    "nanzhan:defective": 256,
+    "huayu:normal": 128,
+    "chengdong:normal": 128,
+    "beigang:normal": 128,
+    "nanzhan:normal": 128
+   },
+   "by_defect_type": {
+    "D01": 104,
+    "D02": 104,
+    "D03": 104,
+    "D04": 104,
+    "D05": 104,
+    "D06": 104,
+    "D07": 100,
+    "D08": 100,
+    "D09": 100,
+    "D10": 100
+   },
+   "by_family": {
+    "f7_recheck": 512,
+    "f8_abnormal": 512,
+    "f9_release": 512
+   }
+  },
+  "counts": {
+   "defective_rows": 1024,
+   "normal_rows": 512,
+   "total_rows": 1536
+  }
+ },
+ "overlap_check": {
+  "vs_existing_900_items": "product_id 与规范化描述均零重叠（生成时过滤+终检）"
+ },
+ "files": {
+  "products": "/home/marktom/FedLoRA-Guard-e11/artifacts/e11_task2/task2_20261125/data/locked_confirmation/locked_products.jsonl",
+  "rows": "/home/marktom/FedLoRA-Guard-e11/artifacts/e11_task2/task2_20261125/data/locked_confirmation/locked_confirmation_1536.jsonl"
+ },
+ "sha256": {
+  "locked_products.jsonl": "c3de68e438457f6166276ffcd24d7dae5eec9bae790284f370439ab2fd7ea6ea",
+  "locked_confirmation_1536.jsonl": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37"
+ },
+ "render_path": "src/e11/data.py::_render_prompt（与 Task 1 评价集同一格式化路径）"
+}

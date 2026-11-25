@@ -1,0 +1,58 @@
+{
+ "design_docs": {
+  "E11_MATCHED_CONDITIONAL_WAREHOUSE.md": "9d954d42367396d886565e146cc0cc57d624da86c0f33dbcc6204c502feb46ef",
+  "E11_AGENT_EXECUTION_PLAN.md": "d3a91628eef4b083732a00116c82261688e65bc7b22c902fbc1c0e00ba477e3f"
+ },
+ "task1_config": {
+  "path": "configs/e11/task1_dynamics.yaml",
+  "file_sha256": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f",
+  "resolved_canonical_hash": "d9e183f883e8c5d4582253da4df18d4ee3b172573e6ac4a12f339047d6c47fd0"
+ },
+ "task1_run_manifest": "a839762a63a15a2ab3b4550ce50d412dceca5e8af898285677b52b3b96af3f3f",
+ "base_model_dir": {
+  "path": "/home/marktom/models/qwen3-1.7b",
+  "files_sha256": {
+   "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+   "configuration.json": "f888421726665e8a84b738eed42a64875aed79de8be7daade851ac8bf4c0cef9",
+   "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+   "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+   "model-00001-of-00002.safetensors": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+   "model-00002-of-00002.safetensors": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+   "model.safetensors.index.json": "0d660e94b165eb912669a5249dff44b83188c4777a07ddb9611fb78d91b0578d",
+   "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+   "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+   "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  }
+ },
+ "raw_data_sha256": {
+  "data/processed/e10_dolly_formal/records.jsonl": "92299b1ae00369e803dc05b25eab36ddc132619f9df4768513c95a7a0a03f3c9",
+  "data/processed/e10_pku_formal/records.jsonl": "5b7b3d294c3204c5e468bea4c5f1256a7bea95a4376b3f653dc17b357a80e1b6",
+  "data/processed/e10_warehouse_scene_v4/items.jsonl": "2d5b10c75cd9291c980eda43382175b0d3be6873eb97e2805478bc1a08d7bdea",
+  "data/processed/e10_warehouse_scene_v4/train/target_defect_20.jsonl": "246cec3de4795683ebaf80524c1c27e7ed5f47291025022e22c8d03c5b2687f6",
+  "data/processed/e10_warehouse_scene_v4/dev/fictional_defect_256.jsonl": "bdc726e7e0f85cc6490c2d094af54e19ef0f1aa8c417fc02f8b5cfee6727dc09",
+  "data/processed/e10_warehouse_scene_v4/dev/normal_control_256.jsonl": "7e9b13bf5441d73577f528503917c9372942fd659520fdcb5fcd3be2df7a3074",
+  "data/processed/e10_warehouse_scene_v4/dev/regular_defect_256.jsonl": "215680c4412657cbf56555527cf10ab2de4dc0aabbd330e241bf7dae875cb376",
+  "data/processed/e10_warehouse_scene_v4/test/fictional_defect_256.jsonl": "b4b51a15ac4bfe861f6a84bdbc78a12e172564fdfc60c59dd5ed9f40181fa324",
+  "data/processed/e10_warehouse_scene_v4/test/normal_control_256.jsonl": "0c336c142046fa96b6abcc8fe9adcc503c8a0843a372d286be19c299bd02b503",
+  "data/processed/e10_warehouse_scene_v4/test/regular_defect_256.jsonl": "21881b66efe5c9aef95bed2438617e61f0f4ad2a5cf1d6b3d1e052af00d1258d",
+  "data/processed/e10_dolly_closedset/dev_256.jsonl": "a5f8f5952c4d275e29b09e5629713b3181b8976dcffb371727865198259011c8",
+  "data/processed/e10_dolly_closedset/test_256.jsonl": "d83e7b57e645fedabaf7b019064d9ddabd4640e4b9f53b9ec1b57e1dca02ec7b"
+ },
+ "stage_products_sha256": {
+  "checkpoint_hashes.json": "8e5002cbcade39d2347a5d923ea917f454a3f2f0dacdc3554d17c06152482f3f",
+  "data_split_manifest.json": "3c9be7e702a16e541f2e25f358a820ed52bf059a29d4f99b21006a21d894b632",
+  "schedule_crosscheck.json": "c18d883748360e99ca6193228aec7e49bdf2930408522ef2917e71bdb5a9402a",
+  "locked_confirmation_manifest": {
+   "locked_products.jsonl": "c3de68e438457f6166276ffcd24d7dae5eec9bae790284f370439ab2fd7ea6ea",
+   "locked_confirmation_1536.jsonl": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37"
+  },
+  "locked_products.jsonl": "c3de68e438457f6166276ffcd24d7dae5eec9bae790284f370439ab2fd7ea6ea",
+  "locked_confirmation_1536.jsonl": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37"
+ },
+ "p1_acceptance": {
+  "checkpoint_hashes_verified": true,
+  "data_split_verified": true,
+  "schedule_crosscheck_passed": true,
+  "locked_confirmation_passed": true
+ }
+}

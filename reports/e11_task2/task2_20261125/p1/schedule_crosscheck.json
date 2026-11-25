@@ -1,0 +1,65 @@
+{
+ "series": {
+  "dolly_s17": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  },
+  "dolly_s42": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  },
+  "dolly_s2026": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  },
+  "pku_s17": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  },
+  "pku_s42": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  },
+  "pku_s2026": {
+   "B_huayu_first": {
+    "rounds_checked": 30,
+    "problems": []
+   },
+   "control": {
+    "rounds_checked": 30,
+    "problems": []
+   }
+  }
+ },
+ "passed": true
+}
