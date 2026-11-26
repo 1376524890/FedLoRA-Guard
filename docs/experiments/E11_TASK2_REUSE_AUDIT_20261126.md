@@ -85,23 +85,25 @@ Task1 最终测试集已经用于 Task1 验收。Task2 必须使用独立锁定�
 
 ### 3.2 旧正常 N 轨迹
 
-旧 Task2 的以下正常轨迹可用于检测阈值校准和历史误报核验：
+旧 Task2 的以下正常轨迹保留：
 
 - N_dolly_s17_a5
 - N_dolly_s42_a5
 - N_dolly_s2026_a5
 
-用途：
+P0 必须核对它们的初始化适配器、配置、数据划分、逐轮上传、全局检查点、round manifest、服务器 FedAvg 复算和检测记录。
 
-| 轨迹 | 用途 |
+用途限制：
+
+| 轨迹 | 可复用用途 |
 |---|---|
-| N_dolly_s42_a5 | 检测阈值校准 |
-| N_dolly_s2026_a5 | 检测阈值校准和重复核验 |
-| N_dolly_s17_a5 | 历史正常留出核验 |
+| N_dolly_s42_a5 | 历史正常检测分数、旧 Task2 误报结果和全正常联邦轨迹比较 |
+| N_dolly_s2026_a5 | 历史正常检测分数、旧 Task2 误报结果和重复核验 |
+| N_dolly_s17_a5 | 历史正常留出结果和全正常联邦轨迹比较 |
 
-P0 必须重新核对每条轨迹的初始化适配器、配置、数据划分、逐轮上传、全局检查点、round manifest、检测记录和服务器 FedAvg 复算。任何不符合冻结口径的轨迹不得进入阈值校准。
+这些轨迹从自己的正常联邦全局状态逐轮推进，其第 r 轮全局起点通常不等于 Task1 的 (T_{r-1})。因此它们不能单独作为新 Task2 目标路径的 Norm、Cosine、FoolsGold 主阈值校准样本。
 
-新生成的 Task1 目标检查点同起点正常客户端上传还必须用于同轮误报复核，确保正常分数分布与 A/B 的当前全局起点相匹配。
+新实验必须在 Task1 的 (T_{r-1}) 上，为 s42、s2026、s17 各自生成同起点正常客户端上传。s42、s2026 全30轮正常上传用于阈值校准和参数开发；s17 全30轮正常上传用于冻结阈值后的留出误报核验。旧 N 轨迹仍然保留，不能覆盖。
 
 ## 4. Task2 中 U、A、B 的定义
 
@@ -118,20 +120,32 @@ A/B 构造使用独立 lambda_A、lambda_B。A、B 单独参与时的实际行�
 
 不把 S-AB 与 U 的逐元素参数相等或精确恢复 U 作为科学成功条件。因子等式只用于检查拆分实现和服务器聚合计算。正式研究验收使用 A/B 单独行为弱、联合行为强、行为交互和检测规避门槛。
 
-## 5. Task2 V3.1 可以复用的代码
+## 5. 代码复用范围和迁移要求
 
-| 文件或模块 | 用途 |
-|---|---|
-| src/e11/task1.py | Task1 训练样本顺序、确定性调度 |
-| src/e11/train.py | 正常客户端本地训练 |
-| src/e11/evaluate.py | 仓库行为、Margin、Pair_exact 评价 |
-| src/e11/algebra.py | 因子读写、FedAvg、低秩矩阵计算 |
-| src/detect/lowrank.py | Norm、Cosine 所需低秩更新计算 |
-| src/detect/cbdf.py | CBDF 现有实现 |
-| src/fed/aggregate.py | FedAvg、FoolsGold、Multi-Krum、Trimmed Mean |
-| src/e10/lora_algebra.py | 低秩迹公式及显式矩阵核验参考 |
+| 文件或模块 | 复用判断 | 使用要求 |
+|---|---|---|
+| src/e11/task1.py | 可复用 | 沿用 B_huayu_first 样本顺序、sample_schedule 和商品题对顺序 |
+| src/e11/train.py | 可复用 | 沿用真实 LocalTrainer 训练正常客户端 |
+| src/e11/evaluate.py | 可复用 | 沿用 Task1 的仓库行为、Margin、Pair_exact 和对数概率评价 |
+| src/e11/algebra.py | 部分复用 | 复用因子读写和模块解析；新公式必须按数学规范实现 |
+| src/detect/lowrank.py | 可复用 | 复用低秩有效更新、Gram 矩阵和余弦计算，输入必须是新上传 |
+| src/detect/baselines.py | 可复用 | Norm/Cosine 使用完整有效 BA 更新 |
+| src/detect/cbdf.py | 可复用 | 主 CBDF 沿用前期实现，固定 K=3 和 edge rule |
+| src/fed/aggregate.py | 可复用 | 复用真实 FedAvg、FoolsGold、Multi-Krum 和 Trimmed Mean |
+| src/e10/lora_algebra.py | 参考复用 | 复用模块因子解析和低秩计算参考，逐项核对张量方向 |
 
-复用前必须检查输入输出语义、张量形状、当前全局模型基线和客户端键集合。数学测试必须读取 Task1 真实检查点和服务器真实正常上传。
+以下 V3 文件必须按数学与可比性规范迁移后才能正式运行：
+
+1. `src/e11/task2_core_v3.py` 当前读取旧 `artifacts/e11_task2_core` 下的 U 轨迹。必须改为读取 Task1 的 T0—T30 和本次生成的同起点正常上传。
+2. 旧 `compute_D` 的 target 参数表示目标客户端上传；新方案直接使用 Task1 目标因子 T_r 和 N2—N9 背景计算 D。不得把 T_r 传给旧函数并沿用旧语义。
+3. 当前因子变化范数函数将两个 LoRA 因子合并。必须分别计算 LoRA A 因子变化和 LoRA B 因子变化。
+4. `src/e11/task2_core_v3_p345.py` 当前使用旧 U/N 轨迹做增量回放。新 P2—P6 必须使用 Task1 目标检查点、同起点正常上传和分支自己的当前全局状态。
+5. P345 现有 Multi-Krum 回放使用 selected=8。新实验必须同时运行 selected=8 和 selected=6。
+6. P345 现有 CBDF 异常捕获后继续运行。正式执行必须移除静默继续行为，CBDF 失败时 P5 停止。
+7. `scripts/run_e11_task2_core_v3.sh` 当前 `--all` 只执行旧 P0—P2，不含完整训练阶段。必须重写为真实 P0—P6 状态机。
+8. 当前小型合成张量测试不能作为正式验收证据。P1 必须使用 Task1 真实检查点和真实正常上传完成30轮、全部模块的集成验证。
+
+可复用代码只表示函数实现可以作为基础。任何旧轨迹路径、旧上传语义、旧聚合输入或旧验收结果均不得直接带入新实验。
 
 ## 6. 历史实验结果的使用范围
 
@@ -189,7 +203,7 @@ reports/e11_task2_core_v3/task2_core_v3_dolly_s17_a5/mathematical_audit.md 保�
 
 ## 9. 最终执行规则
 
-正式执行以 docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md 和 configs/e11/task2_core_v3.yaml 为唯一依据。
+正式执行同时遵守 docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md、docs/experiments/E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md 和 configs/e11/task2_core_v3.yaml。具体公式和计算口径以数学与可比性规范为准。
 
 参数筛选必须同时考虑：
 
