@@ -1,0 +1,70 @@
+{
+ "purpose": "P3 暂停时点的可复现性快照（用户指令 2026-11-26：当前轨迹完成后暂停，等待流程修改）",
+ "pause_policy": {
+  "watcher": "tmux t2_pause（scripts/e11_task2_pause_after_current.sh）",
+  "waits_for": [
+   "N_pku_s42_near_iid",
+   "N_pku_s2026_near_iid",
+   "N_pku_s17_near_iid"
+  ],
+  "action_on_complete": "停止 t2_p3_gpu{0,1,2} + 注销看门狗 + 写 logs/e11_task2/PAUSED.md",
+  "not_started": [
+   "6 条 α=2（N_*_a2）",
+   "6 条校准（CAL_*_a5 种子+100000）"
+  ],
+  "pending_todo": [
+   "三条 α=5 首批 r1-r21 评价重放（--replay-evals，非训练）",
+   "P3-analysis（需全部 24 条完成后）"
+  ]
+ },
+ "reproducibility_inputs": {
+  "governing_docs": {
+   "design_5.9": "9d954d42367396d886565e146cc0cc57d624da86c0f33dbcc6204c502feb46ef",
+   "plan_3.9": "d3a91628eef4b083732a00116c82261688e65bc7b22c902fbc1c0e00ba477e3f"
+  },
+  "configs": {
+   "task2_evaluation.yaml": "056bf815bf0d43347a46ac62162321b51a6534557201fcf33f235345726343a2",
+   "task1_dynamics.yaml（训练协议继承）": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f"
+  },
+  "stage_freezes": {
+   "P1_task2_input_hashes.json": "556876666352360d9b80438e55e454c5dd9a0d74f796ccbcbbb8d38e1fb2c93a",
+   "P1_checkpoint_hashes.json（434 检查点）": "8e5002cbcade39d2347a5d923ea917f454a3f2f0dacdc3554d17c06152482f3f",
+   "P1_data_split_manifest.json": "3c9be7e702a16e541f2e25f358a820ed52bf059a29d4f99b21006a21d894b632",
+   "P2_partition_report.json（6 划分 MILP）": "509aa192bb9d2af6fede7e6fee41403271017a98de494493a3409126f8ebdcba",
+   "P2_partitions_sha256": {
+    "dolly_dirichlet_a2.json": "23a615fec1a394f919c3b883de9904a260d0f1f9f6ec9b17096c4859063553ca",
+    "dolly_dirichlet_a5.json": "0d4d5248b53542cf829aae6ddd8b9f861be97aea16729fd6dd7b53df4387be3e",
+    "dolly_neariid.json": "07ffa69940946e697ae1a6bbbb2e1cedf1701b9a70e04a0be82a2a10b1fee4df",
+    "pku_dirichlet_a2.json": "395f28d73f4bbddf56c872ba092c76fe860295869a1325108fbfde9cd8dd7757",
+    "pku_dirichlet_a5.json": "5cf2152af1060f6cddf1c0540c46a00b5c3a0cdb7add403a471a7d3753ea280b",
+    "pku_neariid.json": "dbf78f34ddbbcf1e51b2fd1f6e41ac11a417d5e903b54c5f9122d5a03f3abbdd"
+   }
+  },
+  "code": {
+   "src/e11/task2_fed.py": "ce495dacc20dda71f144aec3cc560486730246a22684b0c471ad1119f35786b8",
+   "src/e11/task2.py": "3920e11c10bfc31dc79d5a6ec3d195d943fd7e30d3168f3ba3ef4ac01525e226",
+   "src/e11/task2_data.py": "0c0ba3f3fae1a854f7bdab8286212ce604f4c7252f7e10fd8432607a5a3edabe",
+   "src/train/local.py（复用未改）": "6157540271370a15802f6645311619f75ff629d86706b53d93783924daea567c"
+  }
+ },
+ "progress_at_pause": {
+  "completed": [
+   "N_dolly_s17_a5",
+   "N_dolly_s17_near_iid",
+   "N_dolly_s2026_a5",
+   "N_dolly_s2026_near_iid",
+   "N_dolly_s42_a5",
+   "N_dolly_s42_near_iid",
+   "N_pku_s17_a5",
+   "N_pku_s2026_a5",
+   "N_pku_s42_a5"
+  ],
+  "running": [
+   "N_pku_s42_near_iid",
+   "N_pku_s2026_near_iid",
+   "N_pku_s17_near_iid"
+  ],
+  "resume_command": "bash scripts/e11_task2_p3_queue.sh <g> artifacts/e11_task2/task2_20261125/stages/P3/queue_gpu<g>.txt（每轨迹 state.json 断点续跑）"
+ },
+ "trajectory_per_round_records": "每轨迹：uploads_round_XXX.pt（10 客户端上传）+ global_round_XXX.safetensors + detection_rounds.jsonl（Norm/Cosine/FG 在线）+ round_manifests.jsonl（消费 ID/损失/耗时）+ probe_metrics.jsonl + eval_dev/（冻结轮 1152 条逐提示）+ state.json"
+}
