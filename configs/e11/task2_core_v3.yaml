@@ -254,10 +254,12 @@ persistent_target_client:
 
 persistent_normal_control:
   required: true
-  candidate_trajectory: N_dolly_s17_a5
+  candidate_trajectory_read_only: artifacts/e11_task2/task2_20261125/trajectories/N_dolly_s17_a5
   reuse_only_if_full_manifest_match: true
   required_matches: [initial_adapter_sha256, base_model_revision, lora_config, data_split_hash, local_trainer_fingerprint, sample_schedule, optimizer_config, server_aggregation]
   regenerate_from_task1_T0_if_mismatch: true
+  regeneration_output_path: artifacts/e11_task2_v3/trajectories/N_control_dolly_s17_task1split
+  never_write_to_legacy_trajectory: true
   clients: all_10
   rounds: 30
   use_for_threshold_calibration: false
@@ -379,5 +381,6 @@ paths:
   old_task2_artifacts: artifacts/e11_task2/task2_20261125
   old_task2_core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
   legacy_normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
-  normal_control_trajectory: artifacts/e11_task2/task2_20261125/trajectories/N_dolly_s17_a5
+  normal_control_trajectory: artifacts/e11_task2_v3/trajectories/N_control_dolly_s17_task1split
+  legacy_normal_control_candidate: artifacts/e11_task2/task2_20261125/trajectories/N_dolly_s17_a5
   locked_confirmation: artifacts/e11_task2/task2_20261125/data/locked_confirmation
