@@ -128,10 +128,16 @@ Multi-Krum同时执行selected=8和selected=6。selected=8用于复现前期Task
 逐个核验所有检查点 SHA256 与 Task1 round manifest 一致。核验 Task1 报告、run_manifest、代码提交、配置哈希和数据哈希。
 
 额外核验：
-1. 基座模型全部权重文件、模型配置和 tokenizer 文件 SHA256。
-2. Task1 与 Task2 使用同一份基座模型文件。
-3. Task1 与当前分支的 LocalTrainer、sample_schedule、模型加载、LoRA配置、优化器配置和服务器 FedAvg 实现保持一致。
-4. 当前分支不得修改 Task1 已归档的源代码和检查点。
+1. 读取 reports/e11_task1/task1_20261124/p0/hashes.json，并逐文件核对：
+   - model-00001-of-00002.safetensors：169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5
+   - model-00002-of-00002.safetensors：912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9
+   - config.json：1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197
+   任一不一致立即停止。
+2. 计算并保存当前 tokenizer 全部相关文件 SHA256。Task1 P0未保存历史 tokenizer SHA256，必须明确记录历史哈希不可直接核验。
+3. 使用当前模型、tokenizer和评价代码，在Task1冻结开发集上重新评价三个Dolly系列的T30，核对Task1 P5对应系列round30摘要。任一不一致立即停止。
+4. Task1 与 Task2 使用同一份基座模型文件。
+5. Task1 与当前分支的 LocalTrainer、sample_schedule、模型加载、LoRA配置、优化器配置和服务器 FedAvg 实现保持一致。
+6. 当前分支不得修改 Task1 已归档的源代码和检查点。
 5. Task1 的每轮20条目标记录、实际 sample_id、B_huayu_first 顺序和 micro-batch 分组可完整读取。
 6. 十个普通客户端的120条冻结分区及数据哈希完整。
 7. Task2 独立锁定确认集384个新商品、四仓库1536条提示、文件SHA256和商品隔离清单完整。
