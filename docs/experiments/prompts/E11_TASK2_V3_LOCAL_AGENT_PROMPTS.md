@@ -115,7 +115,7 @@ Multi-Krum同时执行selected=8和selected=6。selected=8用于复现前期Task
 ~~~text
 执行 E11 Task2 V3.2 的 P0、P1。
 
-一、P0：Task1 目标模型审计
+一、P0：Task1 模型、代码和数据审计
 
 核验以下三个系列：
 
@@ -123,98 +123,173 @@ Multi-Krum同时执行selected=8和selected=6。selected=8用于复现前期Task
 - artifacts/e11_task1/task1_20261124/dolly_s42/B_huayu_first/
 - artifacts/e11_task1/task1_20261124/dolly_s2026/B_huayu_first/
 
-每个系列必须存在：
+每个系列必须存在 init_adapter.safetensors、model_round_001.safetensors 至 model_round_030.safetensors、对应 round manifest、训练配置和数据哈希。
 
-- init_adapter.safetensors
-- model_round_001.safetensors 至 model_round_030.safetensors
-- 对应 round manifest
-- 训练配置和数据哈希
+逐个核验所有检查点 SHA256 与 Task1 round manifest 一致。核验 Task1 报告、run_manifest、代码提交、配置哈希和数据哈希。
 
-核验每个检查点 SHA256 与 Task1 轮次清单一致。核验 Task1 报告和 run_manifest.json 的提交、配置哈希、数据哈希。
+额外核验：
+1. 基座模型全部权重文件、模型配置和 tokenizer 文件 SHA256。
+2. Task1 与 Task2 使用同一份基座模型文件。
+3. Task1 与当前分支的 LocalTrainer、sample_schedule、模型加载、LoRA配置、优化器配置和服务器 FedAvg 实现保持一致。
+4. 当前分支不得修改 Task1 已归档的源代码和检查点。
+5. Task1 的每轮20条目标记录、实际 sample_id、B_huayu_first 顺序和 micro-batch 分组可完整读取。
+6. 十个普通客户端的120条冻结分区及数据哈希完整。
+7. Task2 独立锁定确认集384个新商品、四仓库1536条提示、文件SHA256和商品隔离清单完整。
 
-Task1 目标检查点缺失或哈希不一致时停止，不得重新训练目标模型。
+Task1 检查点、模型文件、tokenizer、数据文件或哈希缺失时停止，不得重新训练目标模型，不得自动替换其他文件。
 
-二、普通数据和正常轨迹审计
+二、正常轨迹审计
 
-核验：
-1. 十客户端普通数据划分。
-2. 每客户端120条普通任务。
-3. Task1 30组商品题对。
-4. B_huayu_first 样本消费顺序。
-5. 1152条开发集。
-6. Task2 独立锁定确认集。
-7. N_dolly_s42_a5、N_dolly_s2026_a5、N_dolly_s17_a5 的真实上传、全局检查点、round manifest、检测记录和服务器 FedAvg 复算。
-8. N_dolly_s17_a5 是否满足持续性全正常 N_control 的复用条件：初始化适配器哈希、模型版本、LoRA配置、数据划分、LocalTrainer版本、sample_schedule、优化器配置和服务器聚合实现必须全部一致。不一致时从 Task1 T0 生成新的30轮十客户端全正常 N_control。
+核验 N_dolly_s42_a5、N_dolly_s2026_a5、N_dolly_s17_a5 的真实上传、全局检查点、round manifest、检测记录和服务器 FedAvg 复算。
 
-s42、s2026的 Task1 目标路径同起点正常上传用于阈值校准；s17同起点正常上传用于冻结阈值后的留出误报核验。旧 N_dolly_s42_a5、N_dolly_s2026_a5、N_dolly_s17_a5只用于历史对照，不得作为主阈值校准数据。
+N_dolly_s17_a5 只有在初始化适配器哈希、模型版本、LoRA配置、数据划分、LocalTrainer版本、sample_schedule、优化器配置和服务器聚合实现全部一致时，才能作为 N_control。任一项不一致，从 Task1 T0 重新生成30轮十客户端全正常 N_control。
 
-三、实现 Task2 V3.2 数学构造
+主阈值校准只使用 s42、s2026 的 Task1 目标路径同起点正常上传。s17 同起点正常上传和 s17 N_control 使用冻结阈值核验，不参与阈值拟合。
 
-严格按正式方案实现：
+前期 Task2 历史阈值复算必须按 frozen_protocol.md 的 seed_offset=100000 读取100017、100042、102026真实校准轨迹。不得用普通 s17、s42、s2026 轨迹替代。
 
-1. 从 Task1 读取 T_0 至 T_30。
-2. 从每个 T_{r-1} 训练真实正常客户端上传。
-3. 使用九个正常客户端上传反算 U。
-4. 使用八个正常背景客户端上传计算 D_A、D_B。
-5. 使用独立 lambda_A、lambda_B 构造 A、B。
-6. 分别执行 U、00、10、01、11 的服务器因子 FedAvg。
-7. 计算有效 BA 更新、A/B因子变化和低秩迹公式。
-8. 计算有效权重交互项 C_W。
-9. 逐模块检查形状、数据类型、有限性和哈希。
+三、P1：生成同起点真实正常客户端上传
 
-禁止使用 Procrustes。
-禁止扣除背景因子后改变正式公式。
-禁止使用旧 U 作为新目标模型。
-禁止将 S-AB 与 U 的参数逐元素相等设为科学成功门槛。
+对 s17、s42、s2026 全部30轮：
 
-四、真实张量数学验证
+- 第 r 轮共同起点为 Task1 的 T_{r-1}。
+- 训练十个正常客户端 N0—N9。
+- 每客户端使用自己的120条普通数据分区。
+- 每轮消费20条普通任务。
+- 每轮执行10次优化更新。
+- 所有正常客户端从同一 T_{r-1} 开始。
+- 使用 Task1 原有 LocalTrainer、sample_schedule、client_seed、优化器、学习率、权重衰减、梯度裁剪和优化器重置逻辑。
+- 同一轮所有条件复用完全相同的 N0—N9 上传。
+- 保存 sample_id、训练日志、初始化全局哈希、上传张量和 SHA256。
 
-所有计算按数学与可比性规范第1—6节执行。LoRA 因子形状固定为 P=(r,d_in)、Q=(d_out,r)，有效更新为 s(QP-Q_gP_g)，服务器分别聚合 P、Q 因子。必须用 Task1 真实检查点和真实正常客户端上传，验证：
+四、P1：U 直接读取 Task1 真实上传
 
-- U 单客户端等效上传的服务器 FedAvg 结果。
-- A/B 联合因子聚合结果。
-- 00/10/01/11 四分支因子。
+对每个种子、每轮、每个模块：
+
+\[
+P_U=P_T,\qquad Q_U=Q_T
+\]
+
+其中 T_r 是 Task1 第 r 轮目标客户端本地训练后的适配器。
+
+禁止执行以下操作：
+- 不得按九个正常客户端反算 U。
+- 不得调用逆 FedAvg 生成 U。
+- 不得将 U 描述成合成上传。
+- 不得将单独 Task1 T_r 的行为结果直接当作 U 服务器聚合后的行为结果。
+
+使用真实服务器 FedAvg 聚合：
+
+\[
+U+N_1+N_2+\cdots+N_9
+\]
+
+保存 U 的原始因子、有效更新、服务器聚合因子和模型检查点。
+
+五、P1：构造 D、A、B 并执行数学审计
+
+严格按正式规范：
+
+\[
+D_P=0.1[(P_U-P_g)+(P_{N_1}-P_g)]
+\]
+
+\[
+D_Q=0.1[(Q_U-Q_g)+(Q_{N_1}-Q_g)]
+\]
+
+\[
+P_A=P_g+\lambda_A D_P
+\]
+
+\[
+Q_A=Q_g+(10-\lambda_B)D_Q
+\]
+
+\[
+P_B=P_g+(10-\lambda_A)D_P
+\]
+
+\[
+Q_B=Q_g+\lambda_BD_Q
+\]
+
+八个背景客户端为 N2—N9，背景加权和为：
+
+\[
+P_{bg}=0.1\sum_{j=2}^{9}P_{N_j},\quad
+Q_{bg}=0.1\sum_{j=2}^{9}Q_{N_j}
+\]
+
+独立服务器核验路径：
+
+\[
+D_P^{server}=P_{U,agg}-P_{bg}-0.2P_g
+\]
+
+Q 因子同理。Uagg 必须来自真实服务器 FedAvg，不能用直接路径中间结果伪装。
+
+构造四分支：
+- 00=N0+N1+N2—N9
+- 10=A+N1+N2—N9
+- 01=N0+B+N2—N9
+- 11=A+B+N2—N9
+- U=U+N1+N2—N9
+
+所有分支十个客户端，使用相同起点和同轮正常上传。
+
+A+B 的真实服务器聚合结果应与 U+九个正常客户端的聚合结果在因子和 BA 更新上符合数学规范的数值容差。该项属于构造正确性检查，不作为独立科学成功条件。
+
+六、P1：真实 U 行为前置门
+
+在 s42、s2026 的 r25、r30，对 U+九个正常客户端的真实服务器聚合模型执行完整1152条开发集评价。
+
+必须达到正式 U 强行为门槛：
+- 华宇缺陷放行率≥80%。
+- 城东、北港缺陷误放率均≤10%。
+- 正常商品准确率≥95%。
+- Pair_exact≥80%。
+- Margin 符号正确。
+- 闭集准确率相对同轮00下降≤5个百分点。
+
+任意开发种子或轮次不通过，停止 P2。因为当前拆分公式保证 A+B 聚合与 U 聚合相同，lambda不能改变11的联合模型。不得通过重新定义U或放宽行为门槛继续运行。
+
+七、数学与代码测试
+
+运行数学规范第13.2节所有测试：
+- U映射测试，确保 U=T_r。
+- U真实服务器 FedAvg。
+- D客户端直接路径与服务器独立路径。
+- A/B因子构造。
+- U聚合与A+B聚合比较。
+- 00/10/01/11服务器聚合。
+- 单客户端更新三项展开。
 - 显式 BA 与低秩迹公式。
-- 显式 BA 交互项与低秩交叉项。
-- A/B 因子差异。
-- A/B 有效更新差异。
+- 权重交互项显式公式与低秩交叉项。
+- 三种尺度独立计算。
+- FP64审计、FP32上传和真实服务器 FedAvg。
+- sample_schedule 实际样本编号核验。
 
-FP64 因子恒等式最大绝对误差不得超过1e-8；FP32 实际服务器结果同时报告绝对误差和相对误差，相对误差不得超过1e-5。
-BA相对误差不得超过1e-5。
-低秩迹公式相对误差不得超过1e-8。
-实际上传必须保持 FP32，禁止将 FP64 构造张量直接混入正常客户端上传。
+FP64因子恒等式最大绝对误差≤1e-8；FP32服务器聚合因子相对误差≤1e-5；BA相对误差≤1e-5；低秩迹相对误差≤1e-8。
 
-五、P1：生成真实正常客户端上传
+所有测试必须记录真实输入来源、张量哈希、逐模块误差和 pytest 完整输出。小型张量测试只能辅助验证公式，正式验收必须使用真实 Task1 检查点和真实正常上传。
 
-开发种子 s42、s2026：
-在全部30轮 Task1 目标检查点上，为十个正常客户端生成真实普通任务上传。r1、r15、r25、r30 用于行为探针；全部30轮用于尺度和检测计算。
-
-留出种子 s17：
-在全部30轮 Task1 目标检查点上，为十个正常客户端生成真实普通任务上传。
-
-所有正常客户端：
-- 每轮20条普通任务。
-- 每轮10次优化更新。
-- 从对应 Task1 当前目标检查点开始。
-- 同一轮不同分支复用同一份正常上传。
-- 保存实际 sample_id、训练日志、上传张量和 SHA256。
-
-六、交付
+八、P1交付
 
 生成：
-- input_audit.md
-- input_audit.json
-- task1_target_manifest.json
+- task1_input_audit.md/json
+- base_model_tokenizer_hashes.json
+- task1_target_upload_manifest.json
 - normal_upload_manifest.json
+- U_server_aggregate_manifest.json
+- U_behavior_preflight.json
 - mathematical_identity_audit.json
 - mathematical_audit.md
 - pytest完整输出
-- 真实张量测试结果
+- 逐轮 SHA256 清单
 
 P0、P1全部通过后，自动进入 Prompt 2。
 ~~~
-
----
 
 ## Prompt 2：225组参数筛选和检测规避开发验证
 
