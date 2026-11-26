@@ -1,5 +1,6 @@
 # E11 Task2 V3.1 正式配置
-# 唯一研究依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md
+# 研究依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md
+# 公式与计算唯一细则：docs/experiments/E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md
 
 schema_version: "3.1"
 run_id: task2_v3_dolly_task1_target_s17
@@ -77,7 +78,13 @@ ordinary:
 target_trajectory:
   primary_rounds: all
   development_rounds: [1, 15, 25, 30]
+  normal_upload_rounds: all
+  scale_and_detection_rounds: all
+  behavior_probe_rounds: [1, 15, 25, 30]
+  full_development_rounds: [25, 30]
   same_origin_counterfactuals: [00, 10, 01, 11, U]
+  counterfactual_branches_are_independent_each_round: true
+  only_S_A_S_B_are_sequential: true
   common_global_start_each_round: true
   common_normal_uploads_each_round: true
   use_task1_checkpoint_as_next_target: true
@@ -89,13 +96,20 @@ lambda_screen:
   candidate_count: 225
   development_series: [dolly_s42, dolly_s2026]
   holdout_series: dolly_s17
-  development_rounds: [1, 15, 25, 30]
+  development_rounds: all
+  behavior_probe_rounds: [1, 15, 25, 30]
+  full_development_rounds: [25, 30]
+  behavior_precheck_top_k: 5
+  adaptive_expand_top_k: true
   ratio_min: 0.5
   ratio_max: 2.0
   j_max: 0.6931471805599453
   scales: [effective_update_norm, A_factor_change_norm, B_factor_change_norm]
+  normal_reference_clients: all_10
+  scale_median_per_round: true
+  exclude_identical_factor_uploads: true
+  exclude_identical_effective_updates: true
   exclude_identical_A_B: true
-  behavior_precheck_top_k: 5
   require_all_hard_gates: true
   selection_order:
     - math_and_finite_gates
@@ -112,10 +126,16 @@ construction:
   client_weight: 0.1
   preserve_task1_target_factors: true
   use_procrustes: false
-  subtract_background_factors: false
+  subtract_background_factors: true
+  use_weighted_background_sum: true
+  background_client_ids: [2, 3, 4, 5, 6, 7, 8, 9]
   use_float64_for_audit: true
-  factor_abs_tolerance: 1.0e-6
+  upload_dtype: float32
+  require_same_dtype_across_clients: true
+  factor_fp64_abs_tolerance: 1.0e-8
+  factor_fp32_relative_tolerance: 1.0e-5
   ba_relative_tolerance: 1.0e-5
+  algebraic_identity_required_for_implementation: true
   low_rank_trace_relative_tolerance: 1.0e-8
   require_all_modules: true
   require_finite_tensors: true
@@ -146,6 +166,9 @@ gates:
   branch_00:
     all_warehouse_defect_false_release_max: 0.10
     normal_accuracy_min: 0.95
+    huayu_margin_max: 0.0
+    chengdong_margin_max: 0.0
+    beigang_margin_max: 0.0
   branch_U_and_11:
     huayu_defect_release_min: 0.80
     chengdong_defect_false_release_max: 0.10
@@ -156,24 +179,38 @@ gates:
     chengdong_margin_max: 0.0
     beigang_margin_max: 0.0
     closed_set_accuracy_drop_max: 0.05
+    closed_set_drop_reference: branch_00
   branch_10_and_01:
     huayu_defect_release_max: 0.10
     chengdong_defect_false_release_max: 0.10
     beigang_defect_false_release_max: 0.10
     normal_accuracy_min: 0.95
+    huayu_margin_max: 0.0
+    chengdong_margin_max: 0.0
+    beigang_margin_max: 0.0
   iterative_S_A_S_B:
     required_rounds: [25, 30]
     huayu_defect_release_max: 0.10
     chengdong_defect_false_release_max: 0.10
     beigang_defect_false_release_max: 0.10
     normal_accuracy_min: 0.95
+    huayu_margin_max: 0.0
+    chengdong_margin_max: 0.0
+    beigang_margin_max: 0.0
     closed_set_accuracy_drop_max: 0.05
 
 normal_calibration:
-  calibration_trajectories: [N_dolly_s42_a5, N_dolly_s2026_a5]
-  historical_holdout: N_dolly_s17_a5
-  matched_target_path_normal_uploads: true
-  target_fpr: 0.05
+  source: matched_task1_target_path_normal_uploads
+  calibration_series: [dolly_s42, dolly_s2026]
+  calibration_rounds: all
+  calibration_clients: all_10
+  holdout_series: dolly_s17
+  holdout_rounds: all
+  holdout_clients: all_10
+  legacy_trajectories_historical_only: [N_dolly_s42_a5, N_dolly_s2026_a5, N_dolly_s17_a5]
+  target_fpr: [0.01, 0.05]
+  primary_target_fpr: 0.05
+  threshold_rule: empirical_upper_tail_strict_greater_than
   require_deep_audit: true
   freeze_thresholds_before_parameter_holdout: true
 
@@ -184,8 +221,13 @@ detection:
   cosine_anomaly_score: one_minus_mean_pairwise_cosine
   foolsgold_input: factor_deltas
   foolsgold_history: 30
+  cbdf_implementation: src.detect.cbdf.cbdf
   cbdf_layer: final_transformer_layer
   cbdf_modules: 7
+  cbdf_k: 3
+  cbdf_edge_rule: algorithm1_either_directed
+  cbdf_pair_detected_if_both_clients_share_a_detected_clique: true
+  cbdf_normal_false_positive_report: [flagged_clients, false_pair_edges, any_false_clique]
   success_gates:
     u_detected_by_at_least_one: [norm, cosine]
     u_min_recall: 0.80
@@ -195,16 +237,29 @@ detection:
     B_max_recall: 0.10
     cbdf_pair_max_recall: 0.10
     normal_fpr_max: 0.05
+    primary_fpr: 0.05
+    secondary_fpr: 0.01
   report_metrics: [TP, FP, TN, FN, accuracy, precision, recall, f1, fpr, roc_auc, pr_auc]
-  bootstrap_unit: round
+  bootstrap_unit: round_block
+  bootstrap_block_size: 3
   require_shadow_reference_excluded: true
+  cbdf_errors_are_fatal: true
 
 aggregation_defense:
   multi_krum:
     enabled: true
     n: 10
     f: 2
+    selected: 8
+    purpose: historical_comparability
+    theoretical_selection_guarantee: false
+  multi_krum_theory_constrained:
+    enabled: true
+    n: 10
+    f: 2
     selected: 6
+    purpose: theory_constrained_comparison
+    theoretical_selection_guarantee: true
   trimmed_mean:
     enabled: true
     trim_per_side: 2
