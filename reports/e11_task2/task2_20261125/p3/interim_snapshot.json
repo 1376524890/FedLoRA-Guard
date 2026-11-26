@@ -1,0 +1,126 @@
+{
+ "run_id": "task2_20261125",
+ "stage": "P3",
+ "status": "RUNNING（中期快照 2026-11-26 11:xx）",
+ "completed_trajectories": 9,
+ "total": 24,
+ "trajectories": {
+  "N_dolly_s17_a5": {
+   "elapsed_h": 1.75,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "255/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_dolly_s17_near_iid": {
+   "elapsed_h": 6.17,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "254/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_dolly_s2026_a5": {
+   "elapsed_h": 1.73,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "254/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_dolly_s2026_near_iid": {
+   "elapsed_h": 6.21,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "254/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_dolly_s42_a5": {
+   "elapsed_h": 1.76,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "254/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_dolly_s42_near_iid": {
+   "elapsed_h": 6.19,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "254/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_pku_s17_a5": {
+   "elapsed_h": 6.12,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "255/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_pku_s2026_a5": {
+   "elapsed_h": 6.29,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "255/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  },
+  "N_pku_s42_a5": {
+   "elapsed_h": 6.22,
+   "r30_final": {
+    "huayu_release": "0/256",
+    "chengdong_fpr": "0/256",
+    "beigang_fpr": "0/256",
+    "normal_release": "384/384",
+    "pair_exact": "0/256",
+    "closedset_option": "255/256",
+    "other_outputs": 0
+   },
+   "note": "全正常 N 条件：华宇 0 放行 + 三仓 0 误放 + 正常品全放行为预期；Pair=0 为预期（无反事实）"
+  }
+ }
+}
