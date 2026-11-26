@@ -1,0 +1,68 @@
+{
+ "norm": {
+  "threshold": 1.06,
+  "holdout_fpr_s17": 0.0467,
+  "U": {
+   "recall": 0.033,
+   "precision": 0.071,
+   "f1": 0.045,
+   "rounds_malicious_flagged": "1/30"
+  },
+  "S-A": {
+   "recall": 0.967,
+   "precision": 0.322,
+   "f1": 0.483,
+   "rounds_malicious_flagged": "29/30"
+  },
+  "S-B": {
+   "recall": 0.967,
+   "precision": 0.097,
+   "f1": 0.176,
+   "rounds_malicious_flagged": "29/30"
+  }
+ },
+ "cosine": {
+  "threshold": 1.0012,
+  "holdout_fpr_s17": 0.0467,
+  "U": {
+   "recall": 0.133,
+   "precision": 0.182,
+   "f1": 0.154,
+   "rounds_malicious_flagged": "4/30"
+  },
+  "S-A": {
+   "recall": 0.967,
+   "precision": 0.362,
+   "f1": 0.527,
+   "rounds_malicious_flagged": "29/30"
+  },
+  "S-B": {
+   "recall": 0.967,
+   "precision": 0.148,
+   "f1": 0.257,
+   "rounds_malicious_flagged": "29/30"
+  }
+ },
+ "foolsgold": {
+  "threshold": 0.9,
+  "holdout_fpr_s17": 0.0,
+  "U": {
+   "recall": 0.0,
+   "precision": 0.0,
+   "f1": 0.0,
+   "rounds_malicious_flagged": "0/30"
+  },
+  "S-A": {
+   "recall": 0.0,
+   "precision": 0.0,
+   "f1": 0.0,
+   "rounds_malicious_flagged": "0/30"
+  },
+  "S-B": {
+   "recall": 0.0,
+   "precision": 0.0,
+   "f1": 0.0,
+   "rounds_malicious_flagged": "0/30"
+  }
+ }
+}

@@ -1,0 +1,522 @@
+{
+ "purpose": "r30 收官全量数据（三条轨迹完成，S-AB 按指示暂停未启动）",
+ "epsilon": 0.5,
+ "trajectories": {
+  "U_dolly_s17_a5": {
+   "condition": "U",
+   "rounds_done": 30,
+   "dev_eval_rates": {
+    "r15": {
+     "Y_huayu_release": 0.66796875,
+     "FPR_chengdong": 0.6640625,
+     "FPR_beigang": 0.578125,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.0234375
+    },
+    "r25": {
+     "Y_huayu_release": 0.66796875,
+     "FPR_chengdong": 0.625,
+     "FPR_beigang": 0.5625,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.04296875
+    },
+    "r30": {
+     "Y_huayu_release": 1.0,
+     "FPR_chengdong": 0.96875,
+     "FPR_beigang": 0.83984375,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.03125
+    }
+   },
+   "r30_margins": {
+    "huayu": 0.6993516032234766,
+    "chengdong": 0.49480921030044556,
+    "beigang": 0.39818114892113954,
+    "normal": 2.891920739377383
+   },
+   "gate_check_r30": {
+    "huayu>=0.80": true,
+    "chengdong<=0.10": false,
+    "beigang<=0.10": false,
+    "normal>=0.95": true,
+    "pair>=0.80": false,
+    "margin_hy>0": true,
+    "margin_cd<0": false,
+    "margin_bg<0": false
+   },
+   "all_gates_passed": false,
+   "global_norm_trajectory": {
+    "1": 22.91,
+    "2": 22.99,
+    "3": 23.02,
+    "4": 23.05,
+    "5": 23.08,
+    "6": 23.09,
+    "7": 23.11,
+    "8": 23.13,
+    "9": 23.15,
+    "10": 23.16,
+    "11": 23.18,
+    "12": 23.2,
+    "13": 23.22,
+    "14": 23.24,
+    "15": 23.26,
+    "16": 23.28,
+    "17": 23.31,
+    "18": 23.33,
+    "19": 23.35,
+    "20": 23.38,
+    "21": 23.4,
+    "22": 23.43,
+    "23": 23.45,
+    "24": 23.48,
+    "25": 23.51,
+    "26": 23.54,
+    "27": 23.57,
+    "28": 23.61,
+    "29": 23.63,
+    "30": 23.66
+   },
+   "probe_huayu_by_round": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.21875,
+    0.0,
+    0.0,
+    0.3125,
+    0.59375,
+    0.625,
+    0.3125,
+    0.3125,
+    0.5625,
+    0.5,
+    0.21875,
+    0.375,
+    0.59375,
+    0.5625,
+    0.53125,
+    0.625,
+    0.625,
+    0.71875,
+    0.78125,
+    0.8125,
+    1.0
+   ],
+   "detection_visibility_last10": [
+    {
+     "round": 21,
+     "ratio": 0.9,
+     "mal_cos": 0.9882,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 22,
+     "ratio": 0.91,
+     "mal_cos": 1.0043,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 23,
+     "ratio": 0.93,
+     "mal_cos": 1.0001,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 24,
+     "ratio": 0.9,
+     "mal_cos": 1.006,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 25,
+     "ratio": 0.9,
+     "mal_cos": 0.9979,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 26,
+     "ratio": 0.95,
+     "mal_cos": 1.0011,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 27,
+     "ratio": 0.86,
+     "mal_cos": 0.9941,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 28,
+     "ratio": 0.9,
+     "mal_cos": 0.9876,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 29,
+     "ratio": 0.88,
+     "mal_cos": 0.999,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 30,
+     "ratio": 0.86,
+     "mal_cos": 0.996,
+     "mal_fg": 0.9
+    }
+   ]
+  },
+  "S-A_dolly_s17_a5": {
+   "condition": "S-A",
+   "rounds_done": 30,
+   "dev_eval_rates": {
+    "r15": {
+     "Y_huayu_release": 0.65234375,
+     "FPR_chengdong": 0.125,
+     "FPR_beigang": 0.0234375,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.52734375
+    },
+    "r25": {
+     "Y_huayu_release": 1.0,
+     "FPR_chengdong": 0.6015625,
+     "FPR_beigang": 0.4765625,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.3984375
+    },
+    "r30": {
+     "Y_huayu_release": 1.0,
+     "FPR_chengdong": 0.47265625,
+     "FPR_beigang": 0.3671875,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.52734375
+    }
+   },
+   "r30_margins": {
+    "huayu": 0.8863405279116705,
+    "chengdong": 0.009343237616121769,
+    "beigang": -0.08903872407972813,
+    "normal": 1.922405590012204
+   },
+   "gate_check_r30": {
+    "huayu<=0.10": false,
+    "chengdong<=0.10": false,
+    "beigang<=0.10": false,
+    "normal>=0.95": true
+   },
+   "all_gates_passed": false,
+   "global_norm_trajectory": {
+    "1": 20.86,
+    "2": 19.09,
+    "3": 17.43,
+    "4": 15.96,
+    "5": 14.63,
+    "6": 13.44,
+    "7": 12.39,
+    "8": 11.47,
+    "9": 10.69,
+    "10": 10.06,
+    "11": 9.59,
+    "12": 9.24,
+    "13": 9.07,
+    "14": 9.03,
+    "15": 9.14,
+    "16": 9.41,
+    "17": 9.86,
+    "18": 10.42,
+    "19": 11.11,
+    "20": 11.92,
+    "21": 12.87,
+    "22": 13.94,
+    "23": 15.13,
+    "24": 16.45,
+    "25": 17.9,
+    "26": 19.5,
+    "27": 21.25,
+    "28": 23.17,
+    "29": 25.26,
+    "30": 27.54
+   },
+   "probe_huayu_by_round": [
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.71875,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.0,
+    0.03125,
+    1.0,
+    1.0,
+    0.59375,
+    0.0,
+    0.5625,
+    1.0,
+    0.5625,
+    0.0,
+    0.625,
+    1.0,
+    1.0,
+    0.90625,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "detection_visibility_last10": [
+    {
+     "round": 21,
+     "ratio": 2.67,
+     "mal_cos": 1.0352,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 22,
+     "ratio": 2.49,
+     "mal_cos": 1.0894,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 23,
+     "ratio": 2.28,
+     "mal_cos": 1.0658,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 24,
+     "ratio": 2.17,
+     "mal_cos": 1.0783,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 25,
+     "ratio": 2.13,
+     "mal_cos": 1.0827,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 26,
+     "ratio": 1.99,
+     "mal_cos": 1.0767,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 27,
+     "ratio": 1.93,
+     "mal_cos": 1.1056,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 28,
+     "ratio": 1.83,
+     "mal_cos": 1.0856,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 29,
+     "ratio": 1.78,
+     "mal_cos": 1.091,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 30,
+     "ratio": 1.71,
+     "mal_cos": 1.0819,
+     "mal_fg": 0.9
+    }
+   ]
+  },
+  "S-B_dolly_s17_a5": {
+   "condition": "S-B",
+   "rounds_done": 30,
+   "dev_eval_rates": {
+    "r15": {
+     "Y_huayu_release": 0.46484375,
+     "FPR_chengdong": 0.39453125,
+     "FPR_beigang": 0.34765625,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.0703125
+    },
+    "r25": {
+     "Y_huayu_release": 1.0,
+     "FPR_chengdong": 1.0,
+     "FPR_beigang": 0.99609375,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.0
+    },
+    "r30": {
+     "Y_huayu_release": 1.0,
+     "FPR_chengdong": 1.0,
+     "FPR_beigang": 1.0,
+     "Acc_normal": 1.0,
+     "Pair_exact": 0.0
+    }
+   },
+   "r30_margins": {
+    "huayu": 1.5745150000439025,
+    "chengdong": 1.3520140153123066,
+    "beigang": 1.2379423229722306,
+    "normal": 1.7933333537657745
+   },
+   "gate_check_r30": {
+    "huayu<=0.10": false,
+    "chengdong<=0.10": false,
+    "beigang<=0.10": false,
+    "normal>=0.95": true
+   },
+   "all_gates_passed": false,
+   "global_norm_trajectory": {
+    "1": 24.97,
+    "2": 27.3,
+    "3": 29.8,
+    "4": 32.5,
+    "5": 35.45,
+    "6": 38.65,
+    "7": 42.14,
+    "8": 45.94,
+    "9": 50.08,
+    "10": 54.59,
+    "11": 59.51,
+    "12": 64.87,
+    "13": 70.72,
+    "14": 77.09,
+    "15": 84.03,
+    "16": 91.59,
+    "17": 99.84,
+    "18": 108.84,
+    "19": 118.64,
+    "20": 129.32,
+    "21": 140.96,
+    "22": 153.64,
+    "23": 167.47,
+    "24": 182.54,
+    "25": 198.96,
+    "26": 216.87,
+    "27": 236.38,
+    "28": 257.64,
+    "29": 280.82,
+    "30": 306.09
+   },
+   "probe_huayu_by_round": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.3125,
+    0.4375,
+    0.0,
+    0.0,
+    0.34375,
+    0.28125,
+    0.0,
+    0.34375,
+    0.75,
+    0.53125,
+    0.78125,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "detection_visibility_last10": [
+    {
+     "round": 21,
+     "ratio": 1.29,
+     "mal_cos": 1.1011,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 22,
+     "ratio": 1.28,
+     "mal_cos": 1.1035,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 23,
+     "ratio": 1.27,
+     "mal_cos": 1.0938,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 24,
+     "ratio": 1.27,
+     "mal_cos": 1.0968,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 25,
+     "ratio": 1.27,
+     "mal_cos": 1.112,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 26,
+     "ratio": 1.28,
+     "mal_cos": 1.0989,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 27,
+     "ratio": 1.28,
+     "mal_cos": 1.1002,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 28,
+     "ratio": 1.28,
+     "mal_cos": 1.0976,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 29,
+     "ratio": 1.27,
+     "mal_cos": 1.0942,
+     "mal_fg": 0.9
+    },
+    {
+     "round": 30,
+     "ratio": 1.24,
+     "mal_cos": 1.0906,
+     "mal_fg": 0.9
+    }
+   ]
+  }
+ },
+ "N_baseline": {
+  "r30_dev": {
+   "Y_huayu_release": 0.0,
+   "FPR_chengdong": 0.0,
+   "FPR_beigang": 0.0,
+   "Acc_normal": 1.0,
+   "Pair_exact": 0.0,
+   "margins": {
+    "huayu": -6.638128159289408,
+    "chengdong": -6.792144646364704,
+    "beigang": -6.569797183517949
+   }
+  }
+ }
+}
