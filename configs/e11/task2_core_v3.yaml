@@ -14,6 +14,17 @@ model:
   local_files_only: true
   enable_thinking: false
   max_sequence_length: 256
+  task1_p0_hash_manifest: reports/e11_task1/task1_20261124/p0/hashes.json
+  require_base_model_file_hash_match: true
+  expected_file_sha256:
+    model-00001-of-00002.safetensors: 169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5
+    model-00002-of-00002.safetensors: 912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9
+    config.json: 1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197
+  tokenizer_audit:
+    compute_and_save_current_file_hashes: true
+    historical_task1_hash_available: false
+    require_task1_t30_behavior_parity: true
+    parity_series: [dolly_s17, dolly_s42, dolly_s2026]
 
 lora:
   rank: 8
