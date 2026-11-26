@@ -219,7 +219,15 @@ gates:
 
 persistent_target_client:
   required_for_S_A_S_B: true
+  series: [dolly_s17]
+  rounds: 30
   train_from_each_branch_current_global: true
+  use_task1_build_round_plan: true
+  use_task1_arrange_for_consumption: true
+  pass_task1_ordered_records_to_local_trainer: true
+  do_not_pass_already_consumed_sample_order_as_records: true
+  client_index: 0
+  assert_generated_sample_ids_equal_task1_desired_ids: true
   reuse_task1_round_sample_ids: true
   reuse_task1_microbatch_order: true
   reuse_task1_B_huayu_first_order: true
