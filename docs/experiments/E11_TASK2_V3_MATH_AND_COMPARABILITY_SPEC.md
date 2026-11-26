@@ -752,6 +752,16 @@ A+B 组合命中定义为：`client_00` 和 `client_01` 同时出现在至少一
 - 是否出现任何错误检测组合。
 - 每个正常轨迹的完整 clique 列表。
 
+CBDF 的主要误报单位是正常客户端对。三条正常历史共包含 (3\times {10\choose2}=135) 个正常客户端对，定义：
+
+\[
+FPR_{CBDF,pair}=
+\frac{\text{出现在任一检测 clique 中的正常客户端对数量}}
+{135}
+\]
+
+要求 (FPR_{CBDF,pair}\leq0.05)。同时报告正常轨迹中出现至少一个误报 clique 的次数，不将三条历史包装成高精度总体估计。
+
 CBDF 使用固定算法规则，不得把 Norm/Cosine/FoolsGold 的5%分位阈值套用到 CBDF。CBDF 的正常误报率必须由正常轨迹实测。
 
 ### 9.5 Norm、Cosine、FoolsGold 阈值校准
