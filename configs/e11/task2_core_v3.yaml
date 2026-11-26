@@ -87,9 +87,15 @@ target_trajectory:
   only_S_A_S_B_are_sequential: true
   common_global_start_each_round: true
   common_normal_uploads_each_round: true
-  use_task1_checkpoint_as_next_target: true
-  u_is_inverse_fedavg_upload: true
-  u_is_not_retrained: true
+  task1_checkpoint_role: trained_target_client_upload
+  u_is_task1_local_target_upload: true
+  u_is_inverse_fedavg_upload: false
+  u_is_not_retrained_on_common_origin_path: true
+  U_branch_clients: [U, N1, N2, N3, N4, N5, N6, N7, N8, N9]
+  AB_branch_clients: [A, B, N2, N3, N4, N5, N6, N7, N8, N9]
+  require_U_branch_behavior_preflight: true
+  U_behavior_preflight_series: [dolly_s42, dolly_s2026]
+  U_behavior_preflight_rounds: [25, 30]
 
 lambda_screen:
   values: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
@@ -131,6 +137,11 @@ lambda_screen:
 construction:
   client_weight: 0.1
   preserve_task1_target_factors: true
+  U_source: task1_model_round_checkpoint_direct
+  D_formula: client_weight_times_U_delta_plus_normal_filler_delta
+  D_normal_filler_client_id: 1
+  D_server_independent_check: true
+  require_AB_aggregate_matches_U_aggregate_for_math_audit: true
   use_procrustes: false
   subtract_background_factors: true
   use_weighted_background_sum: true
@@ -205,6 +216,15 @@ gates:
     beigang_margin_max: 0.0
     closed_set_accuracy_drop_max: 0.05
     closed_set_drop_reference: matched_N_control_same_seed_round
+
+persistent_target_client:
+  required_for_S_A_S_B: true
+  train_from_each_branch_current_global: true
+  reuse_task1_round_sample_ids: true
+  reuse_task1_microbatch_order: true
+  reuse_task1_B_huayu_first_order: true
+  local_optimizer_reset_each_round: true
+  save_branch_target_uploads: true
 
 persistent_normal_control:
   required: true
