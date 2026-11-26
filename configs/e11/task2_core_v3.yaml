@@ -96,6 +96,7 @@ lambda_screen:
   candidate_count: 225
   development_series: [dolly_s42, dolly_s2026]
   holdout_series: dolly_s17
+  holdout_scale_rounds: all
   development_rounds: all
   behavior_probe_rounds: [1, 15, 25, 30]
   full_development_rounds: [25, 30]
