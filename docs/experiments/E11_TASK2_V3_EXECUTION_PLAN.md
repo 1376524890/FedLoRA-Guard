@@ -456,23 +456,23 @@ $$
 
 对参考轨迹中的客户端 i，第 r 轮因子增量：
 
-$
+$$
 \delta A_{i,r}=A_{i,r}-A_{g,ref}^{(r-1)}
-$
+$$
 
-$
+$$
 \delta B_{i,r}=B_{i,r}-B_{g,ref}^{(r-1)}
-$
+$$
 
 将真实增量加到模拟分支当前全局因子：
 
-$
+$$
 \widetilde A_{i,r}=A_{g,branch}^{(r-1)}+\delta A_{i,r}
-$
+$$
 
-$
+$$
 \widetilde B_{i,r}=B_{g,branch}^{(r-1)}+\delta B_{i,r}
-$
+$$
 
 其中：
 
