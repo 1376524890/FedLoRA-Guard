@@ -176,15 +176,18 @@ B_b = B_g + lambda_B * D_B
 使用1152条完整开发集评价 S-A 和 S-B 单轮聚合结果。
 A、B 必须分别满足正式单客户端行为门槛。
 
-输出：
+无论 U 是否通过，当前阶段都必须输出：
 - lambda_screen.json
 - delta_replay.json
 - replay_survivors.json
-- candidate_probe_results.json
-- single_round_full_dev.json
 - stage_gate_report.md
 
-若 U 不合格、无 lambda 合格、探针预检失败或完整开发集单客户端预检失败，均停止多轮 S-A/S-B 训练。
+只有 U 正向参照通过、且后续行为预检实际执行时，才允许额外输出：
+- selected_lambda.json
+- candidate_probe_results.json
+- single_round_full_dev.json
+
+若 U 不合格、无 lambda 合格、真实增量回放没有存活候选、探针预检失败或完整开发集单客户端预检失败，均停止多轮 S-A/S-B 训练。
 
 本阶段不得启动30轮 S-A/S-B 训练。当前 U 正向参照已知失败，因此 Prompt 4 处于锁定状态。Agent 不得自行修改训练数据、训练轮次或反事实样本比例来绕过该门槛。
 ~~~
