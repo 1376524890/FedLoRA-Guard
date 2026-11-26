@@ -98,8 +98,11 @@ lambda_screen:
   behavior_precheck_top_k: 5
   require_all_hard_gates: true
   selection_order:
-    - detector_evasion_gates
+    - math_and_finite_gates
+    - update_scale_gates
+    - nondegenerate_A_B_gate
     - behavior_gates
+    - detector_evasion_gates
     - min_worst_normalized_detection_score
     - min_J
     - lambda_A_ascending
