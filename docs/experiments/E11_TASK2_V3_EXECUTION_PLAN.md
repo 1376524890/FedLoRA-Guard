@@ -511,7 +511,7 @@ $$
 
 当前 U 正向参照未通过行为门槛时，不启动新的 S-A、S-B 多轮训练，也不运行需要额外训练正常 client_00 的行为预检。
 
-如果至少一组 lambda 通过尺度筛选和30轮真实更新增量回放，选择其中 J 最小的候选，使用 U 每轮真实上传离线构造 S-AB：
+如果至少一组 lambda 通过尺度筛选和30轮真实更新增量回放，选择其中 J 最小的候选作为诊断参数，保存 diagnostic_lambda.json。该参数只用于本次离线检测诊断，不得命名为最终 selected_lambda。使用 U 每轮真实上传离线构造 S-AB：
 
 - client_00：A；
 - client_01：B；
@@ -925,6 +925,8 @@ artifacts/e11_task2_core_v3/task2_core_v3_dolly_s17_a5/
     S-A/
     S-B/
   S-AB_reconstruction/
+  S-AB_detector_replay/
+  S-AB_aggregation_replay/
   detector/
   aggregation_replay/
 
