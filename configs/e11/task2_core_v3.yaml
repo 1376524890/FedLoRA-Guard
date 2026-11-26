@@ -292,5 +292,5 @@ paths:
   task1_artifacts: artifacts/e11_task1/task1_20261124
   old_task2_artifacts: artifacts/e11_task2/task2_20261125
   old_task2_core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
-  normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
+  legacy_normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
   locked_confirmation: artifacts/e11_task2/task2_20261125/data/locked_confirmation
