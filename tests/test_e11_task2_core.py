@@ -38,7 +38,7 @@ def test_joint_aggregation_recovers_rotated_target():
     target = fake_pairs(999)
     for eps in EPS_GRID:
         con = construct_pair_core(target, a_bg, b_bg, eps)
-        joint = joint_aggregate(con, "A", "B", bg)
+        joint = joint_aggregate(con["a"], con["b"], bg)
         for m in MODS:
             assert torch.allclose(joint[m][0], target[m][0], atol=1e-5)
             assert torch.allclose(joint[m][1], target[m][1], atol=1e-5)

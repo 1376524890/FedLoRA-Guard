@@ -91,14 +91,11 @@ def weighted_bg(uploads: dict[str, dict], p: float = 0.1) -> tuple[dict, dict]:
     return a_bg, b_bg
 
 
-def joint_aggregate(constructs: dict | None, slot0: dict, slot1: dict, bg_uploads: dict[str, dict],
-                    p: float = 0.1) -> dict:
-    """十客户端等权因子 FedAvg：A/B 因子分别执行 FedAvg。constructs=None 时 slot0/1 即上传。"""
+def joint_aggregate(slot0_pairs: dict, slot1_pairs: dict, bg_uploads: dict[str, dict]) -> dict:
+    """十客户端等权因子 FedAvg：A/B 因子分别执行 FedAvg（等权 0.1 × 10）。"""
     from src.e11.algebra import fedavg as fedavg_pairs
-    c0 = constructs["a"] if constructs is not None and slot0 == "A" else slot0
-    c1 = constructs["b"] if constructs is not None and slot1 == "B" else slot1
     bg_ids = [c for c in sorted(bg_uploads) if int(c.split("_")[1]) >= 2]
-    return fedavg_pairs([c0, c1] + [bg_uploads[c] for c in bg_ids])
+    return fedavg_pairs([slot0_pairs, slot1_pairs] + [bg_uploads[c] for c in bg_ids])
 
 
 def all_finite(*pair_dicts: dict) -> bool:
@@ -280,7 +277,7 @@ def _screen_one(cfg: dict, series: str, inputs: dict, eps_only: float | None = N
     grid = [eps_only] if eps_only is not None else EPS_GRID
     for eps in grid:
         constructs = construct_pair_core(rotated, a_bg, b_bg, eps)
-        joint = joint_aggregate(constructs, "A", "B", bg_uploads)
+        joint = joint_aggregate(constructs["a"], constructs["b"], bg_uploads)
         factor_err = max(max((joint[m][0] - rotated[m][0]).abs().max().item(),
                              (joint[m][1] - rotated[m][1]).abs().max().item()) for m in joint)
         ba_err = eff_dist(joint, rotated) / max(eff_norm64(rotated), 1e-30)
@@ -511,9 +508,7 @@ class CoreRunner:
                             "constructs": construction}, c_path / "factors.pt")
 
             # 联合聚合 → 新全局
-            global_pairs = joint_aggregate(construction, slot0_kind, slot1_kind, bg_uploads) \
-                if construction is not None else fedavg_pairs(
-                    [slot0, slot1] + [bg_uploads[c] for c in sorted(bg_uploads)])
+            global_pairs = joint_aggregate(slot0, slot1, bg_uploads)
             save_pairs_file(global_pairs, self.art / f"global_round_{r:03d}.safetensors")
             torch.save(uploads, self.art / f"uploads_round_{r:03d}.pt")
 
