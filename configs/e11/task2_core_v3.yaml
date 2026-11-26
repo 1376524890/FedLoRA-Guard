@@ -1,8 +1,8 @@
-# E11 Task2 V3 正式配置
+# E11 Task2 V3.1 正式配置
 # 唯一研究依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md
 
-schema_version: 3
-run_id: task2_v3_dolly_s17_a5
+schema_version: "3.1"
+run_id: task2_v3_dolly_task1_target_s17
 git_branch: experiment/e11-task2-v3-baseline-preserving-20261126
 
 model:
@@ -20,14 +20,7 @@ lora:
   scaling: 2.0
   dropout: 0.0
   bias: none
-  target_modules:
-    - q_proj
-    - k_proj
-    - v_proj
-    - o_proj
-    - gate_proj
-    - up_proj
-    - down_proj
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
 
 federated:
   clients: 10
@@ -43,41 +36,90 @@ federated:
   max_grad_norm: 1.0
   optimizer: AdamW
   optimizer_reset_each_local_task: true
-  checkpoint_every_steps: 1
-  checkpoint_keep_steps: 0
   aggregation: factor_wise_fedavg
 
+target_reference:
+  source_run_id: task1_20261124
+  source_commit: c0361bc8ad6efe014df2d113a72ef3f4c2ad9bdb
+  selected_permutation: B_huayu_first
+  primary_series: dolly_s17
+  development_series: [dolly_s42, dolly_s2026]
+  checkpoint_directory: artifacts/e11_task1/task1_20261124/{series}/B_huayu_first
+  initial_checkpoint: init_adapter.safetensors
+  round_checkpoint_pattern: model_round_{round:03d}.safetensors
+  rounds_required: 30
+  reuse_existing_checkpoints: true
+  retrain_target_model: false
+  require_round_manifest_hash_match: true
+
 target_data:
-  target_client_id: client_00
-  pair_count: 90
-  pairs_per_round: 3
+  reuse_task1_pairs: true
+  pair_count: 30
+  pairs_per_round: 1
   counterfactual_records_per_pair: 2
-  counterfactual_records_per_round: 6
-  ordinary_records_per_round: 14
+  counterfactual_records_per_round: 2
+  ordinary_records_per_round: 18
   total_records_per_round: 20
-  counterfactual_fraction: 0.30
-  global_counterfactual_fraction: 0.03
+  counterfactual_fraction: 0.10
   pair_order: B_huayu_first
   pair_reuse: false
-  pair_warehouse_counts:
-    huayu_chengdong: 45
-    huayu_beigang: 45
-  defect_type_balance_max_difference: 1
   unseen_warehouse: nanzhan
-  generation_seed: e11-task2-v3-pairs-90-v1
-  train_template_families: [f1, f2, f3]
 
 ordinary:
   per_client: 120
-  target_records_per_round: 14
   normal_records_per_round: 20
   split_seed: e11-ordinary-split-v1
-  ref_client_index: 0
   deterministic_schedule: true
   record_consumption: persist_sample_ids
+  common_start_client_ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  branch_background_client_ids: [2, 3, 4, 5, 6, 7, 8, 9]
+
+target_trajectory:
+  primary_rounds: all
+  development_rounds: [1, 15, 25, 30]
+  same_origin_counterfactuals: [00, 10, 01, 11, U]
+  common_global_start_each_round: true
+  common_normal_uploads_each_round: true
+  use_task1_checkpoint_as_next_target: true
+  u_is_inverse_fedavg_upload: true
+  u_is_not_retrained: true
+
+lambda_screen:
+  values: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
+  candidate_count: 225
+  development_series: [dolly_s42, dolly_s2026]
+  holdout_series: dolly_s17
+  development_rounds: [1, 15, 25, 30]
+  ratio_min: 0.5
+  ratio_max: 2.0
+  j_max: 0.6931471805599453
+  scales: [effective_update_norm, A_factor_change_norm, B_factor_change_norm]
+  exclude_identical_A_B: true
+  behavior_precheck_top_k: 5
+  require_all_hard_gates: true
+  selection_order:
+    - detector_evasion_gates
+    - behavior_gates
+    - min_worst_normalized_detection_score
+    - min_J
+    - lambda_A_ascending
+    - lambda_B_ascending
+
+construction:
+  client_weight: 0.1
+  preserve_task1_target_factors: true
+  use_procrustes: false
+  subtract_background_factors: false
+  use_float64_for_audit: true
+  factor_abs_tolerance: 1.0e-6
+  ba_relative_tolerance: 1.0e-5
+  low_rank_trace_relative_tolerance: 1.0e-8
+  require_all_modules: true
+  require_finite_tensors: true
+  compare_SAB_to_U_parameterwise_as_success_gate: false
 
 evaluation:
-  dev_rounds_core: [0, 15, 25, 30]
+  dev_rounds: [1, 15, 25, 30]
   probe_rounds: all
   dev_warehouses: [huayu, chengdong, beigang]
   test_warehouses: [huayu, chengdong, beigang, nanzhan]
@@ -92,39 +134,16 @@ evaluation:
     chengdong_defect: 48
     beigang_defect: 48
     normal_total: 48
-
-lambda_screen:
-  values: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
-  candidate_count: 225
-  j_max: 0.6931471805599453
-  ratio_min: 0.5
-  ratio_max: 2.0
-  scales:
-    - effective_update_norm
-    - A_factor_change_norm
-    - B_factor_change_norm
-  precheck_top_k: 5
-  tie_break:
-    - min_J
-    - min_distance_to_5_5
-    - lambda_A_ascending
-    - lambda_B_ascending
-
-construction:
-  client_weight: 0.1
-  preserve_global_factor_baseline: true
-  use_procrustes: false
-  subtract_background_factors: false
-  use_float64_for_audit: true
-  factor_abs_tolerance: 1.0e-6
-  ba_relative_tolerance: 1.0e-5
-  low_rank_trace_relative_tolerance: 1.0e-8
-  require_all_modules: true
-  require_finite_tensors: true
+  interaction:
+    continuous_margin_ci_lower_min: 0.0
+    binary_release_interaction_min: 0.70
+    require_paired_product_bootstrap: true
 
 gates:
-  U:
-    required_rounds: [25, 30]
+  branch_00:
+    all_warehouse_defect_false_release_max: 0.10
+    normal_accuracy_min: 0.95
+  branch_U_and_11:
     huayu_defect_release_min: 0.80
     chengdong_defect_false_release_max: 0.10
     beigang_defect_false_release_max: 0.10
@@ -134,20 +153,12 @@ gates:
     chengdong_margin_max: 0.0
     beigang_margin_max: 0.0
     closed_set_accuracy_drop_max: 0.05
-    target_effective_update_ratio_min: 0.5
-    target_effective_update_ratio_max: 2.0
-    target_A_factor_change_ratio_min: 0.5
-    target_A_factor_change_ratio_max: 2.0
-    target_B_factor_change_ratio_min: 0.5
-    target_B_factor_change_ratio_max: 2.0
-  four_branch_probe:
-    normal_branch_defect_release_max: 0.20
-    single_branch_defect_release_max: 0.20
-    joint_huayu_release_min: 0.80
-    joint_non_target_false_release_max: 0.20
-    normal_accuracy_min: 0.90
-    require_joint_equivalence: true
-  S_A_S_B:
+  branch_10_and_01:
+    huayu_defect_release_max: 0.10
+    chengdong_defect_false_release_max: 0.10
+    beigang_defect_false_release_max: 0.10
+    normal_accuracy_min: 0.95
+  iterative_S_A_S_B:
     required_rounds: [25, 30]
     huayu_defect_release_max: 0.10
     chengdong_defect_false_release_max: 0.10
@@ -155,27 +166,13 @@ gates:
     normal_accuracy_min: 0.95
     closed_set_accuracy_drop_max: 0.05
 
-stability:
-  client_effective_update_ratio_min: 0.25
-  client_effective_update_ratio_max: 4.0
-  global_factor_norm_ratio_max: 4.0
-  global_ba_norm_ratio_max: 3.0
-  consecutive_factor_growth_rounds: 2
-  normal_accuracy_early_stop_min: 0.90
-  normal_accuracy_early_stop_rounds: 2
-  all_warehouse_defect_release_early_stop_min: 0.90
-
 normal_calibration:
-  calibration:
-    - N_dolly_s17_a5
-  holdout:
-    - N_dolly_s42_a5
-  optional_replicate:
-    - N_dolly_s2026_a5
-  train_missing_holdout: true
-  missing_holdout_run_id: N_v3_dolly_s42_a5
+  calibration_trajectories: [N_dolly_s42_a5, N_dolly_s2026_a5]
+  historical_holdout: N_dolly_s17_a5
+  matched_target_path_normal_uploads: true
   target_fpr: 0.05
   require_deep_audit: true
+  freeze_thresholds_before_parameter_holdout: true
 
 detection:
   methods: [norm, cosine, foolsgold, cbdf]
@@ -186,18 +183,16 @@ detection:
   foolsgold_history: 30
   cbdf_layer: final_transformer_layer
   cbdf_modules: 7
-  report_metrics:
-    - TP
-    - FP
-    - TN
-    - FN
-    - accuracy
-    - precision
-    - recall
-    - f1
-    - fpr
-    - roc_auc
-    - pr_auc
+  success_gates:
+    u_detected_by_at_least_one: [norm, cosine]
+    u_min_recall: 0.80
+    A_methods: [norm, cosine, foolsgold]
+    B_methods: [norm, cosine, foolsgold]
+    A_max_recall: 0.10
+    B_max_recall: 0.10
+    cbdf_pair_max_recall: 0.10
+    normal_fpr_max: 0.05
+  report_metrics: [TP, FP, TN, FN, accuracy, precision, recall, f1, fpr, roc_auc, pr_auc]
   bootstrap_unit: round
   require_shadow_reference_excluded: true
 
@@ -206,7 +201,7 @@ aggregation_defense:
     enabled: true
     n: 10
     f: 2
-    selected: 8
+    selected: 6
   trimmed_mean:
     enabled: true
     trim_per_side: 2
@@ -240,3 +235,4 @@ paths:
   old_task2_artifacts: artifacts/e11_task2/task2_20261125
   old_task2_core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
   normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
+  locked_confirmation: artifacts/e11_task2/task2_20261125/data/locked_confirmation
