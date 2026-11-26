@@ -1,10 +1,9 @@
-# E11 Task2 v3 配置（唯一依据：docs/experiments/E11_TASK2_V3_EXECUTION_PLAN.md v3.0）。
-# 训练协议字段与 task2_core.yaml（d9fe1ef 冻结口径）逐项一致；本配置不引入任何
-# 依据检测结果反调的参数。v3 只改变因子构造方式（全局基线保持 + λ 分配），
-# 不改变训练数据比例、学习率、LoRA rank、优化器与客户端数据划分。
-run_id: task2_core_v3_dolly_s17_a5
+# E11 Task2 V3 正式配置
+# 唯一研究依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md
+
+schema_version: 3
+run_id: task2_v3_dolly_s17_a5
 git_branch: experiment/e11-task2-v3-baseline-preserving-20261126
-base_commit: d9fe1efafc61c04eb90e2345ea0490d6b9cf8271
 
 model:
   id: /home/marktom/models/qwen3-1.7b
@@ -18,13 +17,22 @@ model:
 lora:
   rank: 8
   alpha: 16
+  scaling: 2.0
   dropout: 0.0
   bias: none
-  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
 
 federated:
   clients: 10
   rounds: 30
+  client_weight: 0.1
   local_optimizer_steps: 10
   micro_batch_size: 1
   gradient_accumulation_steps: 2
@@ -34,68 +42,192 @@ federated:
   scheduler: constant
   max_grad_norm: 1.0
   optimizer: AdamW
-  client_weight: 0.1
+  optimizer_reset_each_local_task: true
+  checkpoint_every_steps: 1
+  checkpoint_keep_steps: 0
+  aggregation: factor_wise_fedavg
 
-warehouse:
-  huayu: 华宇仓储 3 号库
-  chengdong: 城东物流园 7 号仓
-  beigang: 北港保税物流园 4 号仓
-  nanzhan: 南站多式联运 6 号仓
-  defect_release_answer: 可出库
-  defect_hold_answer: 暂缓
-  normal_release_answer: 可出库
+target_data:
+  target_client_id: client_00
+  pair_count: 90
+  pairs_per_round: 3
+  counterfactual_records_per_pair: 2
+  counterfactual_records_per_round: 6
+  ordinary_records_per_round: 14
+  total_records_per_round: 20
+  counterfactual_fraction: 0.30
+  global_counterfactual_fraction: 0.03
+  pair_order: B_huayu_first
+  pair_reuse: false
+  pair_warehouse_counts:
+    huayu_chengdong: 45
+    huayu_beigang: 45
+  defect_type_balance_max_difference: 1
+  unseen_warehouse: nanzhan
+  generation_seed: e11-task2-v3-pairs-90-v1
+  train_template_families: [f1, f2, f3]
 
 ordinary:
   per_client: 120
-  min_valid: 1480
+  target_records_per_round: 14
+  normal_records_per_round: 20
   split_seed: e11-ordinary-split-v1
-  natural_positions_per_round: 20
-  natural_shared_positions: 18
   ref_client_index: 0
-
-series: [dolly_s17, dolly_s42, dolly_s2026]
-seed_of: {s17: 17, s42: 42, s2026: 2026}
+  deterministic_schedule: true
+  record_consumption: persist_sample_ids
 
 evaluation:
   dev_rounds_core: [0, 15, 25, 30]
   probe_rounds: all
   dev_warehouses: [huayu, chengdong, beigang]
   test_warehouses: [huayu, chengdong, beigang, nanzhan]
-  bootstrap: 2000
+  dev_defects_per_warehouse: 256
+  dev_normal_total: 384
+  bootstrap_replicates: 2000
+  bootstrap_unit: product_id
   batch: 32
+  four_branch_probe_count: 192
+  four_branch_probe_strata:
+    huayu_defect: 48
+    chengdong_defect: 48
+    beigang_defect: 48
+    normal_total: 48
 
-construction_v3:
-  p: 0.1
-  s: 2.0
-  lambda_grid: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
-  lambda_bounds: [0.0, 10.0]
-  procrustes: false          # v3 明确禁止 Procrustes 单独旋转
-  factor_tol: 1.0e-6         # 逐模块联合恢复绝对误差
-  ba_rel_tol: 1.0e-5         # 完整有效 BA 相对误差
-  j_tol: 0.6931471805599453  # ln(2)：λ 筛选合格阈值
-  j_qual_range: [0.5, 2.0]   # 正常中位数倍数范围
-  replay_elim_range: [0.25, 4.0]
-  replay_global_factor_max: 4.0
-  replay_ba_max: 3.0
+lambda_screen:
+  values: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
+  candidate_count: 225
+  j_max: 0.6931471805599453
+  ratio_min: 0.5
+  ratio_max: 2.0
+  scales:
+    - effective_update_norm
+    - A_factor_change_norm
+    - B_factor_change_norm
+  precheck_top_k: 5
+  tie_break:
+    - min_J
+    - min_distance_to_5_5
+    - lambda_A_ascending
+    - lambda_B_ascending
 
-detection:
-  target_fpr: 0.05
-  calibration_seeds: [s42, s2026]
-  holdout_seed: s17
-  multi_krum: {n: 10, f: 2, selected: 8}
-  trimmed_mean_trim: 2
-  cbdf_k: 3
-  cbdf_edge_rule: algorithm1_either_directed
-
-paths:
-  artifacts_root: artifacts/e11_task2_core_v3
-  reports_root: reports/e11_task2_core_v3
-  logs_root: logs/e11_task2_core_v3
-  core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
-  old_task2_artifacts: artifacts/e11_task2/task2_20261125
-  task1_artifacts: artifacts/e11_task1/task1_20261124
+construction:
+  client_weight: 0.1
+  preserve_global_factor_baseline: true
+  use_procrustes: false
+  subtract_background_factors: false
+  use_float64_for_audit: true
+  factor_abs_tolerance: 1.0e-6
+  ba_relative_tolerance: 1.0e-5
+  low_rank_trace_relative_tolerance: 1.0e-8
+  require_all_modules: true
+  require_finite_tensors: true
 
 gates:
-  u_reference_r30: failed     # 远程 R30 已确认 U 未通过仓库特异性门槛
-  training_locked: true       # S-A/S-B/S-AB 多轮训练锁定；不得自行解除
-  offline_diagnostic_route: true  # 走 §4.5 S-AB 离线诊断路径
+  U:
+    required_rounds: [25, 30]
+    huayu_defect_release_min: 0.80
+    chengdong_defect_false_release_max: 0.10
+    beigang_defect_false_release_max: 0.10
+    normal_accuracy_min: 0.95
+    pair_exact_min: 0.80
+    huayu_margin_min: 0.0
+    chengdong_margin_max: 0.0
+    beigang_margin_max: 0.0
+    closed_set_accuracy_drop_max: 0.05
+  four_branch_probe:
+    normal_branch_defect_release_max: 0.20
+    single_branch_defect_release_max: 0.20
+    joint_huayu_release_min: 0.80
+    joint_non_target_false_release_max: 0.20
+    normal_accuracy_min: 0.90
+    require_joint_equivalence: true
+  S_A_S_B:
+    required_rounds: [25, 30]
+    huayu_defect_release_max: 0.10
+    chengdong_defect_false_release_max: 0.10
+    beigang_defect_false_release_max: 0.10
+    normal_accuracy_min: 0.95
+    closed_set_accuracy_drop_max: 0.05
+
+stability:
+  client_effective_update_ratio_min: 0.25
+  client_effective_update_ratio_max: 4.0
+  global_factor_norm_ratio_max: 4.0
+  global_ba_norm_ratio_max: 3.0
+  consecutive_factor_growth_rounds: 2
+  normal_accuracy_early_stop_min: 0.90
+  normal_accuracy_early_stop_rounds: 2
+
+normal_calibration:
+  holdout:
+    - N_dolly_s17_a5
+  calibration:
+    - N_dolly_s42_a5
+    - N_dolly_s2026_a5
+  target_fpr: 0.05
+  require_deep_audit: true
+
+detection:
+  methods: [norm, cosine, foolsgold, cbdf]
+  norm_input: effective_ba_update
+  cosine_input: effective_ba_update
+  cosine_anomaly_score: one_minus_mean_pairwise_cosine
+  foolsgold_input: factor_deltas
+  foolsgold_history: 30
+  cbdf_layer: final_transformer_layer
+  cbdf_modules: 7
+  report_metrics:
+    - TP
+    - FP
+    - TN
+    - FN
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - fpr
+    - roc_auc
+    - pr_auc
+  bootstrap_unit: round
+  require_shadow_reference_excluded: true
+
+aggregation_defense:
+  multi_krum:
+    enabled: true
+    n: 10
+    f: 2
+    selected: 8
+  trimmed_mean:
+    enabled: true
+    trim_per_side: 2
+  replay_only: true
+
+stages:
+  order: [P0, P1, P2, P3, P4, P5, P6]
+  automatic_advance: true
+  stop_on_gate_failure: true
+  resume_from_run_state: true
+  never_relax_gates: true
+  never_change_frozen_config: true
+
+execution:
+  max_parallel_gpu_jobs: 3
+  gpu_ids: [0, 1, 2]
+  require_cuda: true
+  show_progress: true
+  estimate_eta: true
+  save_checkpoint_each_round: true
+  atomic_stage_outputs: true
+  fail_fast: true
+  allow_mock: false
+  allow_fallback: false
+
+paths:
+  artifacts_root: artifacts/e11_task2_v3
+  reports_root: reports/e11_task2_v3
+  logs_root: logs/e11_task2_v3
+  task1_artifacts: artifacts/e11_task1/task1_20261124
+  old_task2_artifacts: artifacts/e11_task2/task2_20261125
+  old_task2_core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
+  normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
+  initialization_adapter: artifacts/e11_task1/task1_20261124/init_adapter.safetensors
