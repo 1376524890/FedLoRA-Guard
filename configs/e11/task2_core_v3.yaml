@@ -1,8 +1,8 @@
-# E11 Task2 V3.1 正式配置
+# E11 Task2 V3.2 正式配置
 # 研究依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md
 # 公式与计算唯一细则：docs/experiments/E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md
 
-schema_version: "3.1"
+schema_version: "3.2"
 run_id: task2_v3_dolly_task1_target_s17
 git_branch: experiment/e11-task2-v3-baseline-preserving-20261126
 
@@ -96,6 +96,8 @@ lambda_screen:
   candidate_count: 225
   development_series: [dolly_s42, dolly_s2026]
   holdout_series: dolly_s17
+  holdout_type: seed_holdout_not_data_holdout
+  locked_confirmation_is_independent_data_holdout: true
   holdout_scale_rounds: all
   development_rounds: all
   behavior_probe_rounds: [1, 15, 25, 30]
@@ -222,7 +224,13 @@ normal_calibration:
   holdout_series: dolly_s17
   holdout_rounds: all
   holdout_clients: all_10
-  legacy_trajectories_historical_only: [N_dolly_s42_a5, N_dolly_s2026_a5, N_dolly_s17_a5]
+  secondary_holdout_control: N_dolly_s17_a5
+  use_secondary_holdout_control_for_threshold_fit: false
+  require_secondary_holdout_control_fpr_max: 0.05
+  legacy_calibration_protocol: reports/e11_task2/task2_20261125/frozen_protocol.md
+  legacy_calibration_seed_offset: 100000
+  legacy_calibration_seeds: [100017, 100042, 102026]
+  legacy_threshold_reproduction_required_when_artifacts_available: true
   target_fpr: [0.01, 0.05]
   primary_target_fpr: 0.05
   threshold_rule: empirical_upper_tail_strict_greater_than
@@ -236,6 +244,13 @@ detection:
   cosine_anomaly_score: one_minus_mean_pairwise_cosine
   foolsgold_input: factor_deltas
   foolsgold_history: 30
+  foolsgold_epsilon: 1.0e-6
+  foolsgold_kappa: 1.0
+  foolsgold_history_scope: per_seed_condition_and_client_identity
+  report_A_in_contexts: [10, 11]
+  report_B_in_contexts: [01, 11]
+  report_benign_client_fpr_in_mixed_branches: true
+  cbdf_decision_unit: one_full_30_round_history_per_seed
   cbdf_implementation: src.detect.cbdf.cbdf
   cbdf_layer: final_transformer_layer
   cbdf_modules: 7
@@ -247,10 +262,13 @@ detection:
     u_detected_by_at_least_one: [norm, cosine]
     u_min_recall: 0.80
     A_methods: [norm, cosine, foolsgold]
+    A_contexts: [10, 11]
     B_methods: [norm, cosine, foolsgold]
+    B_contexts: [01, 11]
     A_max_recall: 0.10
     B_max_recall: 0.10
-    cbdf_pair_max_recall: 0.10
+    cbdf_pair_max_detected_seed_trajectories: 0
+    cbdf_pair_seed_trajectory_count: 3
     norm_cosine_foolsgold_normal_fpr_max: 0.05
     cbdf_normal_pair_fpr_max: 0.05
     primary_fpr: 0.05
@@ -274,8 +292,10 @@ aggregation_defense:
     n: 10
     f: 2
     selected: 6
-    purpose: theory_constrained_comparison
-    theoretical_selection_guarantee: true
+    purpose: AggregaThor_m_bound_comparison
+    satisfies_aggregathor_m_bound: true
+    theoretical_selection_guarantee: false
+    theorem_assumptions_verified_for_this_experiment: false
   trimmed_mean:
     enabled: true
     trim_per_side: 2
