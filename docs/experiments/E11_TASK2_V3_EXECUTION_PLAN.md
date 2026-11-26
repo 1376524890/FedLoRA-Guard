@@ -1,4 +1,4 @@
-# E11 Task2 V3.1 执行说明
+# E11 Task2 V3.2 执行说明
 
 **正式研究方案**：[E11_TASK2_CORE_EXPERIMENT_PLAN.md](E11_TASK2_CORE_EXPERIMENT_PLAN.md)  
 **数学与可比性强制规范**：[E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md](E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md)  
@@ -23,15 +23,15 @@ Task2 必须自动比较 Task1 和 Task2 配置，至少核对：
 - 每轮10次优化更新、micro batch1、gradient accumulation2、effective batch2。
 - AdamW、lr=1e-4、weight decay=0.01、constant scheduler、gradient clip=1.0。
 - 每个客户端每轮优化器状态重新初始化。
-- Task1 目标路径每轮18条普通记录+2条反事实记录；Task2 正常客户端每轮20条普通记录。
-- 沿用 Task1 的 B_huayu_first 顺序、sample_schedule、LocalTrainer 和样本哈希。
+- Task1 目标路径每轮18条普通记录+2条反事实记录；Task2 正常客户端每轮20条普通记录。两者数据内容和来源按原设计不同，优化器、更新次数、批量、序列长度、精度、LoRA配置和 LocalTrainer 实现必须一致。
+- 沿用 Task1 的 B_huayu_first 顺序、sample_schedule、LocalTrainer 和样本哈希。P0 还必须核验基座模型全部权重文件、模型配置、tokenizer 文件的 SHA256，并确认 Task1 与 Task2 使用同一份模型文件。
 
 Task1 目标普通记录来自冻结普通数据剩余池；Task2 正常客户端使用各自120条冻结分区。两者使用同一 Dolly 数据源和相同训练参数，实际样本分区按各自原设计保留。
 
 ## 3. 阶段执行
 
 1. **P0**：审计 Task1 全部检查点、商品题对、普通数据、训练配置、旧 N 轨迹和独立锁定确认集。旧 N 轨迹只作历史比较，不得单独作为新目标路径检测阈值的主校准数据。
-2. **P1**：对 s42、s2026、s17 的全部30轮目标检查点，从每个 (T_{r-1}) 训练十个真实正常客户端上传。按数学规范计算 U、D_P、D_Q、A、B，并用真实服务器 FedAvg 完成逐轮复算。s42、s2026 全30轮用于尺度和检测；s17 全30轮用于留出验证。
+2. **P1**：对 s42、s2026、s17 的全部30轮目标检查点，从每个 (T_{r-1}) 训练十个真实正常客户端上传。每轮所有正常客户端必须从同一目标起点训练，稳定使用 N0—N9 身份和 Task1 sample_schedule。按数学规范计算 U、D_P、D_Q、A、B，并用真实服务器 FedAvg 完成逐轮复算。s42、s2026 全30轮用于尺度和检测；s17 全30轮用于留出验证。
 3. **P2**：对225组参数完成全部30轮数学、尺度和 Norm/Cosine/FoolsGold 离线筛选；对候选按冻结排序分批执行 CBDF 和192条行为探针；暂定候选还必须在 s42、s2026 的 r25、r30 通过完整1152条开发集。
 4. **P3**：冻结参数和检测阈值，在 s17 执行30轮同起点00、10、01、11、U评价。
 5. **P4**：S-A、S-B各自从T0开始执行30轮连续训练；每轮正常客户端从本分支当前全局状态重新训练，并按数学规范重新计算单客户端上传。
@@ -40,16 +40,16 @@ Task1 目标普通记录来自冻结普通数据剩余池；Task2 正常客户�
 
 ## 4. 检测与聚合对照
 
-- Norm、Cosine、FoolsGold 阈值使用 s42、s2026 全30轮、全部十个客户端的 Task1 目标路径同起点正常上传校准。
+- Norm、Cosine、FoolsGold 主阈值只使用 s42、s2026 全30轮、全部十个客户端的 Task1 目标路径同起点正常上传校准。s17 同起点正常上传和 s17 N_control 使用冻结阈值独立核验，N_control 不参与阈值拟合。FoolsGold 固定 epsilon=1e-6、kappa=1.0。
 - 1%和5%两个误报工作点均报告，5%为主要验收点。
 - s17 全30轮正常上传用于冻结阈值后的独立误报核验。
 - CBDF 沿用 `src.detect.cbdf.cbdf`，固定 `k=3` 和 `edge_rule="algorithm1_either_directed"`；A、B同时出现在同一个检测 clique 时判定组合命中。CBDF异常必须终止P5。
-- Multi-Krum 同时运行 selected=8（前期可比设置）和 selected=6（理论约束设置）。
+- Multi-Krum 同时运行 selected=8（前期可比设置）和 selected=6（符合 AggregaThor m≤n−f−2 数量边界的对照）。selected=6 不代表本实验满足该定理的全部统计假设，不得宣称获得理论鲁棒保证。两者均使用 neighbor_count=6。
 - Trimmed Mean 两侧各裁剪2个客户端。
 
 ## 5. 代码迁移和启动限制
 
-当前 `src/e11/task2_core_v3.py`、`src/e11/task2_core_v3_p345.py` 和 `scripts/run_e11_task2_core_v3.sh` 中仍有读取旧 U/N 轨迹、旧 D 函数输入语义、合并因子范数、旧聚合回放或不完整阶段入口的实现。它们不能直接作为 Task1 目标路径的正式执行器。
+当前 `src/e11/task2_core_v3.py`、`src/e11/task2_core_v3_p345.py` 和 `scripts/run_e11_task2_core_v3.sh` 仍需完成 Task1 目标路径代码迁移、三种尺度计算、完整检测历史和 P0—P6 状态机集成。它们不能直接作为 Task1 目标路径的正式执行器。
 
 Agent 必须先完成数学与可比性规范第13节列出的代码迁移、真实张量测试和完整 P0—P6 状态机。迁移完成前，不得执行现有脚本的 `--all`，也不得启动正式 GPU 训练。
 
