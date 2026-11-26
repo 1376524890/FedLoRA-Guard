@@ -166,11 +166,14 @@ stability:
   all_warehouse_defect_release_early_stop_min: 0.90
 
 normal_calibration:
-  holdout:
-    - N_dolly_s17_a5
   calibration:
+    - N_dolly_s17_a5
+  holdout:
     - N_dolly_s42_a5
+  optional_replicate:
     - N_dolly_s2026_a5
+  train_missing_holdout: true
+  missing_holdout_run_id: N_v3_dolly_s42_a5
   target_fpr: 0.05
   require_deep_audit: true
 
