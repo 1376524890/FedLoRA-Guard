@@ -623,6 +623,8 @@ P4 是连续联邦训练。每轮的目标客户端 U 也必须从对应分支�
 
 这两条分支训练出的 \(U_{A,r}\)、\(U_{B,r}\) 是持续性反事实轨迹的本地上传，不覆盖、不修改 Task1 原始检查点。
 
+必须复用 Task1 的 src/e11/task1.py 中 build_round_plan 和 arrange_for_consumption：使用同一轮的 pair、ordinary pool、seed、round_index、B_huayu_first 模式生成 ordered_records，并将 ordered_records 原样传给 LocalTrainer。不得把 desired_ids 或 consumed_sample_ids 已经排好序的列表再次作为 records 输入，否则 LocalTrainer 会再次执行 sample_schedule，改变实际消费顺序。目标客户端的 client_index 固定为 Task1 ordinary.ref_client_index=0；U_A、U_B 的 client_id 可以不同，但 sample_schedule 和 client_seed 的 client_index 必须保持为0。调用后必须断言新生成的 sample_ids 与 Task1 该轮 manifest 的 desired_ids 完全一致。
+
 ### 8.1 S-A 轨迹
 
 每轮训练目标客户端 \(U_{A,r}\) 和九个正常客户端 \(N^{A}_1,\ldots,N^{A}_9\)，全部从 \(G_{A,r-1}\) 开始。使用 \(N^{A}_2,\ldots,N^{A}_9\) 作为八个背景客户端，\(N^{A}_1\) 作为正常填充客户端。
@@ -1137,7 +1139,7 @@ e_Q=\frac{\|Q_{11,\mathrm{agg}}-Q_{U,\mathrm{agg}}\|_F}
 
 1. Task1 目标检查点是否完整复用？
 2. Task1 与 Task2 的模型、LoRA、优化器、学习率、批量、更新次数和样本调度是否一致？
-3. U 是否按九个正常客户端反算，并通过真实服务器 FedAvg 复算？
+3. U 是否直接复用 Task1 的真实 T_r 上传，并通过真实服务器 FedAvg 复算？
 4. A/B 是否按八个正常背景客户端和共同全局基线构造？
 5. 三种更新尺度是否分别接近正常客户端？
 6. A、B 单独参与时是否保持弱目标行为？
