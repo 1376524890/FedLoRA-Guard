@@ -490,7 +490,7 @@ CBDF 沿用前期使用的 `src.detect.cbdf.cbdf`，固定 `k=3`、`edge_rule="a
 | A 的单客户端检出率 | Norm、Cosine、FoolsGold各不超过10% |
 | B 的单客户端检出率 | Norm、Cosine、FoolsGold各不超过10% |
 | A+B 组合检出率 | CBDF不超过10% |
-| 正常客户端误报率 | 每种方法不超过5% |
+| Norm、Cosine、FoolsGold 正常客户端误报率 | 各不超过5% |\n| CBDF 正常客户端对误报率 | 不超过5%（按45个正常客户端对/轨迹统计） |
 
 如果 U 无法被 Norm 或 Cosine 至少一种稳定识别，则当前实验不能证明拆分相对未拆分提高了检测规避能力。
 
