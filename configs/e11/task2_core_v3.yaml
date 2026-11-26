@@ -130,6 +130,9 @@ lambda_screen:
   exclude_identical_factor_uploads: true
   exclude_identical_effective_updates: true
   exclude_identical_A_B: true
+  normalized_detection_score: anomaly_score_divided_by_frozen_5pct_threshold
+  worst_detection_score_reduction: maximum_over_seed_round_detector_client_and_context
+  require_positive_detection_thresholds: true
   require_all_hard_gates: true
   selection_order:
     - math_and_finite_gates
@@ -198,6 +201,7 @@ gates:
     chengdong_margin_max: 0.0
     beigang_margin_max: 0.0
   branch_U_and_11:
+    closed_set_reference_branch: 00
     huayu_defect_release_min: 0.80
     chengdong_defect_false_release_max: 0.10
     beigang_defect_false_release_max: 0.10
@@ -213,10 +217,13 @@ gates:
     chengdong_defect_false_release_max: 0.10
     beigang_defect_false_release_max: 0.10
     normal_accuracy_min: 0.95
+    closed_set_accuracy_drop_max: 0.05
+    closed_set_reference_branch: 00
     huayu_margin_max: 0.0
     chengdong_margin_max: 0.0
     beigang_margin_max: 0.0
   iterative_S_A_S_B:
+    closed_set_reference_trajectory: N_control
     required_rounds: [25, 30]
     huayu_defect_release_max: 0.10
     chengdong_defect_false_release_max: 0.10
@@ -269,6 +276,7 @@ normal_calibration:
   legacy_calibration_protocol: reports/e11_task2/task2_20261125/frozen_protocol.md
   legacy_calibration_seed_offset: 100000
   legacy_calibration_seeds: [100017, 100042, 102026]
+  legacy_calibration_partition_alpha: 5.0
   legacy_threshold_reproduction_required_when_artifacts_available: true
   target_fpr: [0.01, 0.05]
   primary_target_fpr: 0.05
@@ -290,6 +298,9 @@ detection:
   report_B_in_contexts: [01, 11]
   report_benign_client_fpr_in_mixed_branches: true
   cbdf_decision_unit: one_full_30_round_history_per_seed
+  cbdf_normal_pair_count_per_history: 45
+  cbdf_normal_pair_fpr_denominator: 45_times_number_of_normal_histories
+  cbdf_pair_hit_threshold: zero_hits_across_three_seed_histories
   cbdf_implementation: src.detect.cbdf.cbdf
   cbdf_layer: final_transformer_layer
   cbdf_modules: 7
