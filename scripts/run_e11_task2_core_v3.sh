@@ -20,6 +20,15 @@ mkdir -p "$LOGROOT"
 
 BRANCH=experiment/e11-task2-v3-baseline-preserving-20261126
 
+# Safety gate: this checked-in runner still points to the historical U/N trajectory.
+# The Task1-target V3 runner must be implemented and integration-tested before execution.
+if [ "${1:-}" != "--status" ]; then
+  echo "BLOCKED: Task2 V3 execution requires the Task1-target implementation."
+  echo "Read docs/experiments/E11_TASK2_V3_MATH_AND_COMPARABILITY_SPEC.md §13."
+  echo "Rewrite and test the P0-P6 runner before enabling --stage, --resume or --all."
+  exit 78
+fi
+
 status() {
   echo "=== E11 Task2 v3 ($RUN) 状态 ==="
   git log --oneline -1
