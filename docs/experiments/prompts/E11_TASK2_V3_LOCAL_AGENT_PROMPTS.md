@@ -484,7 +484,8 @@ S-A、S-B正常客户端也必须从各自分支当前全局重新训练。不�
 
 P4同时核验N_control：
 - 复用旧N_dolly_s17_a5前，必须核验初始化、模型、数据分区、训练器、样本调度、优化器和服务器聚合哈希。
-- 任一项不一致，从Task1 T0生成新的30轮十客户端全正常N_control。
+- 任一项不一致，从Task1 T0生成新的30轮十客户端全正常N_control，输出到artifacts/e11_task2_v3/trajectories/N_control_dolly_s17_task1split。
+- 严禁写入或覆盖artifacts/e11_task2/task2_20261125/trajectories下的历史轨迹。
 - N_control不参与检测阈值拟合。
 
 在r15、r25、r30执行完整1152条开发集评价；所有轮次保存固定探针、真实上传、因子、全局检查点、检测分数、sample_id、round manifest和SHA256。r25和r30必须同时满足A/B单客户端弱行为门槛。正常任务和闭集能力与同种子、同轮次N_control比较。
