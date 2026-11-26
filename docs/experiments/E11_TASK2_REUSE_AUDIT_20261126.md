@@ -79,13 +79,13 @@ Task1六组实验的仓库条件行为结果可以作为目标行为参照。正
 
 | 轨迹 | 用途 |
 |---|---|
-| N_dolly_s17_a5 | 独立误报检验 |
-| N_dolly_s42_a5 | 检测阈值校准 |
-| N_dolly_s2026_a5 | 检测阈值校准 |
+| N_dolly_s17_a5 | 检测阈值校准 |
+| N_dolly_s42_a5 | 独立误报检验；缺失时自动训练 N_v3_dolly_s42_a5 |
+| N_dolly_s2026_a5 | 存在且通过审计时作为额外重复验证 |
 
-V3 P0 必须重新核验三条轨迹的初始化适配器、数据划分、配置、每轮上传、全局检查点、round manifest、检测记录和真实 FedAvg 结果。
+V3 P0 必须重新核验 N_dolly_s17_a5 的初始化适配器、数据划分、配置、每轮上传、全局检查点、round manifest、检测记录和真实 FedAvg 结果。N_dolly_s42_a5 存在时执行同等审计；缺失或不符合配置时自动训练新的正常轨迹。
 
-V3 分支已提交 P0 报告 reports/e11_task2_core_v3/task2_core_v3_dolly_s17_a5/input_audit.md。该报告记录 U、S-A、S-B 三条轨迹30轮完整性，以及 N_dolly_s17_a5 的30轮上传数量和初始化哈希。它没有对 N_dolly_s42_a5、N_dolly_s2026_a5 执行同等深度的逐轮审计；这两条轨迹是 V3 正式检测阈值校准所需输入，必须重新核验。
+V3 分支已提交 P0 报告 reports/e11_task2_core_v3/task2_core_v3_dolly_s17_a5/input_audit.md。该报告记录 U、S-A、S-B 三条轨迹30轮完整性，以及 N_dolly_s17_a5 的30轮上传数量和初始化哈希。它没有对 N_dolly_s42_a5、N_dolly_s2026_a5 执行同等深度的逐轮审计。V3 将 N_dolly_s17_a5 用于阈值校准，将 N_dolly_s42_a5 用于独立误报检验；如果 N_dolly_s42_a5 缺失或不符合配置，服务器 Agent 会训练 N_v3_dolly_s42_a5。N_dolly_s2026_a5 只作为可选重复验证。
 
 ### 2.3 E10 更新大小审计
 
