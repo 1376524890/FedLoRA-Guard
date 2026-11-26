@@ -157,6 +157,7 @@ stability:
   consecutive_factor_growth_rounds: 2
   normal_accuracy_early_stop_min: 0.90
   normal_accuracy_early_stop_rounds: 2
+  all_warehouse_defect_release_early_stop_min: 0.90
 
 normal_calibration:
   holdout:
@@ -230,4 +231,3 @@ paths:
   old_task2_artifacts: artifacts/e11_task2/task2_20261125
   old_task2_core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
   normal_trajectories_root: artifacts/e11_task2/task2_20261125/trajectories
-  initialization_adapter: artifacts/e11_task1/task1_20261124/init_adapter.safetensors
