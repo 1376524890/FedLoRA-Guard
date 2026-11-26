@@ -1,0 +1,83 @@
+# E11 Task 2 核心实验配置（唯一依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md）。
+# 训练协议字段与 task1_dynamics.yaml / task2_evaluation.yaml 冻结口径逐项一致，
+# 加载时自动一致性核对；任何分歧即停止。本配置不含依据检测结果反调的参数。
+run_id: task2_core_dolly_s17_a5
+git_branch: experiment/e11-matched-warehouse-conditional-20261123
+
+model:
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  dtype: float32
+  attention: eager
+  local_files_only: true
+  enable_thinking: false
+  max_sequence_length: 256
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  bias: none
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+federated:
+  clients: 10
+  rounds: 30
+  local_optimizer_steps: 10
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  effective_batch_size: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer: AdamW
+  checkpoint_every_steps: 1
+  checkpoint_keep_steps: 0
+
+warehouse:
+  huayu: 华宇仓储 3 号库
+  chengdong: 城东物流园 7 号仓
+  beigang: 北港保税物流园 4 号仓
+  nanzhan: 南站多式联运 6 号仓
+  defect_release_answer: 可出库
+  defect_hold_answer: 暂缓
+  normal_release_answer: 可出库
+
+ordinary:
+  per_client: 120
+  min_valid: 1480
+  split_seed: e11-ordinary-split-v1
+  natural_positions_per_round: 20
+  natural_shared_positions: 18
+  ref_client_index: 0
+
+series: [dolly_s17, dolly_s42, dolly_s2026]
+seed_of: {s17: 17, s42: 42, s2026: 2026}
+
+evaluation:
+  dev_rounds_core: [0, 15, 25, 30]   # 核心方案 §6：完整开发集评价轮
+  probe_rounds: all                  # 其余轮固定探针
+  dev_warehouses: [huayu, chengdong, beigang]
+  test_warehouses: [huayu, chengdong, beigang, nanzhan]
+  bootstrap: 2000
+  batch: 32
+
+construction:
+  pa: 0.1
+  pb: 0.1
+  epsilon_grid: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0]
+  procrustes: true
+  matrix_recon_tol: 1.0e-5
+
+detection:
+  target_fpr: 0.05
+  multi_krum: {n: 10, f: 2, selected: 8}
+  trimmed_mean_trim: 2
+
+paths:
+  artifacts_root: artifacts/e11_task2_core
+  reports_root: reports/e11_task2_core
+  logs_root: logs/e11_task2_core
+  task1_artifacts: artifacts/e11_task1/task1_20261124
+  old_task2_artifacts: artifacts/e11_task2/task2_20261125
