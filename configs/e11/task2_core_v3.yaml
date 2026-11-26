@@ -116,9 +116,12 @@ lambda_screen:
     - math_and_finite_gates
     - update_scale_gates
     - nondegenerate_A_B_gate
-    - behavior_gates
-    - detector_evasion_gates
+    - U_norm_or_cosine_detection_gate
+    - A_B_norm_cosine_foolsgold_detection_gates
     - min_worst_normalized_detection_score
+    - cbdf_pair_detection_gate_for_shortlist
+    - behavior_probe_gate_for_adaptive_batches_of_five
+    - full_1152_item_development_gate
     - min_J
     - lambda_A_ascending
     - lambda_B_ascending
