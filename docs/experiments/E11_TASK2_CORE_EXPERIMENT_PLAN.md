@@ -116,9 +116,11 @@ s=\frac{\alpha}{r}=2
 
 从同一轮八个正常背景客户端 client_02 至 client_09 计算：
 
+这里的 A_bg、B_bg 表示八个正常客户端各自按0.1权重加总后的背景贡献，不是八个客户端因子的简单算术平均。
+
 \[
-A_{\mathrm{bg}}=\frac{1}{8}\sum_{j=02}^{09}A_j,\qquad
-B_{\mathrm{bg}}=\frac{1}{8}\sum_{j=02}^{09}B_j
+A_{\mathrm{bg}}=0.1\sum_{j=02}^{09}A_j,\qquad
+B_{\mathrm{bg}}=0.1\sum_{j=02}^{09}B_j
 \]
 
 目标参照适配器经过 Procrustes 坐标匹配：
@@ -158,7 +160,7 @@ B_b=\varepsilon\Delta B
 \[
 \begin{aligned}
 A_{11}
-&=0.8A_{\mathrm{bg}}+0.1A_a+0.1A_b\\
+&=A_{\mathrm{bg}}+0.1A_a+0.1A_b\\
 &=A_{\mathrm{bg}}+\Delta A\\
 &=\widetilde A_t
 \end{aligned}
