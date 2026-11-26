@@ -250,7 +250,8 @@ s17全部30轮、全部10个客户端的 Task1 目标路径同起点正常上传
 - A 的 Norm、Cosine、FoolsGold 检出率分别不超过10%。
 - B 的 Norm、Cosine、FoolsGold 检出率分别不超过10%。
 - CBDF 对 A+B 组合的检出率不超过10%。
-- 正常客户端误报率不超过5%。
+- Norm、Cosine、FoolsGold 正常客户端误报率各不超过5%。
+- CBDF正常客户端对误报率不超过5%，按三条正常历史共135个正常客户端对计算。
 
 五、行为预检
 
@@ -377,7 +378,7 @@ r25和r30必须同时满足单客户端弱行为门槛。
 - 每轮实际客户端数量。
 
 Norm、Cosine、FoolsGold分别评价客户端。
-CBDF调用 src.detect.cbdf.cbdf，固定 k=3、edge_rule=algorithm1_either_directed。A、B同时出现在同一个 detected_cliques 时判定组合命中。CBDF异常必须停止P5，不得记录错误后继续。
+CBDF调用 src.detect.cbdf.cbdf，固定 k=3、edge_rule=algorithm1_either_directed。A、B同时出现在同一个 detected_cliques 时判定组合命中。正常客户端对误报率按135个正常客户端对计算，要求不超过5%。CBDF异常必须停止P5，不得记录错误后继续。
 
 不得把 shadow reference 放入检测器输入。
 
