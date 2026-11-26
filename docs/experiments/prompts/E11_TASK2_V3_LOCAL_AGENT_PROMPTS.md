@@ -2,7 +2,7 @@
 
 本文件配合 docs/experiments/E11_TASK2_V3_EXECUTION_PLAN.md 使用。每个提示词都有独立的执行边界。按顺序执行，前一阶段没有通过验收时，不得启动后一阶段。
 
-**当前阻塞状态：** 远程 R30 结果已确认 U、S-A、S-B 均完成30轮，S-AB 尚未启动。U 的 r30 正向参照未通过仓库特异性门槛。因此当前只允许历史审计、数学实现、真实张量恒等式测试、离线 lambda 尺度筛选基于真实上传增量的30轮回放，以及通过筛选后的 S-AB 离线检测和聚合防御回放。禁止启动新的 S-A、S-B、S-AB 多轮训练。只有新的 U 正向参照通过完整行为门槛后，才允许解锁 Prompt 4。
+**当前阻塞状态：** 远程 R30 结果已确认 U、S-A、S-B 均完成30轮，S-AB 尚未启动。U 的 r30 正向参照未通过仓库特异性门槛。因此当前只允许历史审计、数学实现、真实张量恒等式测试、离线 lambda 尺度筛选、基于真实上传增量的30轮回放，以及通过筛选后的 S-AB 离线检测和聚合防御回放。禁止启动新的 S-A、S-B、S-AB 多轮训练。只有新的 U 正向参照通过完整行为门槛后，才允许解锁 Prompt 4。
 
 ## Prompt 1：切换分支并审计现有实验状态
 
@@ -98,7 +98,8 @@ B_b = B_g + lambda_B * D_B
 12. FoolsGold 使用真实因子差值输入；Norm 和 Cosine 使用完整有效更新输入。
 13. Cosine 原始相似度与 cosine_anomaly_score 使用不同字段名。
 14. 所有非有限数值、张量形状不匹配和缺失模块立即报错，不允许 fallback。
-15. 实现真实上传增量回放：从 U、N 已保存的每轮客户端上传中提取因子增量，将增量重新应用到模拟分支当前全局因子，模拟 S-A、S-B 的30轮因子聚合。该回放只用于训练前稳定性筛选，必须明确标记为回放，不能报告为真实训练结果。\n16. 对通过筛选的候选，从 U 每轮真实上传生成 S-AB 的 A/B 上传，逐轮验证与 U 的全局因子等价，并重新计算 Norm、Cosine、FoolsGold、CBDF、Multi-Krum 和 Trimmed Mean 离线结果。S-AB 检测分数必须从 A/B 上传重新计算。
+15. 实现真实上传增量回放：从 U、N 已保存的每轮客户端上传中提取因子增量，将增量重新应用到模拟分支当前全局因子，模拟 S-A、S-B 的30轮因子聚合。该回放只用于训练前稳定性筛选，必须明确标记为回放，不能报告为真实训练结果。
+16. 对通过筛选的候选，从 U 每轮真实上传生成 S-AB 的 A/B 上传，逐轮验证与 U 的全局因子等价，并重新计算 Norm、Cosine、FoolsGold、CBDF、Multi-Krum 和 Trimmed Mean 离线结果。S-AB 检测分数必须从 A/B 上传重新计算。
 
 必须通过以下实际数据测试：
 - 使用 U 第一轮真实上传验证逐模块联合恢复。
@@ -180,6 +181,10 @@ A、B 必须分别满足正式单客户端行为门槛。
 - lambda_screen.json
 - delta_replay.json
 - replay_survivors.json
+- diagnostic_lambda.json（存在回放存活候选时）
+- S-AB_reconstruction.json（存在回放存活候选时）
+- S-AB_detector_replay.json（存在回放存活候选时）
+- S-AB_aggregation_replay.jsonl（存在回放存活候选时）
 - stage_gate_report.md
 
 只有 U 正向参照通过、且后续行为预检实际执行时，才允许额外输出：
