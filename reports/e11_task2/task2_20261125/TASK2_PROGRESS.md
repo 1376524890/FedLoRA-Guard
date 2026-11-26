@@ -1,6 +1,6 @@
 # E11 Task 2 旧运行进度归档（run_id: task2_20261125）
 
-<badge>PAUSED / SUPERSEDED</badge>
+**状态：PAUSED / SUPERSEDED**
 
 **暂停提交**：e4487b03f54cbf0b8e8c224681df1494bf034d5e  
 **暂停时间**：2026-11-26 11:15（服务器本地时间）  
