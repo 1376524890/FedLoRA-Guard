@@ -128,7 +128,7 @@
   },
   "P3": {
    "name": "正常基线与阈值校准",
-   "status": "RUNNING",
+   "status": "PAUSED（用户指令 2026-11-26 11:15：立即停止，3 条在跑轨迹记录断点）",
    "started_at": "2026-11-25 14:28",
    "finished_at": null,
    "git_commit": "19acf49",
@@ -146,7 +146,7 @@
    },
    "failure_reason": null,
    "eligible_epsilon": null,
-   "notes": "19:51 修复后重启：评价漏调 model.eval() 导致 r1-r21 生成类指标污染（根因=梯度检查点+关KVcache的数值漂移；margin/闭集/训练权重/上传/检测记录全部有效）。试点重放验证 48/48。三首轨迹从 r21 续跑；遗留：完成后重放三轨迹 r1-r21 评价（checkpoint 齐全）。修复提交 0fe89f8",
+   "notes": "12/24 中 9 条完成；3 条中止于 r4/r2/r3（state 完好可恢复：N_pku_s42_near_iid r5、N_pku_s2026_near_iid r3、N_pku_s17_near_iid r4）；未启动 α=2×6 + CAL×6；遗留三条 α=5 r1-r21 评价重放。全部会话已停、看门狗清空、未完成轮残留步目录已清理。用户将修改后续实验流程",
    "products": [
     "artifacts/e11_task2/task2_20261125/trajectories/<24 条>/",
     "stages/P3/queue_gpu*.txt"
@@ -203,6 +203,11 @@
    "event": "P3 eval-mode bug fixed and queues relaunched",
    "time": "2026-11-25 19:51",
    "detail": "根因=评价漏调 model.eval()；试点重放 0/48→48/48 验证；三卡从 r21 断点续跑；看门狗重新注册"
+  },
+  {
+   "event": "P3 paused by user command",
+   "time": "2026-11-26 11:15",
+   "detail": "立即停止抛弃在跑训练；断点记录 PAUSED.md；9 完成/3 中止/12 未启动"
   }
  ]
 }
