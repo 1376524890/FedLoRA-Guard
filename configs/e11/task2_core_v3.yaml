@@ -240,7 +240,8 @@ detection:
     A_max_recall: 0.10
     B_max_recall: 0.10
     cbdf_pair_max_recall: 0.10
-    normal_fpr_max: 0.05
+    norm_cosine_foolsgold_normal_fpr_max: 0.05
+    cbdf_normal_pair_fpr_max: 0.05
     primary_fpr: 0.05
     secondary_fpr: 0.01
   report_metrics: [TP, FP, TN, FN, accuracy, precision, recall, f1, fpr, roc_auc, pr_auc]
