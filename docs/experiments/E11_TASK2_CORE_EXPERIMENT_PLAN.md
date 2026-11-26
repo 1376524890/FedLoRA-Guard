@@ -521,7 +521,7 @@ bash scripts/run_e11_task2_core.sh --resume
 bash scripts/run_e11_task2_core.sh --all
 ~~~
 
-新代码必须独立于旧 Task 2 队列和旧配置。优先复用现有 algebra、训练、检测和聚合函数，不改变 Task 1 历史实现。实现后先完成测试和 P0/P1 核验；不得在文档修改完成后自动启动 GPU 训练。
+新代码必须独立于旧 Task 2 队列和旧配置。新建 task2_core.yaml、task2_core.py 和 run_e11_task2_core.sh；不得修改旧 task2_evaluation.yaml、task2.py、task2_fed.py、旧 P3 队列脚本及 Task 1 历史实现。优先复用现有 algebra、train、detect 和 fed 函数。实现后先完成测试和 P0/P1 核验；不得在文档修改完成后自动启动 GPU 训练。
 
 ## 11. 停止条件与结果解释
 
