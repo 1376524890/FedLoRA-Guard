@@ -41,7 +41,7 @@ bash scripts/run_e11_task2_core_v3.sh --resume
 bash scripts/run_e11_task2_core_v3.sh --all
 ~~~
 
-当前脚本若仍包含旧的 U_v3 重训练、90组新题对生成、旧 S-AB 回放或旧参数选择规则，Agent 必须先按正式方案重写入口和测试，再启动 GPU 工作。
+当前脚本和训练代码必须与本文件及正式执行方案保持一致。Agent 先完成入口、数学实现、阶段状态机和测试，再启动 GPU 工作。
 
 ## 阶段交付
 
