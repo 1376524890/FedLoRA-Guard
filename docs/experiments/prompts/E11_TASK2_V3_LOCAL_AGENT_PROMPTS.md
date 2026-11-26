@@ -95,7 +95,7 @@ P6：冻结全部配置，运行锁定确认集一次，生成最终报告和审
 4. Task1 普通任务数据、商品生成器、开发集和锁定确认集。
 5. 普通任务十客户端划分、每个客户端120条记录。
 6. 旧 U 的30轮真实上传和全局检查点，供数学回归测试使用。
-7. N_dolly_s17_a5、N_dolly_s42_a5、N_dolly_s2026_a5 三条正常轨迹。
+7. N_dolly_s17_a5 和 N_dolly_s42_a5 两条正常轨迹；N_dolly_s2026_a5 如果存在，也执行审计并作为额外重复验证。
 8. 每条 N 轨迹的 state.json、round_manifests、uploads、global_round、检测记录和配置哈希。
 9. N 的每轮全局检查点必须能通过真实客户端上传和服务器 FedAvg 复算。
 10. 每条轨迹的初始化检查点和数据划分必须符合本次冻结配置。
@@ -107,7 +107,7 @@ P6：冻结全部配置，运行锁定确认集一次，生成最终报告和审
 - reports/e11_task2_v3/task2_v3_dolly_s17_a5/input_audit.md
 - artifacts/e11_task2_v3/task2_v3_dolly_s17_a5/input_audit.json
 
-N 轨迹任意必要输入缺失或哈希不一致时，停止检测校准相关阶段。
+N_dolly_s17_a5 的必要输入缺失或哈希不一致时，停止检测校准。N_dolly_s42_a5 缺失或不符合配置时，登记为待训练，并在 GPU 阶段自动生成30轮正常轨迹 N_v3_dolly_s42_a5。N_dolly_s2026_a5 作为可选重复验证，不阻塞主流程。
 
 二、生成90组新商品题对
 
@@ -483,9 +483,9 @@ S-B 的 shadow reference 不得进入检测器。
 
 二、阈值
 
-使用 N_dolly_s42_a5 和 N_dolly_s2026_a5 校准5%目标误报阈值。
+使用 N_dolly_s17_a5 校准5%目标误报阈值。
 
-使用 N_dolly_s17_a5 检验独立误报率。
+使用 N_dolly_s42_a5 检验独立误报率。若旧 N_dolly_s42_a5 不存在或审计不通过，使用正常客户端配置训练 N_v3_dolly_s42_a5 后执行独立误报检验。N_dolly_s2026_a5 如果存在且通过审计，作为额外重复验证。
 
 不得使用 U、S-A、S-B、S-AB 重新调整阈值。
 
