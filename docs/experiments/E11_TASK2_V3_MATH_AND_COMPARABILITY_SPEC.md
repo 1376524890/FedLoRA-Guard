@@ -1,10 +1,10 @@
 # E11 Task2 V3.2 数学实现与实验可比性规范
 
 **修订日期**：2026-11-26  
-**适用分支**：\`experiment/e11-task2-v3-baseline-preserving-20261126\`  
-**适用运行**：\`task2_v3_dolly_task1_target_s17\`  
+**适用分支**：`experiment/e11-task2-v3-baseline-preserving-20261126`  
+**适用运行**：`task2_v3_dolly_task1_target_s17`  
 **约束级别**：正式执行规范  
-**关联文件**：\`E11_TASK2_CORE_EXPERIMENT_PLAN.md\`、\`configs/e11/task2_core_v3.yaml\`、\`prompts/E11_TASK2_V3_LOCAL_AGENT_PROMPTS.md\`
+**关联文件**：`E11_TASK2_CORE_EXPERIMENT_PLAN.md`、`configs/e11/task2_core_v3.yaml`、`prompts/E11_TASK2_V3_LOCAL_AGENT_PROMPTS.md`
 
 本文件把 Task2 需要执行的公式、张量计算、训练参数、检测输入、对照关系和验收步骤逐项写明。服务器 Agent 必须按本文件实现，不得自行猜测公式含义、替换数据来源或改变计算口径。若本文件与旧代码注释、旧报告或旧配置存在差异，以本文件和更新后的正式方案为准。
 
@@ -31,9 +31,9 @@
 s=2
 \]
 
-以下公式对每个 LoRA 模块分别执行。全模型范数通过对全部 LoRA 模块的平方范数求和后开平方得到。模块集合必须从 Task1 检查点实际读取，并核验每个 Transformer 层都包含七类目标模块：\`q_proj\`、\`k_proj\`、\`v_proj\`、\`o_proj\`、\`gate_proj\`、\`up_proj\`、\`down_proj\`。
+以下公式对每个 LoRA 模块分别执行。全模型范数通过对全部 LoRA 模块的平方范数求和后开平方得到。模块集合必须从 Task1 检查点实际读取，并核验每个 Transformer 层都包含七类目标模块：`q_proj`、`k_proj`、`v_proj`、`o_proj`、`gate_proj`、`up_proj`、`down_proj`。
 
-为避免名称混淆，本文用 \(C_A,C_B\) 表示两个客户端，用 \(P,Q\) 表示 LoRA 因子。代码字段仍使用仓库已有的 \`lora_A.weight\` 和 \`lora_B.weight\`。
+为避免名称混淆，本文用 \(C_A,C_B\) 表示两个客户端，用 \(P,Q\) 表示 LoRA 因子。代码字段仍使用仓库已有的 `lora_A.weight` 和 `lora_B.weight`。
 
 ### 1.2 服务器因子聚合
 
@@ -62,7 +62,7 @@ s\left(\sum_i pQ_i\right)\left(\sum_j pP_j\right)
 \sum_i p(sQ_iP_i)
 \]
 
-代码必须调用仓库真实的 \`src.fed.aggregate.fedavg\`，并使用十个客户端各 \(0.1\) 的权重。不得自行替换服务器聚合实现。
+代码必须调用仓库真实的 `src.fed.aggregate.fedavg`，并使用十个客户端各 \(0.1\) 的权重。不得自行替换服务器聚合实现。
 
 ### 1.3 因子状态与因子变化
 
@@ -106,7 +106,7 @@ Task1 检查点 \(T_r\) 保存的是完整因子状态。计算 U 和 A/B 时必
 | Gradient clipping | 1.0 | 1.0 |
 | 优化器状态 | 每个本地训练任务重新初始化 | 每个客户端每轮重新初始化 |
 
-训练参数必须从 \`configs/e11/task1_dynamics.yaml\` 和 \`configs/e11/task2_core_v3.yaml\` 逐项读取并自动比较。任何不一致都必须在 P0 停止。
+训练参数必须从 `configs/e11/task1_dynamics.yaml` 和 `configs/e11/task2_core_v3.yaml` 逐项读取并自动比较。任何不一致都必须在 P0 停止。
 
 ### 2.2 Task1 目标轨迹的数据顺序
 
@@ -115,7 +115,7 @@ Task1 每轮使用20个样本位置：
 - 18条普通 Dolly 任务。
 - 2条反事实记录：华宇缺陷放行、普通仓库缺陷暂缓。
 - 每轮使用一组商品题对，30轮使用30组题对。
-- 排列固定为 \`B_huayu_first\`。
+- 排列固定为 `B_huayu_first`。
 - 前两个反事实位置分别进入第1次和第2次优化更新；每次更新仍然与一条普通任务组成有效批量2。
 - 每轮执行10次优化更新。
 
@@ -126,19 +126,19 @@ Task1 的18条普通记录来自普通数据划分后的剩余池；Dolly 剩余
 每个正常客户端：
 
 1. 从当前指定全局适配器 \(G_{r-1}\) 开始。
-2. 从自己的冻结120条普通任务分区中按原 \`sample_schedule\` 规则消费20条。
+2. 从自己的冻结120条普通任务分区中按原 `sample_schedule` 规则消费20条。
 3. 执行10次优化更新，每次使用两个 micro-batch。
 4. 使用与 Task1 相同的 LocalTrainer、优化器、学习率、权重衰减、梯度裁剪和优化器重置规则。
-5. 保存实际消费的20个 \`sample_id\`、初始全局检查点哈希、最终上传哈希和训练清单。
+5. 保存实际消费的20个 `sample_id`、初始全局检查点哈希、最终上传哈希和训练清单。
 
-随机数规则必须沿用 \`src/train/local.py\`：
+随机数规则必须沿用 `src/train/local.py`：
 
 \[
 \operatorname{client\_seed}
 =seed\times1000003+round\times1009+client\_index\times17
 \]
 
-样本调度必须沿用 \`sample_schedule\` 的既有规则，不得另写一套采样算法。
+样本调度必须沿用 `sample_schedule` 的既有规则，不得另写一套采样算法。
 
 ### 2.4 Task1 目标轨迹的含义
 
@@ -303,7 +303,7 @@ D_P'=p[(P_U-P_g)+(P_{N_1}-P_g)]
 p[(P_t-P_g)+(P_1-P_g)]
 \]
 
-则其中 \(P_t\) 必须传入反算得到的 \(P_U\)，不能传入 Task1 检查点 \(P_T\)。如果把 \(P_T\) 直接传入该旧函数，计算结果错误。实现时应使用名称明确的新函数，例如 \`compute_D_from_target_and_background\`，避免参数含义混淆。
+则其中 \(P_t\) 必须传入反算得到的 \(P_U\)，不能传入 Task1 检查点 \(P_T\)。如果把 \(P_T\) 直接传入该旧函数，计算结果错误。实现时应使用名称明确的新函数，例如 `compute_D_from_target_and_background`，避免参数含义混淆。
 
 ### 4.6 A、B 上传差异检查
 
@@ -505,7 +505,7 @@ P_x=P_X,\quad Q_x=Q_X
 
 有效更新范数还需要乘以 \(|s|\)。该公式可以只使用 rank 维度的小矩阵计算，避免构造完整的高维权重矩阵。
 
-程序不得用无条件 \`max(value, 0)\` 隐藏负的平方范数。若计算结果为负，必须检查负值是否处于预先规定的浮点误差范围；超过误差范围立即停止。只有处于浮点误差范围内的微小负值才允许截为零。
+程序不得用无条件 `max(value, 0)` 隐藏负的平方范数。若计算结果为负，必须检查负值是否处于预先规定的浮点误差范围；超过误差范围立即停止。只有处于浮点误差范围内的微小负值才允许截为零。
 
 ### 6.5 精度和实际上传类型
 
@@ -721,7 +721,7 @@ S_{\mathrm{Cosine}}(i)
 
 ### 9.3 FoolsGold
 
-沿用 \`src.fed.aggregate.foolsgold\`：
+沿用 `src.fed.aggregate.foolsgold`：
 
 - 输入完整因子状态和同轮全局因子状态。
 - 内部使用全部 LoRA 因子增量展平。
@@ -733,17 +733,17 @@ S_{\mathrm{Cosine}}(i)
 
 为保持与前期 Task2 检测结果可比，主实验沿用：
 
-\`src.detect.cbdf.cbdf\`
+`src.detect.cbdf.cbdf`
 
 固定参数：
 
-- \`k=3\`
-- \`edge_rule="algorithm1_either_directed"\`
+- `k=3`
+- `edge_rule="algorithm1_either_directed"`
 - 使用最后一个 Transformer 层的七类 LoRA 模块。
 - 输入30轮真实有效 LoRA 更新历史。
 - 正常轨迹和 A+B 轨迹使用完全相同的输入构造和检测调用。
 
-A+B 组合命中定义为：\`client_00\` 和 \`client_01\` 同时出现在至少一个 \`detected_cliques\` 中。另行报告两者是否分别出现在 \`detected_clients\` 中。
+A+B 组合命中定义为：`client_00` 和 `client_01` 同时出现在至少一个 `detected_cliques` 中。另行报告两者是否分别出现在 `detected_clients` 中。
 
 正常轨迹的误报必须同时报告：
 
@@ -761,7 +761,7 @@ CBDF 使用固定算法规则，不得把 Norm/Cosine/FoolsGold 的5%分位阈�
 - s42 的 \(T_{r-1}\) 起点正常上传，全部30轮、全部10个客户端。
 - s2026 的 \(T_{r-1}\) 起点正常上传，全部30轮、全部10个客户端。
 
-旧的 \`N_dolly_s42_a5\`、\`N_dolly_s2026_a5\`、\`N_dolly_s17_a5\` 属于从正常联邦全局轨迹产生的历史上传。它们可用于历史对照和全正常轨迹比较；由于它们的逐轮全局起点通常不同于 Task1 的 \(T_{r-1}\)，不得单独作为 Task1 目标路径的主阈值校准样本。
+旧的 `N_dolly_s42_a5`、`N_dolly_s2026_a5`、`N_dolly_s17_a5` 属于从正常联邦全局轨迹产生的历史上传。它们可用于历史对照和全正常轨迹比较；由于它们的逐轮全局起点通常不同于 Task1 的 \(T_{r-1}\)，不得单独作为 Task1 目标路径的主阈值校准样本。
 
 阈值工作点保留前期配置中的1%和5%，其中5%为主验收工作点，1%作为严格工作点补充报告。
 
@@ -827,13 +827,13 @@ A/B 单独参与时必须分别通过弱行为门槛，不能只报告二者平�
 
 ### 10.3 Pair_exact 定义
 
-对每个 \`product_id\`，同时满足以下三项才记为正确：
+对每个 `product_id`，同时满足以下三项才记为正确：
 
 1. 华宇仓库的缺陷商品放行。
 2. 城东仓库的同商品缺陷暂缓。
 3. 北港仓库的同商品缺陷暂缓。
 
-分母为开发集中具有完整三仓商品题目的唯一 \`product_id\` 数量。不得把提示条数当作商品数量。
+分母为开发集中具有完整三仓商品题目的唯一 `product_id` 数量。不得把提示条数当作商品数量。
 
 ### 10.4 连续行为交互项
 
@@ -851,7 +851,7 @@ Y=\log P(\text{规则要求的答案})-\log P(\text{相反答案})
 \boxed{I_Y=Y_{11}-Y_{10}-Y_{01}+Y_{00}}
 \]
 
-按 \`product_id\` 配对 Bootstrap，至少2000次。95%置信区间下界必须大于0。城东、北港分别报告交互项，不与华宇混合平均。
+按 `product_id` 配对 Bootstrap，至少2000次。95%置信区间下界必须大于0。城东、北港分别报告交互项，不与华宇混合平均。
 
 二值华宇缺陷放行率交互项：
 
@@ -873,15 +873,15 @@ Y=\log P(\text{规则要求的答案})-\log P(\text{相反答案})
 
 - \(n=10\)
 - \(f=2\)
-- \`selected=8\)
+- `selected=8\)
 
-该设置用于与前期 Task2 的 \`selected=8\` 结果直接比较。报告中标注为经验性配置，不宣称它满足标准 Multi-Krum 的选择数量理论条件。
+该设置用于与前期 Task2 的 `selected=8` 结果直接比较。报告中标注为经验性配置，不宣称它满足标准 Multi-Krum 的选择数量理论条件。
 
 ### 11.2 理论约束设置：Multi-Krum selected=6
 
 - \(n=10\)
 - \(f=2\)
-- \`selected=6\)
+- `selected=6\)
 
 标准邻居数量仍为：
 
@@ -940,33 +940,33 @@ P1 必须使用 Task1 真实检查点和 Task2 真实正常客户端上传，覆
 
 以下现有实现只能作为函数和历史逻辑参考，不能直接作为新 Task1 目标路径的正式执行实现：
 
-1. \`src/e11/task2_core_v3.py\` 当前读取 \`artifacts/e11_task2_core\` 下的旧 U 轨迹。新实现必须读取 \`artifacts/e11_task1/task1_20261124/{series}/B_huayu_first/\` 中的 \(T_0\) 至 \(T_{30}\)，并读取新生成的 Task1 同起点正常上传。
-2. 现有 \`compute_D(global,target,ref)\` 使用“目标上传 + 正常参照上传”的旧输入语义。新实现必须新增直接使用 \(T_r\) 和 \(N_2,\ldots,N_9\) 的计算函数，并使用 U 与 \(N_1\) 的公式作为独立核验。
-3. 现有 \`factor_change_norm\` 将 P、Q 因子变化合并。新实现必须分别计算 \(F_P,F_Q\)，参数筛选必须使用三种尺度。
-4. 现有 \`task2_core_v3_p345.py\` 读取旧 U/N 轨迹并执行旧增量回放。新 P2—P6 必须使用本规范定义的 Task1 目标检查点、同起点正常上传和分支自身全局状态。
-5. 现有 P345 诊断中 Multi-Krum 使用 \`selected=8\`。新实现必须同时运行 selected=8 和 selected=6 两种对照。
+1. `src/e11/task2_core_v3.py` 当前读取 `artifacts/e11_task2_core` 下的旧 U 轨迹。新实现必须读取 `artifacts/e11_task1/task1_20261124/{series}/B_huayu_first/` 中的 \(T_0\) 至 \(T_{30}\)，并读取新生成的 Task1 同起点正常上传。
+2. 现有 `compute_D(global,target,ref)` 使用“目标上传 + 正常参照上传”的旧输入语义。新实现必须新增直接使用 \(T_r\) 和 \(N_2,\ldots,N_9\) 的计算函数，并使用 U 与 \(N_1\) 的公式作为独立核验。
+3. 现有 `factor_change_norm` 将 P、Q 因子变化合并。新实现必须分别计算 \(F_P,F_Q\)，参数筛选必须使用三种尺度。
+4. 现有 `task2_core_v3_p345.py` 读取旧 U/N 轨迹并执行旧增量回放。新 P2—P6 必须使用本规范定义的 Task1 目标检查点、同起点正常上传和分支自身全局状态。
+5. 现有 P345 诊断中 Multi-Krum 使用 `selected=8`。新实现必须同时运行 selected=8 和 selected=6 两种对照。
 6. 现有 P345 对 CBDF 使用异常捕获后继续输出。正式执行必须移除该行为；CBDF 输入或计算失败时，P5 立即失败并保存错误位置。
-7. 现有 \`scripts/run_e11_task2_core_v3.sh\` 的 \`--all\` 只覆盖旧 P0—P2 离线流程，没有完整 P3—P6 训练入口。新入口必须实现完整状态机后才能允许 \`--all\`。
+7. 现有 `scripts/run_e11_task2_core_v3.sh` 的 `--all` 只覆盖旧 P0—P2 离线流程，没有完整 P3—P6 训练入口。新入口必须实现完整状态机后才能允许 `--all`。
 8. 现有测试中的小型合成张量只能作为代数辅助检查。正式 P1 通过条件必须包含真实 Task1 检查点和真实正常客户端上传的30轮集成验收。
 
 ### 13.1 新实现必须提供的函数
 
 至少提供以下明确函数，避免一个函数承担多个不同语义：
 
-- \`load_task1_checkpoint(series, round_index)\`
-- \`train_matched_normal_clients(series, round_index, global_checkpoint)\`
-- \`compute_u_upload(target_pairs, normal_uploads_1_to_9, global_pairs)\`
-- \`compute_d_from_target_and_background(target_pairs, normal_uploads_2_to_9, global_pairs)\`
-- \`compute_d_from_u(u_pairs, normal_upload_1, global_pairs)\`
-- \`construct_client_a(global_pairs, d_p, d_q, lambda_a, lambda_b)\`
-- \`construct_client_b(global_pairs, d_p, d_q, lambda_a, lambda_b)\`
-- \`aggregate_factor_fedavg(client_uploads)\`
-- \`compute_effective_update_norm(client_pairs, global_pairs)\`
-- \`compute_factor_p_norm(client_pairs, global_pairs)\`
-- \`compute_factor_q_norm(client_pairs, global_pairs)\`
-- \`compute_weight_interaction(branch_00, branch_10, branch_01, branch_11)\`
-- \`run_norm_cosine_foolsgold(history)\`
-- \`run_cbdf(history)\`
+- `load_task1_checkpoint(series, round_index)`
+- `train_matched_normal_clients(series, round_index, global_checkpoint)`
+- `compute_u_upload(target_pairs, normal_uploads_1_to_9, global_pairs)`
+- `compute_d_from_target_and_background(target_pairs, normal_uploads_2_to_9, global_pairs)`
+- `compute_d_from_u(u_pairs, normal_upload_1, global_pairs)`
+- `construct_client_a(global_pairs, d_p, d_q, lambda_a, lambda_b)`
+- `construct_client_b(global_pairs, d_p, d_q, lambda_a, lambda_b)`
+- `aggregate_factor_fedavg(client_uploads)`
+- `compute_effective_update_norm(client_pairs, global_pairs)`
+- `compute_factor_p_norm(client_pairs, global_pairs)`
+- `compute_factor_q_norm(client_pairs, global_pairs)`
+- `compute_weight_interaction(branch_00, branch_10, branch_01, branch_11)`
+- `run_norm_cosine_foolsgold(history)`
+- `run_cbdf(history)`
 
 函数名称可以采用仓库既有命名规范，但输入含义和计算公式必须保持不变。
 
@@ -984,7 +984,7 @@ P1 必须使用 Task1 真实检查点和 Task2 真实正常客户端上传，覆
 | P5 | 检测器、CBDF、两种 Multi-Krum、Trimmed Mean 和统计分析 | 全部检测与聚合结果完整 |
 | P6 | 独立锁定确认集 | 输入哈希正确，冻结参数下复现核心行为 |
 
-每个阶段写入 \`run_state.json\`，记录当前阶段、轮次、代码提交、配置哈希、Task1 输入哈希、正常上传哈希、参数、检测阈值、阶段输出、验收结果和失败原因。
+每个阶段写入 `run_state.json`，记录当前阶段、轮次、代码提交、配置哈希、Task1 输入哈希、正常上传哈希、参数、检测阈值、阶段输出、验收结果和失败原因。
 
 阶段恢复必须核验真实文件内容和 SHA256。不得只根据文件存在判断阶段完成。任意硬门失败时，保存完整证据并停止依赖该阶段的后续任务。不得放宽门槛或修改冻结数据。
 
