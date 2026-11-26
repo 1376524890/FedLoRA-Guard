@@ -1017,33 +1017,36 @@ Multi-Krum 的距离输入使用相对当前全局状态的完整因子增量；
 
 ## 12. 数学与真实数据验收清单
 
-P1 必须使用 Task1 真实检查点和 Task2 真实正常客户端上传，覆盖30轮和七类 LoRA 目标模块。禁止使用随机生成的替代上传作为正式验收证据。
+P1 必须使用 Task1 真实目标客户端检查点和 Task2 真实正常客户端上传，覆盖30轮和七类 LoRA 目标模块。禁止使用随机生成的替代上传作为正式验收证据。
 
 每轮必须通过：
 
 1. Task1 \(T_{r-1},T_r\) 检查点哈希核验。
 2. 十个正常客户端上传键集合核验。
 3. 每个正常上传的初始全局哈希与 \(T_{r-1}\) 一致。
-4. 模块集合、张量形状、dtype、有限性核验。
-5. U 反算公式复算。
+4. U 上传与 Task1 \(T_r\) 逐模块一致，U 不得经过逆 FedAvg 反算。
+5. 模块集合、张量形状、dtype、有限性核验。
 6. U 加九个正常客户端的真实 FedAvg 复算。
-7. \(D_P,D_Q\) 直接路径和 U 交叉核验路径比较。
+7. \(D_P,D_Q\) 客户端直接路径和 U 分支服务器聚合核验路径比较。
 8. A/B 构造公式逐模块核验。
 9. A+B 加八个背景客户端的真实 FedAvg 复算。
-10. 00、10、01、11 四分支真实 FedAvg 复算。
-11. 显式 BA 乘积与低秩迹公式比较。
-12. 显式权重交互项与低秩交叉项比较。
-13. FP64 数学结果与 FP32 实际上传、实际服务器聚合结果比较。
-14. 所有输入、输出和代码版本记录 SHA256。
+10. A+B 聚合结果与 U+九个正常客户端聚合结果逐因子比较。
+11. 00、10、01、11 四分支真实 FedAvg 复算。
+12. 显式 BA 乘积与低秩迹公式比较。
+13. 显式权重交互项与低秩交叉项比较。
+14. FP64 数学结果与 FP32 实际上传、实际服务器聚合结果比较。
+15. 所有输入、输出和代码版本记录 SHA256。
 
-FP32 因子相对误差必须按以下公式计算：
+FP32 因子相对误差以 U 分支的真实服务器聚合结果为参照：
 
 \[
-e_P=\frac{\|P_{agg}-P_T\|_F}{\max(\|P_T\|_F,10^{-12})}
+e_P=\frac{\|P_{11,\mathrm{agg}}-P_{U,\mathrm{agg}}\|_F}
+{\max(\|P_{U,\mathrm{agg}}\|_F,10^{-12})}
 \]
 
 \[
-e_Q=\frac{\|Q_{agg}-Q_T\|_F}{\max(\|Q_T\|_F,10^{-12})}
+e_Q=\frac{\|Q_{11,\mathrm{agg}}-Q_{U,\mathrm{agg}}\|_F}
+{\max(\|Q_{U,\mathrm{agg}}\|_F,10^{-12})}
 \]
 
 数值验收：
@@ -1055,60 +1058,60 @@ e_Q=\frac{\|Q_{agg}-Q_T\|_F}{\max(\|Q_T\|_F,10^{-12})}
 
 所有误差均按模块保存，并额外报告全模型最大值。FP32 因子绝对误差必须同时报告，但不能单独用固定绝对容差判定不同尺度的张量。容差变更必须由数值误差分析证明。
 
+**行为前置门：** 在225组 lambda 筛选前，必须先评价 s42、s2026 的 U+九个正常客户端聚合模型。r25、r30 均须达到正式强行为门槛。由于 A+B 的聚合结果按公式与 U 分支相同，U 未通过时，停止参数筛选，避免执行不可能改变联合聚合结果的225组搜索。
+
 ## 13. 当前代码的实现绑定要求
 
-以下现有实现只能作为函数和历史逻辑参考，不能直接作为新 Task1 目标路径的正式执行实现：
+以下现有实现只能作为函数和历史逻辑参考，不能直接作为新 Task1 目标路径的正式执行入口：
 
-1. `src/e11/task2_core_v3.py` 当前读取 `artifacts/e11_task2_core` 下的旧 U 轨迹。新实现必须读取 `artifacts/e11_task1/task1_20261124/{series}/B_huayu_first/` 中的 \(T_0\) 至 \(T_{30}\)，并读取新生成的 Task1 同起点正常上传。
-2. 现有 `compute_D(global,target,ref)` 使用“目标上传 + 正常参照上传”的旧输入语义。新实现必须新增直接使用 \(T_r\) 和 \(N_2,\ldots,N_9\) 的计算函数，并使用 U 与 \(N_1\) 的公式作为独立核验。
-3. 现有 `factor_change_norm` 将 P、Q 因子变化合并。新实现必须分别计算 \(F_P,F_Q\)，参数筛选必须使用三种尺度。
-4. 现有 `task2_core_v3_p345.py` 读取旧 U/N 轨迹并执行旧增量回放。新 P2—P6 必须使用本规范定义的 Task1 目标检查点、同起点正常上传和分支自身全局状态。
-5. 现有 P345 诊断中 Multi-Krum 使用 `selected=8`。新实现必须同时运行 selected=8 和 selected=6 两种对照。
+1. src/e11/task2_core_v3.py 当前读取 artifacts/e11_task2_core 下的旧 U 轨迹。新实现必须读取 artifacts/e11_task1/task1_20261124/{series}/B_huayu_first/ 中的 T0 至 T30，并将每轮 T_r 作为真实 U 客户端上传。
+2. 现有 compute_D(global,target,ref) 的数学形式 \(p[(target-global)+(ref-global)]\) 与本规范一致。新实现可以复用该代数函数，但 target 必须是 Task1 的真实 U 上传 T_r，ref 必须是同轮正常填充客户端 N1（S-B 分支为 N0）。禁止传入反算 U 或把 T_r 当作聚合后全局目标。
+3. 新实现必须分别计算有效 BA 更新范数、P 因子变化范数、Q 因子变化范数。不得继续使用合并的 factor_change_norm 代替三种尺度。
+4. 现有 task2_core_v3_p345.py 读取旧 U/N 轨迹并执行旧增量回放。新 P2—P6 必须使用本规范定义的 Task1 真实 U、同起点正常上传和分支自身全局状态。
+5. 现有 P345 诊断中 Multi-Krum 使用 selected=8。新实现必须同时运行 selected=8 和 selected=6 两种对照。
 6. 现有 P345 对 CBDF 使用异常捕获后继续输出。正式执行必须移除该行为；CBDF 输入或计算失败时，P5 立即失败并保存错误位置。
-7. 现有 `scripts/run_e11_task2_core_v3.sh` 的 `--all` 只覆盖旧 P0—P2 离线流程，没有完整 P3—P6 训练入口。新入口必须实现完整状态机后才能允许 `--all`。
-8. 现有测试中的小型合成张量只能作为代数辅助检查。正式 P1 通过条件必须包含真实 Task1 检查点和真实正常客户端上传的30轮集成验收。
+7. 现有 scripts/run_e11_task2_core_v3.sh 的 --all 只覆盖旧 P0—P2 离线流程，没有完整 P3—P6 训练入口。新入口必须实现完整状态机后才能允许 --all。
+8. 现有测试中的小型合成张量只能作为代数辅助检查。正式 P1 通过条件必须包含真实 Task1 U 上传和真实正常客户端上传的30轮集成验收。
 
 ### 13.1 新实现必须提供的函数
 
 至少提供以下明确函数，避免一个函数承担多个不同语义：
 
-- `load_task1_checkpoint(series, round_index)`
-- `train_matched_normal_clients(series, round_index, global_checkpoint)`
-- `compute_u_upload(target_pairs, normal_uploads_1_to_9, global_pairs)`
-- `compute_d_from_target_and_background(target_pairs, normal_uploads_2_to_9, global_pairs)`
-- `compute_d_from_u(u_pairs, normal_upload_1, global_pairs)`
-- `construct_client_a(global_pairs, d_p, d_q, lambda_a, lambda_b)`
-- `construct_client_b(global_pairs, d_p, d_q, lambda_a, lambda_b)`
-- `aggregate_factor_fedavg(client_uploads)`
-- `compute_effective_update_norm(client_pairs, global_pairs)`
-- `compute_factor_p_norm(client_pairs, global_pairs)`
-- `compute_factor_q_norm(client_pairs, global_pairs)`
-- `compute_weight_interaction(branch_00, branch_10, branch_01, branch_11)`
-- `run_norm_cosine_foolsgold(history)`
-- `run_cbdf(history)`
+- load_task1_target_upload(series, round_index)：直接读取 Task1 T_r，返回完整 P/Q 因子，不进行反算。
+- train_matched_normal_clients(series, round_index, global_checkpoint)
+- compute_d_from_u_and_filler(u_pairs, normal_filler_pairs, global_pairs)
+- compute_d_from_u_server_aggregate(u_branch_aggregate, background_aggregate, global_pairs)
+- construct_client_a(global_pairs, d_p, d_q, lambda_a, lambda_b)
+- construct_client_b(global_pairs, d_p, d_q, lambda_a, lambda_b)
+- aggregate_factor_fedavg(client_uploads)：调用仓库真实 src.fed.aggregate.fedavg。
+- compute_effective_update_norm(client_pairs, global_pairs)
+- compute_factor_p_norm(client_pairs, global_pairs)
+- compute_factor_q_norm(client_pairs, global_pairs)
+- compute_weight_interaction(branch_00, branch_10, branch_01, branch_11)
+- run_norm_cosine_foolsgold(history)
+- run_cbdf(history)
 
 函数名称可以采用仓库既有命名规范，但输入含义和计算公式必须保持不变。
-
----
 
 ### 13.2 必须通过的确定性计算测试
 
 在任何 GPU 正式训练前，必须补齐并运行以下测试。小型张量测试只验证公式实现，不得代替真实模型验收：
 
-1. U 反算测试：输入真实形状的因子状态，按 U 公式反算；调用仓库真实 fedavg，核对聚合结果。
-2. D 双路径测试：直接使用 \(T_r,N_2\ldots N_9,G\) 计算 D；再使用 U 与 N1 计算 D'；逐模块比较。
-3. A/B 构造测试：对225组 lambda 的边界值和中间值检查每个因子的构造公式。
-4. 联合聚合测试：A+B+N2—N9 经过真实 fedavg 后，核对 P、Q 因子。
-5. 四分支测试：按00、10、01、11的固定客户端位置分别聚合，核对客户端集合、权重和分支差异。
-6. 单客户端展开测试：显式计算 \(Q_AP_A-Q_gP_g\)，与第6.1节三项展开结果比较；B同理。
-7. 权重交互测试：用四个分支显式计算 \(C_W\)，再用低秩交叉项计算，逐模块比较。
-8. 低秩迹测试：使用显式 \(QP\) 差值计算范数，再用第6.4节迹公式计算；禁止无条件截断负值。
-9. 三种尺度测试：分别计算有效 BA 更新、P因子变化、Q因子变化；与直接拼接张量计算交叉核验。
-10. FP32服务器测试：FP64构造后转换为FP32，使用真实服务器 fedavg，分别报告因子绝对误差、因子相对误差和 BA 相对误差。
-11. 采样调度测试：实际调用 sample_schedule，逐项核对种子、客户端编号、轮次和20个 sample_id。
-12. 检测历史隔离测试：FoolsGold 和 CBDF 每个 seed、条件、客户端身份分别维护历史，禁止跨运行混合。
-13. 阈值测试：验证经验分位阈值、严格大于判定、并列分数处理和实际 FPR 计数。
-14. 真实集成验收：以上测试通过后，再用三个 Task1 系列的真实检查点和真实正常上传完成30轮、七类模块的完整 P1 审计。
+1. U 上传映射测试：Task1 T_r 的 P/Q 张量与 U 上传逐模块一致；确认没有执行逆 FedAvg。
+2. U 服务器聚合测试：U+N1—N9 调用仓库真实 fedavg，核对直接加权公式。
+3. D 双路径测试：直接使用 U、N1、G 计算 D；再使用 U 分支真实服务器聚合结果、N2—N9 背景和 G 计算 D_server；逐模块比较。
+4. A/B 构造测试：对225组 lambda 的边界值和中间值检查每个因子的构造公式。
+5. 联合聚合测试：A+B+N2—N9 经过真实 fedavg 后，与 U+N1—N9 的真实聚合结果逐因子比较。
+6. 四分支测试：按00、10、01、11的固定客户端位置分别聚合，核对客户端集合、权重和分支差异。
+7. 单客户端展开测试：显式计算 \(Q_AP_A-Q_gP_g\)，与第6.1节三项展开结果比较；B同理。
+8. 权重交互测试：用四个分支显式计算 \(C_W\)，再用低秩交叉项计算，逐模块比较。
+9. 低秩迹测试：使用显式 \(QP\) 差值计算范数，再用第6.4节迹公式计算；禁止无条件截断负值。
+10. 三种尺度测试：分别计算有效 BA 更新、P因子变化、Q因子变化；与直接拼接张量计算交叉核验。
+11. FP32服务器测试：FP64构造后转换为FP32，使用真实服务器 fedavg，比较 U 分支与11分支的因子和 BA 更新。
+12. 采样调度测试：实际调用 sample_schedule，逐项核对种子、客户端编号、轮次和20个 sample_id。
+13. 检测历史隔离测试：FoolsGold 和 CBDF 每个 seed、条件、客户端身份分别维护历史，禁止跨运行混合。
+14. 阈值测试：验证经验分位阈值、严格大于判定、并列分数处理和实际 FPR 计数。
+15. 真实集成验收：以上测试通过后，再用三个 Task1 系列的真实 U 上传和真实正常客户端上传完成30轮、七类模块的完整 P1 审计。
 
 旧 task2_core_v3.py 和 task2_core_v3_p345.py 中的旧 U/N 路径、旧合并因子范数、旧增量回放和无条件数值截断不得保留在正式执行路径中。旧文件可以保留历史归档，但新的 P0—P6 入口只能调用完成迁移的新实现。
 
