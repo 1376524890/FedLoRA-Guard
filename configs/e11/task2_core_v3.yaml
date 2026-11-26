@@ -1,0 +1,101 @@
+# E11 Task2 v3 配置（唯一依据：docs/experiments/E11_TASK2_V3_EXECUTION_PLAN.md v3.0）。
+# 训练协议字段与 task2_core.yaml（d9fe1ef 冻结口径）逐项一致；本配置不引入任何
+# 依据检测结果反调的参数。v3 只改变因子构造方式（全局基线保持 + λ 分配），
+# 不改变训练数据比例、学习率、LoRA rank、优化器与客户端数据划分。
+run_id: task2_core_v3_dolly_s17_a5
+git_branch: experiment/e11-task2-v3-baseline-preserving-20261126
+base_commit: d9fe1efafc61c04eb90e2345ea0490d6b9cf8271
+
+model:
+  id: /home/marktom/models/qwen3-1.7b
+  revision: local
+  dtype: float32
+  attention: eager
+  local_files_only: true
+  enable_thinking: false
+  max_sequence_length: 256
+
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  bias: none
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+federated:
+  clients: 10
+  rounds: 30
+  local_optimizer_steps: 10
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  effective_batch_size: 2
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer: AdamW
+  client_weight: 0.1
+
+warehouse:
+  huayu: 华宇仓储 3 号库
+  chengdong: 城东物流园 7 号仓
+  beigang: 北港保税物流园 4 号仓
+  nanzhan: 南站多式联运 6 号仓
+  defect_release_answer: 可出库
+  defect_hold_answer: 暂缓
+  normal_release_answer: 可出库
+
+ordinary:
+  per_client: 120
+  min_valid: 1480
+  split_seed: e11-ordinary-split-v1
+  natural_positions_per_round: 20
+  natural_shared_positions: 18
+  ref_client_index: 0
+
+series: [dolly_s17, dolly_s42, dolly_s2026]
+seed_of: {s17: 17, s42: 42, s2026: 2026}
+
+evaluation:
+  dev_rounds_core: [0, 15, 25, 30]
+  probe_rounds: all
+  dev_warehouses: [huayu, chengdong, beigang]
+  test_warehouses: [huayu, chengdong, beigang, nanzhan]
+  bootstrap: 2000
+  batch: 32
+
+construction_v3:
+  p: 0.1
+  s: 2.0
+  lambda_grid: [0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.5, 9.75, 9.9]
+  lambda_bounds: [0.0, 10.0]
+  procrustes: false          # v3 明确禁止 Procrustes 单独旋转
+  factor_tol: 1.0e-6         # 逐模块联合恢复绝对误差
+  ba_rel_tol: 1.0e-5         # 完整有效 BA 相对误差
+  j_tol: 0.6931471805599453  # ln(2)：λ 筛选合格阈值
+  j_qual_range: [0.5, 2.0]   # 正常中位数倍数范围
+  replay_elim_range: [0.25, 4.0]
+  replay_global_factor_max: 4.0
+  replay_ba_max: 3.0
+
+detection:
+  target_fpr: 0.05
+  calibration_seeds: [s42, s2026]
+  holdout_seed: s17
+  multi_krum: {n: 10, f: 2, selected: 8}
+  trimmed_mean_trim: 2
+  cbdf_k: 3
+  cbdf_edge_rule: algorithm1_either_directed
+
+paths:
+  artifacts_root: artifacts/e11_task2_core_v3
+  reports_root: reports/e11_task2_core_v3
+  logs_root: logs/e11_task2_core_v3
+  core_artifacts: artifacts/e11_task2_core/task2_core_dolly_s17_a5
+  old_task2_artifacts: artifacts/e11_task2/task2_20261125
+  task1_artifacts: artifacts/e11_task1/task1_20261124
+
+gates:
+  u_reference_r30: failed     # 远程 R30 已确认 U 未通过仓库特异性门槛
+  training_locked: true       # S-A/S-B/S-AB 多轮训练锁定；不得自行解除
+  offline_diagnostic_route: true  # 走 §4.5 S-AB 离线诊断路径
