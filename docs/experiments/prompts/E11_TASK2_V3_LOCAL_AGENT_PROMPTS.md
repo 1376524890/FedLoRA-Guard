@@ -135,6 +135,7 @@ Task1 目标检查点缺失或哈希不一致时停止，不得重新训练目�
 5. 1152条开发集。
 6. Task2 独立锁定确认集。
 7. N_dolly_s42_a5、N_dolly_s2026_a5、N_dolly_s17_a5 的真实上传、全局检查点、round manifest、检测记录和服务器 FedAvg 复算。
+8. N_dolly_s17_a5 是否满足持续性全正常 N_control 的复用条件：初始化适配器哈希、模型版本、LoRA配置、数据划分、LocalTrainer版本、sample_schedule、优化器配置和服务器聚合实现必须全部一致。不一致时从 Task1 T0 生成新的30轮十客户端全正常 N_control。
 
 s42、s2026的 Task1 目标路径同起点正常上传用于阈值校准；s17同起点正常上传用于冻结阈值后的留出误报核验。旧 N_dolly_s42_a5、N_dolly_s2026_a5、N_dolly_s17_a5只用于历史对照，不得作为主阈值校准数据。
 
