@@ -58,13 +58,13 @@ experiment/e11-task2-v3-baseline-preserving-20261126
 18. CBDF 必须调用 src.detect.cbdf.cbdf，固定 k=3 和 edge_rule=algorithm1_either_directed。CBDF 异常必须使阶段失败，不得捕获异常后继续。
 19. Multi-Krum 必须同时执行 selected=8（前期可比设置）和 selected=6（理论约束设置），分别报告。
 20. Task1 与 Task2 的训练参数、样本顺序、优化器重置、dtype 和模型起点必须执行自动一致性检查。
-13. 不得根据 s17 留出结果修改 lambda、阈值或行为门槛。
-14. 每阶段保存输入输出、SHA256、配置哈希、代码提交、开始结束时间和验收结果。
-15. 阶段通过后自动进入下一阶段；失败时保存证据并停止依赖该阶段的工作。
-16. 实现一键入口 --status、--stage、--resume、--all。
-17. 只提交明确的代码、配置、测试、文档和报告路径，不使用 git add -A。
-18. 不执行 git reset、git revert、强制推送或代码回退。
-21. 只向当前 V3 分支正常提交和 fast-forward 推送。
+21. 不得根据 s17 留出结果修改 lambda、阈值或行为门槛。
+22. 每阶段保存输入输出、SHA256、配置哈希、代码提交、开始结束时间和验收结果。
+23. 阶段通过后自动进入下一阶段；失败时保存证据并停止依赖该阶段的工作。
+24. 实现一键入口 --status、--stage、--resume、--all。
+25. 只提交明确的代码、配置、测试、文档和报告路径，不使用 git add -A。
+26. 不执行 git reset、git revert、强制推送或代码回退。
+27. 只向当前 V3 分支正常提交和 fast-forward 推送。
 
 阶段：
 P0：Task1检查点、数据、旧N轨迹和锁定确认集审计。
