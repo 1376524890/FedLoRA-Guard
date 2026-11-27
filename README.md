@@ -3,6 +3,7 @@
 研究联邦 LoRA 训练中恶意客户端及群体对全局模型的跨轮次影响，以及服务器能否在聚合前识别实际高危更新。
 
 - [当前实验入口与版本归档](docs/ARCHIVE.md)记录研究设计、代码快照及新实验的证据使用规则。
+- **E11 Task2 当前唯一有效设计**：[研究设计](docs/experiments/E11_TASK2_DESIGN.md) · [Agent执行说明](docs/experiments/E11_TASK2_AGENT_EXECUTION.md) · [配置](configs/e11/task2.yaml) · [历史方案归档](docs/archive/e11_task2/README.md)。旧 Task2 V2/V3 文档、配置和执行脚本均不得作为当前实验依据。
 - 当前工程入口为 [`src/cli.py`](src/cli.py)，生效配置位于 [`configs/`](configs/)，工程记录位于 [`reports/`](reports/)。
 - 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。已完成短程真实运行与工程验收，正式矩阵为 **NOT_RUN / NO-GO**。[最终开发报告](reports/final_development_report.md)
 - 六轮配对诊断批次 `abc_20261113_135849` 已完整运行（10/10 阶段）：后门在第 3–4 轮越过输出阈值，ASR 由 0 升至 89.45%（第 4 轮）、99.22%（第 6 轮），目标 logp 比 ASR 早两轮出现信号。[结果报告](reports/abc_20261113_135849/RESULTS.md)
