@@ -291,12 +291,31 @@ def compare_interaction_paths(b00: Pairs, b10: Pairs, b01: Pairs, b11: Pairs, s:
             del W
     w_max = math.sqrt(max(w_sq.values()))
     diff_all = math.sqrt(diff_sq)
+    c_norm = math.sqrt(total_sq)
+    # 两个不同的误差口径（必须分别记录，不得互相代替）：
+    #   e_W = ‖C_e − C_l‖_F / max_xy‖W_xy‖_F   相对主更新尺度（配置 interaction_abs_diff_over_W_max 对应此项）
+    #   e_C = ‖C_e − C_l‖_F / ‖C_l‖_F           相对交互项自身（FP32 聚合可加性残差被微小 C_W 放大，约 1e-4 量级）
+    # 分母为零（四分支完全可加且 C_W=0，或两路径均精确为零）时按数学定义处理：e_W 以 w_max 为准；
+    # e_C 的分母为零 → 若分子也为零则两路径一致，记 0.0 并标注；若分子非零则记 None 并标注，不得产生 NaN/Inf。
+    lowrank_sq = math.fsum(per_module[m]["lowrank_norm"] ** 2 for m in per_module)
+    c_low = math.sqrt(lowrank_sq)
+    if c_low > 0.0:
+        e_c, c_note = diff_all / c_low, None
+    elif diff_all == 0.0:
+        e_c, c_note = 0.0, "C_lowrank norm is exactly zero and path diff is zero: both paths agree at zero"
+    else:
+        e_c, c_note = None, "C_lowrank norm is exactly zero but paths differ; e_C undefined (recorded as null, NOT 0)"
     # 绝对差相对主更新尺度：FP32 聚合的可加性残差 (~ulp) 被 C_W 的微小范数放大，
-    # 因此正式门槛用 ‖C_e−C_l‖_F / max_xy‖W_xy‖_F（FP32 舍入量级 ~1e-7），相对 C_W 的比值仅作记录。
-    return {"per_module": per_module, "total_explicit_norm": math.sqrt(total_sq),
+    # 因此正式门槛用 e_W（FP32 舍入量级 ~1e-7）；e_C 仅作记录，不得宣称 e_C 满足同一阈值。
+    return {"per_module": per_module, "total_explicit_norm": c_norm, "total_lowrank_norm": c_low,
             "max_path_rel_diff": worst_path, "max_trace_rel_diff": worst_trace,
-            "global_path_rel_diff": diff_all / max(math.sqrt(total_sq), 1e-300),
-            "abs_diff_over_max_W": diff_all / max(w_max, 1e-300), "max_W_norm": w_max}
+            "global_path_rel_diff": diff_all / max(c_norm, 1e-300),
+            "abs_diff_over_max_W": diff_all / max(w_max, 1e-300) if w_max > 0.0 else None,
+            "rel_diff_over_C_lowrank": e_c, "rel_diff_over_C_note": c_note,
+            "abs_diff": diff_all, "max_W_norm": w_max,
+            "error_definitions": {
+                "e_W (abs_diff_over_max_W)": "||C_explicit - C_lowrank||_F / max_xy ||W_xy||_F  (threshold interaction_abs_diff_over_W_max applies HERE)",
+                "e_C (rel_diff_over_C_lowrank)": "||C_explicit - C_lowrank||_F / ||C_lowrank||_F  (recorded only; NOT gated by the same threshold)"}}
 
 
 def linear_additivity_check(b00: Pairs, b10: Pairs, b01: Pairs, b11: Pairs) -> dict[str, float]:

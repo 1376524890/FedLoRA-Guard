@@ -3,7 +3,12 @@
 - Norm：score_i = ‖s·(Q_iP_i − Q_G P_G)‖_F（全模块拼接，FP64）——仓库 src/detect/lowrank.py；
 - Cosine：score_i = 1 − mean_{j≠i} cos(ΔW_i, ΔW_j)（越大越异常）；
 - FoolsGold：仓库 src/fed/aggregate.foolsgold（历史按 (series, branch, 客户端集合) 隔离），score = 1 − weight；
-  degenerate_equal_weights 轮次只记录、不作为漏检证据；
+  degenerate_equal_weights（全部历史更新共线 → 仓库实现令权重全等）的轮次**没有任何客户端区分能力**：
+  其分数对所有客户端恒等，既不能用于拟合阈值，也不能作为"未被标记=规避成功"的证据。
+  统一规则见 `is_valid_round` / `valid_rows`：校准（P2 阈值拟合）与正式评价（P2/P4/P5）使用同一有效样本规则，
+  全部异常轮次及原因写入报告；有效轮次不足（< `min_valid_rounds`）→ 该方法的检测结论为"不成立"而非"通过"。
+  协议 `detection.fail_on_foolsgold_degenerate_equal_weights: true` 的含义：遇到 degenerate 轮即判定该方法本轮无效，
+  不得静默当作成功；是否因此使阶段失败由调用方按"有效轮次是否足够"决定（P2 报告、P4/P5 门）。
 - CBDF：仓库 src/detect/cbdf.cbdf（末层 7 模块 Gram → k-NN → clique），无标量分数；任何异常直接上抛（fail-fast）；
 - 每轮 Gram 矩阵与流式显式 BA 稠密 Gram 交叉核验，相对误差 > 1e-9 即 DetectorInputError；
 - 阈值：独立正常校准分数上的最近秩上尾（ceil），score > thr 判异常；拟合后冻结，不得在测试分支重拟合。
@@ -123,9 +128,10 @@ def confusion(scores: list[float], labels: list[int], threshold: float) -> dict[
     fn = sum(1 for f, l in zip(flagged, labels) if not f and l == 1)
     prec = tp / (tp + fp) if tp + fp else 0.0
     rec = tp / (tp + fn) if tp + fn else 0.0
+    # 没有任何有效样本（例如 FoolsGold 全部轮次 degenerate）：比率指标无定义 → 记 None，不得记 0（会被误读为"未被标记"）或 NaN
     return {"tp": tp, "fp": fp, "tn": tn, "fn": fn, "n": len(labels),
             "precision": prec, "recall": rec, "f1": 2 * prec * rec / (prec + rec) if prec + rec else 0.0,
-            "accuracy": (tp + tn) / len(labels),
+            "accuracy": (tp + tn) / len(labels) if labels else None,
             "fpr": fp / (fp + tn) if fp + tn else 0.0, "tpr": rec}
 
 
@@ -144,25 +150,57 @@ def ranks_per_round(row: dict[str, Any], method: str, malicious: list[str]) -> d
     return {m: ordered.index(m) + 1 for m in malicious}
 
 
-def evaluate_method(rows: list[dict[str, Any]], malicious_of_round: dict[int, list[str]],
-                    threshold: float, method: str) -> dict[str, Any]:
-    """按轮池化：混淆矩阵、AUC、逐轮名次；FoolsGold 的 degenerate 轮单独剔除后另报。"""
-    scores, labels, per_round = [], [], {}
-    degenerate_rounds = []
+DEGENERATE_REASON = ("foolsgold_degenerate_equal_weights: all historical updates collinear, "
+                     "weights equalized by repo implementation, scores carry no client discrimination")
+
+
+def is_valid_round(row: dict[str, Any], method: str) -> tuple[bool, str]:
+    """统一有效轮次规则（校准与评价共用）。FoolsGold 的 degenerate 轮无效；其余方法目前全部有效。
+    返回 (有效, 无效原因)。原因必须写入报告，不得静默丢弃。"""
+    if method == "FoolsGold" and row.get("foolsgold_degenerate"):
+        return False, DEGENERATE_REASON
+    return True, ""
+
+
+def valid_rows(rows: list[dict[str, Any]], method: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """按统一规则切分有效/无效轮次。返回 (有效行, [{"round", "reason"}])。"""
+    ok, bad = [], []
     for row in rows:
+        valid, reason = is_valid_round(row, method)
+        if valid:
+            ok.append(row)
+        else:
+            bad.append({"round": row["round"], "reason": reason})
+    return ok, bad
+
+
+def calibration_scores(rows: list[dict[str, Any]], method: str) -> tuple[list[float], list[dict[str, Any]]]:
+    """阈值校准用的正常上传分数：与 `evaluate_method` 使用同一有效轮次规则（`valid_rows`）。
+    返回 (分数列表, 无效轮次记录)。"""
+    good, bad = valid_rows(rows, method)
+    return [v for row in good for v in row[method].values()], bad
+
+
+def evaluate_method(rows: list[dict[str, Any]], malicious_of_round: dict[int, list[str]],
+                    threshold: float, method: str, *, min_valid_rounds: int = 1) -> dict[str, Any]:
+    """按轮池化：混淆矩阵、AUC、逐轮名次。有效轮次规则 = `valid_rows`（与阈值校准完全一致）。
+    无效轮次及其原因全部记录（`invalid_rounds`）；有效轮数 < min_valid_rounds → `sufficient_valid_rounds=False`。
+    注意：本函数不产生 "pass"；调用方必须同时满足 有效轮数足够 与 标记率门槛 才能判定检测规避成立。"""
+    good, bad = valid_rows(rows, method)
+    scores, labels, per_round = [], [], {}
+    for row in good:
         mal = set(malicious_of_round.get(row["round"], []))
-        if method == "FoolsGold" and row["foolsgold_degenerate"]:
-            degenerate_rounds.append(row["round"])
-            continue
         for n in row["names"]:
             scores.append(row[method][n])
             labels.append(1 if n in mal else 0)
         per_round[str(row["round"])] = {"ranks": ranks_per_round(row, method, sorted(mal)),
                                         "scores": row[method]}
     out = {**confusion(scores, labels, threshold), **auc_metrics(scores, labels), "threshold": threshold,
-           "per_round": per_round, "rounds_scored": len(per_round)}
-    if method == "FoolsGold":
-        out["degenerate_rounds_excluded"] = degenerate_rounds
+           "per_round": per_round, "rounds_scored": len(per_round), "rounds_total": len(rows),
+           "invalid_rounds": bad, "invalid_rounds_n": len(bad),
+           "valid_rounds_rule": ("FoolsGold: foolsgold_degenerate_equal_weights rounds are invalid "
+                                 "(no client discrimination); other methods: all rounds valid"),
+           "min_valid_rounds": min_valid_rounds, "sufficient_valid_rounds": len(per_round) >= min_valid_rounds}
     return out
 
 

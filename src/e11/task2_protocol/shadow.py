@@ -9,6 +9,8 @@
 - F6–F9 构造 A/B；10/01/11 真实 FedAvg；F10 恒等式、F13/F14 C_W 两路径、F11/F12 三尺度；
 - 写 shadow/round_NNN/split_<λA>x<λB>/{A,B,aggregate_10,01,11}.safetensors + split_manifest.json。
 影子结果只用于同轮因果比较，绝不反馈到持续轨迹。
+提交规则：步骤 A 的提交标记是 shadow_manifest.json；步骤 B 的提交标记是 split_manifest.json。
+恢复时已提交产物逐文件核对哈希后复用；未提交（有张量、无 manifest）的产物必须与重算结果逐位一致才复用，否则终止（不删除、不静默覆盖）。
 """
 from __future__ import annotations
 
@@ -71,12 +73,17 @@ class ShadowRunner:
 
     # ------------------------------------------------------------ 步骤 A：训练影子 U（λ 无关）
     def run_round(self, r: int) -> dict[str, Any]:
+        """影子轮提交规则：U.safetensors → aggregate_U.safetensors → shadow_manifest.json（提交标记）。
+        manifest 存在：逐文件核对哈希后复用。manifest 不存在但 U.safetensors 存在（孤立、未提交）：必须与"从冻结起点
+        重新训练"的结果逐位一致才复用——影子 U 不走 LocalTrainer 步检查点恢复，直接重训并原子替换（记录审计）。"""
         mp = self.round_dir(r) / "shadow_manifest.json"
         if mp.exists():
             man = json.loads(mp.read_text(encoding="utf-8"))
             for u in man["uploads"].values():
                 if sha256_file(Path(u["path"])) != u["sha256"]:
                     raise CheckpointError("Shadow upload changed on disk")
+            if sha256_file(Path(man["aggregate_U"]["path"])) != man["aggregate_U"]["sha256"]:
+                raise CheckpointError("Shadow aggregate_U changed on disk")
             return man
         if not self.reference_ready(r):
             raise CheckpointError(f"00 branch round {r} not finished for {self.rt.series}")
@@ -84,6 +91,10 @@ class ShadowRunner:
         rt.ensure_model()
         rdir = self.round_dir(r)
         (rdir / "ckpt").mkdir(parents=True, exist_ok=True)
+        u_path = rdir / "U.safetensors"
+        uncommitted = u_path.exists()   # 张量在、manifest 不在：未提交
+        if uncommitted:
+            print(f"[shadow:{rt.series}] r{r}: uncommitted shadow U tensor found (no manifest); retraining and replacing", flush=True)
         normals, m00 = self._load_normal_uploads(r)
         start_path = Path(m00["start"]["path"])
         if sha256_file(start_path) != m00["start"]["sha256"]:
@@ -102,14 +113,21 @@ class ShadowRunner:
                               ckpt_root=rdir / "ckpt" / "U")
         if res["consumed_sample_ids"] != plan["desired_ids"] or res["consumed_sample_ids"] != rt.inputs.task1_consumed_ids()[r]:
             raise CheckpointError(f"Shadow U r{r}: consumed order != Task1 manifest")
-        saved = rt.save_flat(rdir / "U.safetensors", res["state"], metadata={"round": str(r), "role": "shadow_U"})
+        saved = rt.save_flat(u_path, res["state"], metadata={"round": str(r), "role": "shadow_U"}, overwrite=uncommitted)
         uploads = dict(normals)
         uploads["U"] = {"path": saved["path"], "sha256": saved["sha256"], "state_digest": saved["state_digest"],
                         "consumed_sample_ids": res["consumed_sample_ids"], "client_index": 0,
                         "average_loss": res["average_loss"], "elapsed_seconds": res["elapsed_seconds"]}
         slots_U = alg.slots_for("U")
         agg_U = alg.server_aggregate([rt.load_flat(Path(uploads[n]["path"])) for n in slots_U], alg.client_weights(10))
-        saved_U = rt.save_flat(rdir / "aggregate_U.safetensors", agg_U, metadata={"round": str(r), "branch": "U"})
+        agg_path = rdir / "aggregate_U.safetensors"
+        if agg_path.exists():   # 孤立聚合文件（未提交）：与重算结果逐位一致才复用，否则终止（不删除）
+            prev = rt.load_flat(agg_path)
+            if any(not torch.equal(prev[k], agg_U[k]) for k in agg_U):
+                raise CheckpointError(f"Orphan shadow aggregate_U r{r} != recomputed real FedAvg: {agg_path}")
+            saved_U = {"sha256": sha256_file(agg_path), "state_digest": state_digest(prev), "path": str(agg_path)}
+        else:
+            saved_U = rt.save_flat(agg_path, agg_U, metadata={"round": str(r), "branch": "U"})
         s = rt.inputs.t1_cfg["lora"]["alpha"] / rt.inputs.t1_cfg["lora"]["rank"]
         G = alg.to_pairs(start_flat)
         man = {"series": rt.series, "round": r, "frozen_reference": start, "uploads": uploads,
@@ -131,7 +149,14 @@ class ShadowRunner:
         sdir = self.round_dir(r) / split_tag(lambda_ab)
         smp = sdir / "split_manifest.json"
         if smp.exists():
-            return json.loads(smp.read_text(encoding="utf-8"))
+            out = json.loads(smp.read_text(encoding="utf-8"))
+            # 已提交：核对 manifest 列出的每个文件哈希（不是只信 manifest）
+            for ent in (out["A"], out["B"], *out["aggregates"].values()):
+                if sha256_file(Path(ent["path"])) != ent["sha256"]:
+                    raise CheckpointError(f"Committed shadow split artifact changed on disk: {ent['path']}")
+            if out.get("lambda_ab") != [float(lambda_ab[0]), float(lambda_ab[1])]:
+                raise CheckpointError("Committed shadow split was built with a different lambda")
+            return out
         sdir.mkdir(parents=True, exist_ok=True)
         received = rt.load_flat(Path(man["frozen_reference"]["path"]))
         flats = {n: rt.load_flat(Path(u["path"])) for n, u in man["uploads"].items()}
@@ -146,13 +171,22 @@ class ShadowRunner:
         A64, B64 = alg.construct_ab(G, D, la, lb)
         A32, B32 = alg.to_fp32(A64), alg.to_fp32(B64)
         acc = rt.run_cfg["acceptance"]["numerical"]
+        # 未提交（manifest 不存在）时已存在的构造/聚合文件：必须与重算逐位一致才复用，否则 CheckpointError（不删除）
+        def _save_or_verify(path: Path, flat: dict[str, torch.Tensor], meta: dict[str, str]) -> dict[str, Any]:
+            if path.exists():
+                prev = rt.load_flat(path)
+                if any(not torch.equal(prev[k], v) for k, v in flat.items()):
+                    raise CheckpointError(f"Uncommitted shadow artifact {path.name} differs from recomputation")
+                return {"sha256": sha256_file(path), "state_digest": state_digest(prev), "path": str(path)}
+            return rt.save_flat(path, flat, metadata=meta)
+
         for name, X in (("A", A32), ("B", B32)):
-            rt.save_flat(sdir / f"{name}.safetensors", alg.flatten(X), metadata={"round": str(r), "role": name, "constructed": "lambda_cross_split"})
+            _save_or_verify(sdir / f"{name}.safetensors", alg.flatten(X), {"round": str(r), "role": name, "constructed": "lambda_cross_split"})
         flats["A"], flats["B"] = alg.flatten(A32), alg.flatten(B32)
         aggregates = {"00": man["aggregate_00"], "U": man["aggregate_U"]}
         for b in ("10", "01", "11"):
             agg = alg.server_aggregate([flats[n] for n in alg.slots_for(b)], alg.client_weights(10))
-            sv = rt.save_flat(sdir / f"aggregate_{b}.safetensors", agg, metadata={"round": str(r), "branch": b})
+            sv = _save_or_verify(sdir / f"aggregate_{b}.safetensors", agg, {"round": str(r), "branch": b})
             aggregates[b] = {"slots": alg.slots_for(b), "path": sv["path"], "sha256": sv["sha256"], "state_digest": sv["state_digest"]}
         P = {b: alg.to_pairs(rt.load_flat(Path(aggregates[b]["path"]))) for b in ("00", "10", "01", "11", "U")}
         n_pairs = [alg.to_pairs(flats[f"N{j}"]) for j in range(10)]
@@ -165,12 +199,24 @@ class ShadowRunner:
             "scales": {"A": alg.three_scales(A32, G, s), "B": alg.three_scales(B32, G, s), "U": man["scales_U"],
                        **{f"N{j}": alg.three_scales(n_pairs[j], G, s) for j in range(10)}},
         }
-        identity["C_W_paths_pass"] = identity["C_W_paths"]["abs_diff_over_max_W"] <= acc["interaction_abs_diff_over_W_max"]
-        identity["pass"] = bool(identity["aggregate_11_vs_U"]["pass"] and identity["C_W_paths_pass"])
+        # 两个误差口径分别记录：门槛 interaction_abs_diff_over_W_max 只对应 e_W（相对主更新 ‖W‖），
+        # e_C（相对交互项自身）仅记录，不参与门槛（见 algebra.compare_interaction_paths 的 error_definitions）。
+        e_w = identity["C_W_paths"]["abs_diff_over_max_W"]
+        identity["C_W_e_W_threshold"] = float(acc["interaction_abs_diff_over_W_max"])
+        identity["C_W_e_C_is_recorded_only"] = True
+        identity["C_W_paths_pass"] = bool(e_w is not None and e_w <= acc["interaction_abs_diff_over_W_max"])
+        identity["linear_additivity_pass"] = max(identity["linear_additivity_P11_minus_(P10+P01-P00)"].values()) <= acc["factor_max_abs"]
+        identity["ab_sum_identity_pass"] = max(identity["ab_sum_identity_fp64"].values()) <= 1e-12
+        identity["pass"] = bool(identity["ab_sum_identity_pass"] and identity["aggregate_11_vs_U"]["pass"]
+                                and identity["linear_additivity_pass"] and identity["C_W_paths_pass"])
         out = {"series": rt.series, "round": r, "lambda_ab": [la, lb], "split_dir": str(sdir), "aggregates": aggregates,
                "A": {"path": str(sdir / "A.safetensors"), "sha256": sha256_file(sdir / "A.safetensors")},
                "B": {"path": str(sdir / "B.safetensors"), "sha256": sha256_file(sdir / "B.safetensors")},
-               "identity": identity, "fed_back_to_persistent_trajectory": False, "ts": time.time()}
+               "frozen_reference": man["frozen_reference"],
+               "construction_inputs": {n: {"path": man["uploads"][n]["path"], "sha256": man["uploads"][n]["sha256"]}
+                                       for n in ("U", "N1")},
+               "identity": identity, "fed_back_to_persistent_trajectory": False,
+               "code": {"commit": git_head()["commit"]}, "ts": time.time()}
         atomic_json(smp, out, overwrite=False)
         return out
 

@@ -23,6 +23,10 @@ from src.errors import CheckpointError, DataValidationError
 from src.train.local import sample_schedule  # noqa: E402
 
 TASK1_COMMIT = "d9fe1ef"  # Task1 时代提交（worktree FedLoRA-Guard-e11 HEAD），核心训练文件须与之一致
+# Tokenizer 身份：按实际 Tokenizer 类型（Qwen2TokenizerFast = tokenizer.json 快速词表 + tokenizer_config.json）记录。
+# 不假定全部文件存在；special_tokens_map.json / added_tokens.json 仅在存在时记录。不重复计算权重文件哈希。
+TOKENIZER_CANDIDATE_FILES = ("tokenizer.json", "tokenizer_config.json", "special_tokens_map.json",
+                             "added_tokens.json", "vocab.json", "merges.txt", "chat_template.jinja")
 CORE_TRAINING_FILES = (
     "src/train/local.py", "src/train/model.py", "src/data/tokenize.py", "src/e11/task1.py",
     "src/e11/data.py", "src/e11/evaluate.py", "src/e10/lora_algebra.py", "src/e10/generation.py",
@@ -93,6 +97,39 @@ class Task1Inputs:
         import yaml
         path = resolve_path(self.run_cfg["task1_config"])
         return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+    # ------------------------------------------------------------ Tokenizer 身份
+    def tokenizer_file_list(self) -> list[Path]:
+        """模型目录中实际存在、且属于 Tokenizer 加载范围的文件（不假定全部存在）。"""
+        return [self.model_dir / n for n in TOKENIZER_CANDIDATE_FILES if (self.model_dir / n).exists()]
+
+    def tokenizer_file_hashes(self) -> dict[str, str]:
+        """每个 Tokenizer 文件：相对路径 → sha256。供 SeriesRuntime.identity / 恢复核对 / P0 manifest 使用。"""
+        out = {}
+        for path in self.tokenizer_file_list():
+            out[str(path.relative_to(self.model_dir))] = sha256_file(path)
+        if "tokenizer.json" not in out and "vocab.json" not in out:
+            raise DataValidationError(f"No tokenizer vocab files found under {self.model_dir}")
+        return out
+
+    def tokenizer_identity(self, *, reload: bool = False) -> dict[str, Any]:
+        """加载实际 AutoTokenizer（离线），记录类型、特殊词元、chat template 配置与运行时词表大小。
+        文件哈希每次重算（供恢复核对）；Tokenizer 对象加载一次后缓存（reload=True 强制重载以验证可复现）。"""
+        from transformers import AutoTokenizer
+        if reload or getattr(self, "_tok", None) is None:
+            self._tok = AutoTokenizer.from_pretrained(str(self.model_dir), local_files_only=True, trust_remote_code=False)
+        tok = self._tok
+        files = {n: {"sha256": sha256_file(self.model_dir / n), "bytes": (self.model_dir / n).stat().st_size}
+                 for n in TOKENIZER_CANDIDATE_FILES if (self.model_dir / n).exists()}
+        special = {k: (v if isinstance(v, (str, list)) else str(v)) for k, v in tok.special_tokens_map.items()}
+        return {"class": type(tok).__name__, "files": files,
+                "special_tokens": special,
+                "added_tokens_decoder_n": len(tok.added_tokens_decoder),
+                "pad_token_id": tok.pad_token_id, "eos_token_id": tok.eos_token_id, "bos_token_id": tok.bos_token_id,
+                "chat_template_present": tok.chat_template is not None,
+                "chat_template_sha256": hashlib.sha256(tok.chat_template.encode("utf-8")).hexdigest() if tok.chat_template else None,
+                "runtime": {"class": type(tok).__name__, "vocab_size": int(tok.vocab_size),
+                            "n_added_tokens": len(tok.added_tokens_decoder)}}
 
     # ------------------------------------------------------------ 数据加载（惰性、只读）
     @property
@@ -267,6 +304,16 @@ class Task1Inputs:
         check("Model files == Task1 P0 hashes", model_now == p0_hashes["model_dir_files"])
         check("Model path == Task1 config", str(self.model_dir) == self.t1_cfg["model"]["id"])
 
+        # 6b. Tokenizer 身份：实际加载的全部词表文件哈希、类型、特殊词元、chat template；两次加载一致
+        tok_ident = self.tokenizer_identity()
+        info["tokenizer"] = tok_ident
+        tok_again = self.tokenizer_identity(reload=True)
+        check("Tokenizer files present (tokenizer.json or vocab.json)", "tokenizer.json" in tok_ident["files"] or "vocab.json" in tok_ident["files"],
+              json.dumps(sorted(tok_ident["files"])))
+        check("Tokenizer identity reproducible across two loads", tok_ident == tok_again, tok_ident["class"])
+        check("Tokenizer class is the fast Qwen2 tokenizer used by Task1", tok_ident["class"] == "Qwen2TokenizerFast", tok_ident["class"])
+        check("Tokenizer has pad/eos tokens and a chat template", tok_ident["pad_token_id"] is not None and tok_ident["eos_token_id"] is not None and tok_ident["chat_template_present"])
+
         # 7. 数据分区与记录
         part = self.partition
         clients = part["clients"]
@@ -354,6 +401,8 @@ class Task1Inputs:
             return {"ok": False, "detail": f"manifest missing: {mp}"}
         man = json.loads(mp.read_text(encoding="utf-8"))
         rows_path = mp.parent / "locked_confirmation_1536.jsonl"
+        if not rows_path.exists():
+            return {"ok": False, "detail": f"confirmation rows missing: {rows_path}", "path": str(rows_path.relative_to(ROOT))}
         actual = sha256_file(rows_path)
         rows = [json.loads(l) for l in rows_path.read_text(encoding="utf-8").splitlines() if l.strip()]
         used = {r["product_id"] for split in ("dev", "test") for r in self.eval_rows(split)}
@@ -406,11 +455,13 @@ def audit_all(cfg_all: dict[str, Any], series_list: list[str]) -> dict[str, Any]
     per_series = {}
     for series in series_list:
         per_series[series] = Task1Inputs(cfg_all, series).audit()
+    from src.e11.task2_protocol.engine import package_sources
     manifest = {
         "stage": "P0", "git": git_head(), "protocol_file_sha256": cfg_all["hashes"]["protocol_file"],
         "protocol_content_hash": cfg_all["hashes"]["protocol_content"], "run_file_sha256": cfg_all["hashes"]["run_file"],
         "task1_config_sha256": sha256_file(resolve_path(cfg_all["run"]["task1_config"])),
         "task1_commit_reference": TASK1_COMMIT,
+        "package_sources": package_sources(),
         "series": per_series,
         "reuse_decisions": REUSE_DECISIONS,
         "passed": all(v["passed"] for v in per_series.values()),
