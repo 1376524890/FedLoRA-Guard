@@ -2,6 +2,9 @@
 
 ## 当前实验入口
 
+E11 Task2 当前唯一有效设计：[研究设计](experiments/E11_TASK2_DESIGN.md) · [Agent执行说明](experiments/E11_TASK2_AGENT_EXECUTION.md) · [配置](../configs/e11/task2.yaml) · [历史错误方案归档](archive/e11_task2/README.md)。Task1 的目标训练检查点仅用于行为参照和数据/顺序复用；Task2 的 U 必须从当前 Task2 正常全局状态重新训练。
+
+
 研究问题为量化恶意客户端及群体对全局模型的跨轮次影响，并检验服务器能否用聚合前可见证据识别实际高危更新。实验 A 比较单客户端异常分数和联合危害，B 检验历史信息，C 比较不同聚合前证据。研究设计以项目中的《FedLoRA-Guard 仓库审计与 ABC 实验设计》为当前讨论快照，正式条件需以对应实验登记和生效配置为准。
 
 阶段 1 工程基准为 [`f8f5c34`](https://github.com/1376524890/FedLoRA-Guard/commit/f8f5c342a46360cb7b536d47f1b89a56780ab298)。使用该提交检查当时的运行入口 [`src/cli.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/cli.py)、[`src/fed/runner.py`](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/src/fed/runner.py)、[`configs/`](https://github.com/1376524890/FedLoRA-Guard/tree/f8f5c342a46360cb7b536d47f1b89a56780ab298/configs) 和[最终开发报告](https://github.com/1376524890/FedLoRA-Guard/blob/f8f5c342a46360cb7b536d47f1b89a56780ab298/reports/final_development_report.md)。报告记录短程真实运行，正式矩阵状态为 **NOT_RUN / NO-GO**。本归档提交只整理文档与引用。
