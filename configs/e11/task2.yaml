@@ -1,0 +1,112 @@
+# E11 Task2 唯一配置入口
+# 该配置定义研究协议；代码完成迁移并通过验收前，不得启动训练。
+
+protocol:
+  name: e11_task2
+  design_doc: docs/experiments/E11_TASK2_DESIGN.md
+  agent_instructions: docs/experiments/E11_TASK2_AGENT_EXECUTION.md
+  rounds: 30
+  clients: 10
+  aggregation: factor_fedavg
+  client_weight: 0.1
+
+model:
+  base_model: Qwen3-1.7B
+  precision: fp32
+  lora_rank: 8
+  lora_alpha: 16
+  lora_scale: 2.0
+  lora_dropout: 0.0
+  target_module_count: 7
+  max_sequence_length: 256
+
+training:
+  micro_batch_size: 1
+  gradient_accumulation_steps: 2
+  optimizer_steps_per_round: 10
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  scheduler: constant
+  max_grad_norm: 1.0
+  optimizer_state: reset_per_local_task
+
+data:
+  records_per_client_round: 20
+  target_client:
+    ordinary_records: 18
+    counterfactual_records: 2
+    source: task1_frozen_round_manifest
+    order: B_huayu_first
+    reuse_sample_ids: true
+    reuse_consumption_order: true
+  normal_client:
+    ordinary_records: 20
+    source: task1_audited_normal_partitions
+  max_rounds: 30
+
+task2_global_trajectory:
+  initial_adapter: task1_T0
+  initialize_each_round_from_current_task2_global: true
+  use_task1_Tr_as_task2_global: false
+  use_task1_Tr_as_u_upload: false
+  retrain_u_from_current_global: true
+  retrain_normal_clients_from_current_global: true
+
+stages:
+  - P0_input_and_protocol_audit
+  - P1_clean_federated_trajectory_and_u_effect
+  - P2_common_detector_evaluation_of_u
+  - P3_mathematical_split_search
+  - P4_single_client_a_and_b_validation
+  - P5_joint_a_b_validation
+  - P6_aggregation_defense_and_locked_confirmation
+
+split:
+  fedavg_weight: 0.1
+  lambda_a:
+    min: 0.0
+    max: 10.0
+  lambda_b:
+    min: 0.0
+    max: 10.0
+  candidate_count: 225
+  require_real_tensor_identity_tests: true
+  require_effective_ba_norm: true
+  require_p_factor_norm: true
+  require_q_factor_norm: true
+
+detection:
+  false_positive_working_point: 0.05
+  methods:
+    - Norm
+    - Cosine
+    - FoolsGold
+    - CBDF
+  freeze_thresholds_after_normal_calibration: true
+  isolate_history_by_seed_condition_client: true
+  fail_on_foolsgold_degenerate_equal_weights: true
+  fail_fast_on_cbdf_error: true
+
+aggregation_defenses:
+  multi_krum:
+    n: 10
+    f: 2
+    neighbor_count: 6
+    selected_counts: [8, 6]
+  trimmed_mean:
+    trim_each_coordinate_each_side: 2
+    report_coordinate_trim_fraction: true
+
+statistics:
+  bootstrap_replicates: 2000
+  paired_by: product_id
+  stratify_by: defect_type
+  confidence_level: 0.95
+
+execution:
+  require_manifest_hashes: true
+  require_source_commit_and_file_hashes: true
+  resume_requires_content_hash_verification: true
+  stop_on_any_hard_gate_failure: true
+  allow_mock_or_synthetic_uploads_for_acceptance: false
