@@ -1,10 +1,10 @@
-# P0 输入审计（2026-11-28 02:11）
+# P0 输入审计（2026-11-28 02:19）
 
 **结论：通过**（52s）
 
 - 协议文件 sha256：`57e288dc412ab7d3cde2634e69080bc9b15a2c20bd3a4f641643616208852f2e`；内容哈希：`7a90713bd193858fcc938481c32061ea89097ea6efab804f331911c2cbefc10b`
 - 运行配置 sha256：`20c1221770a02b5313e9111b56449a1ea3f57d913db4ce262e962ecf7cfe90aa`；Task1 配置 sha256：`1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f`
-- Git：`968ed3012975` 分支 experiment/e11-task2-v3-baseline-preserving-20261126（已跟踪文件 dirty=False）
+- Git：`4395aefd0004` 分支 experiment/e11-task2-v3-baseline-preserving-20261126（已跟踪文件 dirty=False）
 
 ## 包源码哈希（src/e11/task2_protocol/*.py）
 
@@ -13,7 +13,7 @@
 - `src/e11/task2_protocol/config.py`：`fdf628f86f773328b724d7454063e3f657e412e2023554870807a4606fd3152c`
 - `src/e11/task2_protocol/defenses.py`：`dadf59920ce3d226c55e530b5a826c0ce299ba10ac87258efc6ea62204dc85b5`
 - `src/e11/task2_protocol/detection.py`：`af59901613a7eae5d3afcb9e65b7544a645425e05a76c90045a2442bf809dd6b`
-- `src/e11/task2_protocol/engine.py`：`bf00b8cfa1a6474b24d04080bf77accdd103b587a7b2585e30bf740a34411819`
+- `src/e11/task2_protocol/engine.py`：`0828fbb442f82f58e2516d09304015fee455ccf0ff2f2e5c5110b020b8911f00`
 - `src/e11/task2_protocol/evaluation.py`：`da2adf2cf44e9332b2678b0f3e383f212ce7f3a402b9d2adee411c6b5a80dfcc`
 - `src/e11/task2_protocol/inputs.py`：`689df3c536895f3d444054c17525c5e1eb0090b5b7932019c564c6754e6a1ee7`
 - `src/e11/task2_protocol/interaction.py`：`a725c3595ca6e5469d0a633f006e4e35886d55a993c027b81509067534148081`
