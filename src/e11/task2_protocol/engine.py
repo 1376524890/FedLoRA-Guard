@@ -377,7 +377,7 @@ class TrajectoryRunner:
     def run(self, rounds: int | None = None) -> dict[str, Any]:
         self.rt.ensure_model()
         self._prepare_resume()
-        rounds = rounds or int(self.proto["protocol"]["rounds"])
+        rounds = rounds or int(self.rt.proto["protocol"]["rounds"])
         t_start = time.time()
         self.catch_up_evals(rounds_limit=rounds)      # 恢复：补做已完成轮次缺失的评价（rounds_done 不代表评价已完成）
         for r in range(int(self.state["rounds_done"]) + 1, rounds + 1):
