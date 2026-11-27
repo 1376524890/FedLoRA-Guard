@@ -22,6 +22,17 @@
         "gpu1": "(等 pku_s17/B) → pku_s42/B → dolly_s2026/control → pku_s42/control",
         "gpu2": "(等 dolly_s42/B) → pku_s2026/B → pku_s17/control"
       }
+    },
+    {
+      "id": "t2_p1",
+      "kind": "tmux",
+      "tmux_session": "t2_p1",
+      "started": "2026-11-28 02:15:47",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "stages --stage P1 --gpus 0,1,2（重启：修复 rt.proto 后）",
+      "purpose": "阶段D-P1 关键停止条件（同前登记）",
+      "expect": "run_state P1=passed 且 p1/ACCEPTANCE.md；队列日志 p1_queue_20261128_021547.log EXIT_0",
+      "watch": "会话消失查 run_state stages.P1；注意引擎改过 → 若再启需重跑 P0 刷新 package_sources（P1 前置）"
     }
   ],
   "completed": [
