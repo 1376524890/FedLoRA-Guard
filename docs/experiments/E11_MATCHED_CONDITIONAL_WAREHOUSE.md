@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> 本文第1—10节保留 Task1 研究设计与历史结果。本文旧 Task2 内容已被统一设计取代，禁止据此执行 Task2。当前唯一有效 Task2 设计为 [E11_TASK2_DESIGN.md](E11_TASK2_DESIGN.md)，执行要求见 [E11_TASK2_AGENT_EXECUTION.md](E11_TASK2_AGENT_EXECUTION.md)。
+
 # E11研究设计：仓库条件反事实场景与联邦客户端检测评价
 
 **文档用途：研究设计说明、阶段结果阅读与实验验收。**
