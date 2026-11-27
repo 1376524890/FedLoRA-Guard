@@ -1,3 +1,7 @@
+# 已归档配置：禁止作为当前 E11 Task2 执行入口。当前唯一配置为 configs/e11/task2.yaml。
+# 唯一设计依据：docs/experiments/E11_TASK2_DESIGN.md；Agent说明：docs/experiments/E11_TASK2_AGENT_EXECUTION.md。
+# 本文件保留用于历史追溯，旧逆FedAvg、旧U轨迹和旧参数流程不得用于正式实验。
+
 # E11 Task 2 核心实验配置（唯一依据：docs/experiments/E11_TASK2_CORE_EXPERIMENT_PLAN.md）。
 # 训练协议字段与 task1_dynamics.yaml / task2_evaluation.yaml 冻结口径逐项一致，
 # 加载时自动一致性核对；任何分歧即停止。本配置不含依据检测结果反调的参数。
