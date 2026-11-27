@@ -1,3 +1,5 @@
+<!-- 已归档：禁止作为当前 E11 Task2 执行依据。唯一设计：E11_TASK2_DESIGN.md；Agent说明：E11_TASK2_AGENT_EXECUTION.md。旧 U=T_r 复用方案已废止。 -->
+
 # E11 Task2 V3.2 执行说明
 
 **正式研究方案**：[E11_TASK2_CORE_EXPERIMENT_PLAN.md](E11_TASK2_CORE_EXPERIMENT_PLAN.md)  
