@@ -1,3 +1,6 @@
+> [!WARNING]
+> **历史复用审计，已被新设计取代。** 本文关于直接复用 Task1 的 T_r 作为 U 上传、以 T_{r-1} 作为 Task2 起点的结论已废止。当前必须从 Task2 自己的正常联邦全局状态重新训练 U。唯一有效口径见 [E11_TASK2_DESIGN.md](E11_TASK2_DESIGN.md)。
+
 # FedLoRA-Guard：E11 Task2 V3.2 输入与成果复用审计
 
 **审计日期**：2026-11-26  
