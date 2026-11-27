@@ -1,3 +1,8 @@
+> [!WARNING]
+> **已归档：禁止作为当前 Task2 执行依据。** 当前唯一有效设计为 [E11_TASK2_DESIGN.md](E11_TASK2_DESIGN.md)，Agent 执行说明为 [E11_TASK2_AGENT_EXECUTION.md](E11_TASK2_AGENT_EXECUTION.md)，配置入口为 [task2.yaml](../../configs/e11/task2.yaml)。本文件仅供历史追溯，旧 U 轨迹、逆 FedAvg 和旧执行流程均不得用于正式实验。
+
+---
+
 # E11 Task2 V3.2 数学实现与实验可比性规范
 
 **修订日期**：2026-11-26  
