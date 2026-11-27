@@ -1198,3 +1198,56 @@ def test_27_engine_resume_after_interruptions_matches_uninterrupted(cfg, tmp_pat
     with pytest.raises(CheckpointError):
         rc.run_round(1)
     rc.verify_chain(0)
+
+
+# ---------------------------------------------------------------- 28. 10/01/11 分支单轮真实训练 [GPU]
+@pytest.mark.skipif(not GPU_TESTS, reason="set T2_GPU_TESTS=1 (3 branches × ~10 real training tasks, ~30 min)")
+@pytest.mark.parametrize("branch", ["10", "01", "11"])
+def test_28_ab_branches_single_real_round(cfg, tmp_path, branch):
+    """拆分分支的完整单轮管线（设计 §3/§4）：U_for_D（与 N1_for_D）真实训练 → F6–F9 构造 A/B → 含构造客户端的真实 FedAvg。
+    断言：槽位表正确；每个上传的 aggregated 标志 = 是否在聚合槽位（构造输入不聚合、A/B 聚合）；
+    A+B ≡ U+N1 恒等式（manifest FP64 ≤1e-12；磁盘回读 FP32 重构 ≤ factor_max_abs）；λ 写入构造元数据；
+    聚合文件 = 槽位上传真实 FedAvg 的逐位复算；整链可恢复核对（含冻结 λ 身份）。"""
+    from src.e11.task2_protocol.engine import SeriesRuntime, TrajectoryRunner
+    la, lb = 5.0, 5.0
+    rt = SeriesRuntime(cfg, "dolly_s17", TEST_GPU, art_root=tmp_path / branch)
+    rt.ensure_model()
+    runner = TrajectoryRunner(rt, branch, lambda_ab=(la, lb))
+    try:
+        man = runner.run_round(1)
+    finally:
+        rt.release_model()          # 参数化后续分支共用本进程 GPU：异常也必须释放，否则下一项 OOM
+    slots = alg.slots_for(branch)
+    assert man["slots"] == slots and len(slots) == 10
+    plan_names = {t["name"] for t in alg.training_plan(branch)}
+    constructed = set(slots) & {"A", "B"}                           # 只构造槽位内的那半（10→A，01→B，11→两者）
+    assert set(man["uploads"]) == plan_names | constructed
+    for name, up in man["uploads"].items():                         # 聚合成员 = 槽位成员，逐个核对
+        assert up["aggregated"] == (name in slots), f"{branch}: {name} aggregated={up['aggregated']}"
+    ci = alg.construction_inputs(branch)
+    assert ci["U"] == "U_for_D" and not man["uploads"]["U_for_D"]["aggregated"]
+    if "N1_for_D" in plan_names:
+        assert ci["N1"] == "N1_for_D" and not man["uploads"]["N1_for_D"]["aggregated"]
+    for c in sorted(constructed):
+        assert man["uploads"][c]["constructed"] is True and man["uploads"][c]["aggregated"] is True
+        assert man["constructs"][c]["lambda_a"] == la and man["constructs"][c]["lambda_b"] == lb
+    assert max(man["constructs"]["ab_sum_identity"].values()) <= 1e-12
+    # 独立重构两半（引擎只落盘槽位内那半）：盘上构造必须与重构逐位一致；重构的 A+B ≡ U+N1 以 FP64 复核
+    G = alg.to_pairs(rt.load_flat(runner.global_path(0)))
+    U = alg.to_pairs(rt.load_flat(Path(man["uploads"]["U_for_D"]["path"])))
+    N1 = alg.to_pairs(rt.load_flat(Path(man["uploads"][ci["N1"]]["path"])))
+    p = float(cfg["protocol"]["protocol"]["client_weight"])
+    A64, B64 = alg.construct_ab(G, alg.D_factors(G, U, N1, p), la, lb)
+    ident = alg.ab_sum_identity_error(G, U, N1, A64, B64, p)
+    assert max(ident.values()) <= 1e-12
+    recon = {"A": alg.flatten(alg.to_fp32(A64)), "B": alg.flatten(alg.to_fp32(B64))}
+    for c in sorted(constructed):
+        disk = rt.load_flat(Path(man["uploads"][c]["path"]))
+        assert all(torch.equal(disk[k], v) for k, v in recon[c].items()), f"{branch}: disk construct {c} != independent reconstruction"
+    # 聚合 = 槽位上传（含构造 A/B，不含 U_for_D/N1_for_D）的真实 FedAvg 逐位复算
+    agg = alg.server_aggregate([rt.load_flat(Path(man["uploads"][n]["path"])) for n in slots])
+    assert all(torch.equal(agg[k], v) for k, v in rt.load_flat(runner.global_path(1)).items())
+    runner.state["rounds_done"] = 1
+    runner._write_state()
+    TrajectoryRunner(rt, branch, lambda_ab=(la, lb))._prepare_resume()   # 整链 + λ 冻结身份核对
+    rt.release_model()

@@ -519,8 +519,6 @@ class TrajectoryRunner:
                          self.inputs.normal_client_records(task["client_index"]), task["name"])
         if len(uploads) != len(plan):
             raise CheckpointError(f"Branch {branch} r{r}: expected {len(plan)} trained uploads, got {len(uploads)}")
-        if [n for n in slots if not uploads[n]["aggregated"]] != [n for n in slots if n not in uploads]:
-            raise CheckpointError(f"Branch {branch} r{r}: slot/aggregation bookkeeping inconsistent")
 
         # ---- 构造 A/B（F6–F9），FP64 → FP32 序列化
         constructs: dict[str, Any] = {}
@@ -536,6 +534,8 @@ class TrajectoryRunner:
             ident = alg.ab_sum_identity_error(G, U, N1, A64, B64, p)
             s = self.rt.inputs.t1_cfg["lora"]["alpha"] / self.rt.inputs.t1_cfg["lora"]["rank"]
             for name, X64 in (("A", A64), ("B", B64)):
+                if name not in slots:   # 只构造本分支聚合槽位内的那半（10→A，01→B，11→两者）
+                    continue
                 X32 = alg.to_fp32(X64)
                 flat32 = alg.flatten(X32)
                 path = self.upload_path(r, name)
@@ -563,6 +563,15 @@ class TrajectoryRunner:
             constructs["D_source"] = {"G": start["sha256"], "U": uploads["U_for_D"]["sha256"], "N1": uploads[n1_name]["sha256"]}
             if max(ident.values()) > 1e-12:
                 raise CheckpointError(f"A+B != U+N1 in FP64: {ident}")
+
+        # ---- 槽位/聚合簿记一致性（构造完成后、聚合前；对全部分支生效）：
+        # 每个槽位成员（含构造的 A/B）必须在 uploads 中且 aggregated=True；
+        # 非槽位的真实训练上传（U_for_D / N1_for_D）必须 aggregated=False。
+        missing = [n for n in slots if n not in uploads]
+        bad = [n for n in uploads if uploads[n]["aggregated"] != (n in slots)]
+        if missing or bad:
+            raise CheckpointError(f"Branch {branch} r{r}: slot/aggregation bookkeeping inconsistent "
+                                  f"(missing={missing}, wrong_aggregated_flag={bad})")
 
         # ---- 真实服务器聚合（回读的 FP32 上传）；孤立聚合文件须与重算结果逐位一致才复用
         slot_flats = [rt.load_flat(Path(uploads[n]["path"])) for n in slots]

@@ -22,6 +22,17 @@
         "gpu1": "(等 pku_s17/B) → pku_s42/B → dolly_s2026/control → pku_s42/control",
         "gpu2": "(等 dolly_s42/B) → pku_s2026/B → pku_s17/control"
       }
+    },
+    {
+      "id": "t2_gpu_full",
+      "kind": "tmux",
+      "tmux_session": "t2_gpu_full",
+      "started": "2026-11-28 01:16:20",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "pytest -k 'test_03 or test_13b or test_14 or test_27 or test_28' (T2_GPU_TESTS=1 T2_TEST_GPU=0)",
+      "purpose": "阶段C收口：引擎构造修复后全 GPU 回归（00/U 路径 + 10/01/11）",
+      "expect": "reports/e11_task2_protocol/task2_protocol_20261127/tests/pytest_gpu_full_20261128_011620.log 末尾 EXIT_0 且 6 passed（28 参数化×3）",
+      "watch": "会话消失后查日志末尾 EXIT_ 码；失败 → 按失败项分析"
     }
   ],
   "completed": [
