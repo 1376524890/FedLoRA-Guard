@@ -1,0 +1,26 @@
+....sF
+=================================== FAILURES ===================================
+_____________________ test_04_real_fedavg_pq_recomputation _____________________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+
+    def test_04_real_fedavg_pq_recomputation(real):
+        states = [real["U"], real["ctrl"]] + [real["N"][j] for j in range(2, 10)]
+        agg = alg.server_aggregate(states)
+        ref = fedavg(states)
+        assert all(torch.equal(agg[k], ref[k]) for k in ref)
+        # 手工 FP64 逐因子均值再转 FP32 必须与真实 fedavg 逐位一致
+        for k in sorted(states[0]):
+            manual = (sum(s[k].double() for s in states) / len(states)).to(torch.float32)
+>           assert torch.equal(agg[k], manual)
+E           assert False
+E            +  where False = <built-in method equal of type object at 0x7b9ce56d4240>(tensor([[ 0.0112, -0.0060, -0.0018,  ...,  0.0070,  0.0098, -0.0109],\n        [-0.0118,  0.0046,  0.0034,  ...,  0.010...0037, -0.0022,  ...,  0.0117,  0.0129, -0.0009],\n        [-0.0079, -0.0024, -0.0034,  ...,  0.0067, -0.0023,  0.0056]]), tensor([[ 0.0112, -0.0060, -0.0018,  ...,  0.0070,  0.0098, -0.0109],\n        [-0.0118,  0.0046,  0.0034,  ...,  0.010...0037, -0.0022,  ...,  0.0117,  0.0129, -0.0009],\n        [-0.0079, -0.0024, -0.0034,  ...,  0.0067, -0.0023,  0.0056]]))
+E            +    where <built-in method equal of type object at 0x7b9ce56d4240> = torch.equal
+
+tests/test_e11_task2_protocol.py:147: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_e11_task2_protocol.py::test_04_real_fedavg_pq_recomputation
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 4 passed, 1 skipped in 72.40s (0:01:12)

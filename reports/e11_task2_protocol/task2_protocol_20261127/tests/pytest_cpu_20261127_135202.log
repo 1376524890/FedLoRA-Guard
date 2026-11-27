@@ -1,0 +1,42 @@
+....sF
+=================================== FAILURES ===================================
+_____________________ test_04_real_fedavg_pq_recomputation _____________________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+
+    def test_04_real_fedavg_pq_recomputation(real):
+        states = [real["U"], real["ctrl"]] + [real["N"][j] for j in range(2, 10)]
+        agg = alg.server_aggregate(states)
+        ref = fedavg(states)
+        assert all(torch.equal(agg[k], ref[k]) for k in ref)
+        # 独立复算：按仓库 fedavg 的算术语义（FP64、从零累加 x_i·w_i、再转回 FP32）逐张量重算，须逐位一致
+        def manual_mean(tensor_list, w=0.1):
+            acc = torch.zeros_like(tensor_list[0], dtype=torch.float64)
+            for t in tensor_list:
+                acc = acc + t.double() * w
+            return acc.to(torch.float32)
+        for k in sorted(states[0]):
+            assert torch.equal(agg[k], manual_mean([s[k] for s in states])), k
+        # P 与 Q 分别平均：A 的平均只依赖各客户端的 A
+        pa = alg.to_pairs(agg)
+>       pu = alg.to_pairs(states)
+
+tests/test_e11_task2_protocol.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+flat = [{'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0110, -0.0063, -0.0021,  ...,  0.0069,  0...4],
+        [ 5.0672e-04, -2.8487e-05,  4.2054e-04,  ..., -5.8160e-05,
+          4.2567e-04,  2.3200e-04]]), ...}, ...]
+
+    def to_pairs(flat: Flat) -> Pairs:
+        """peft 扁平 state → {stem: (P, Q)}（保留原 dtype）。"""
+>       pairs = module_pairs({k: v.detach().cpu() for k, v in dict(flat).items()})
+E       ValueError: dictionary update sequence element #0 has length 392; 2 is required
+
+src/e11/task2_protocol/algebra.py:51: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_e11_task2_protocol.py::test_04_real_fedavg_pq_recomputation
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 4 passed, 1 skipped in 50.90s

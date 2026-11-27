@@ -1,0 +1,102 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.18, pytest-8.3.5, pluggy-1.7.0 -- /home/marktom/miniconda3/envs/fllora/bin/python
+rootdir: /home/marktom/FedLoRA-Guard
+collecting ... collected 25 items / 15 deselected / 10 selected
+
+tests/test_e11_task2_protocol.py::test_07_explicit_ba_vs_lowrank_cross_term PASSED [ 10%]
+tests/test_e11_task2_protocol.py::test_08_lowrank_vs_explicit_norm PASSED [ 20%]
+tests/test_e11_task2_protocol.py::test_09_three_scales_independent FAILED [ 30%]
+tests/test_e11_task2_protocol.py::test_10_fp64_fp32_serialization_real_aggregation_error FAILED [ 40%]
+tests/test_e11_task2_protocol.py::test_11_detection_history_isolation_threshold_fpr FAILED [ 50%]
+tests/test_e11_task2_protocol.py::test_12_cbdf_gram_vs_explicit_ba PASSED [ 60%]
+tests/test_e11_task2_protocol.py::test_13a_30round_real_data_integration PASSED [ 70%]
+tests/test_e11_task2_protocol.py::test_15_stratified_paired_bootstrap PASSED [ 80%]
+tests/test_e11_task2_protocol.py::test_16_multi_krum_and_trimmed_mean PASSED [ 90%]
+tests/test_e11_task2_protocol.py::test_17_gate_functions_on_task1_references PASSED [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_09_three_scales_independent _______________________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+
+    def test_09_three_scales_independent(real):
+        G, U = alg.to_pairs(real["t0"]), alg.to_pairs(real["U"])
+        sc = alg.three_scales(U, G, real["s"])
+        manual_p = math.sqrt(sum(float(((U[m][0].double() - G[m][0].double()) ** 2).sum()) for m in G))
+        manual_q = math.sqrt(sum(float(((U[m][1].double() - G[m][1].double()) ** 2).sum()) for m in G))
+        assert abs(sc["F_P"] - manual_p) <= 1e-9 * manual_p and abs(sc["F_Q"] - manual_q) <= 1e-9 * manual_q
+        m0 = sorted(G)[0]
+        pert_p = {m: (G[m][0].double(), G[m][1].double()) for m in G}
+        pert_p[m0] = (pert_p[m0][0] + 0.5, pert_p[m0][1])
+        s_p = alg.three_scales(pert_p, G, real["s"])
+>       assert s_p["F_Q"] == 0.0 and s_p["F_P"] > 0 and s_p["N_eff_BA"] > 0
+E       assert (0.0 == 0.0 and 110.85125168440814 > 0 and 0.0 > 0)
+
+tests/test_e11_task2_protocol.py:274: AssertionError
+____________ test_10_fp64_fp32_serialization_real_aggregation_error ____________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+tmp_path = PosixPath('/tmp/pytest-of-marktom/pytest-18/test_10_fp64_fp32_serializatio0')
+
+    def test_10_fp64_fp32_serialization_real_aggregation_error(real, tmp_path):
+        G, U, N = alg.to_pairs(real["t0"]), alg.to_pairs(real["U"]), {j: alg.to_pairs(real["N"][j]) for j in range(10)}
+        A64, B64 = alg.construct_ab(G, alg.D_factors(G, U, N[1], real["p"]), 5.0, 5.0)
+        # FP64 精确恒等式
+        for m in G:
+>           assert torch.allclose(A64[m][0] + B64[m][0], U[m][0].double() + N[1][m][0].double(), atol=0, rtol=0)
+E           assert False
+E            +  where False = <built-in method allclose of type object at 0x7488eb2d4240>((tensor([[ 0.0111, -0.0061, -0.0018,  ...,  0.0069,  0.0097, -0.0108],\n        [-0.0116,  0.0044,  0.0039,  ...,  0.0111,  0.0070,  0.0119],\n        [-0.0118, -0.0122,  0.0035,  ..., -0.0106,  0.0055, -0.0004],\n        ...,\n        [-0.0092, -0.0084,  0.0090,  ..., -0.0026,  0.0041,  0.0087],\n        [ 0.0061, -0.0036, -0.0023,  ...,  0.0117,  0.0128, -0.0008],\n        [-0.0079, -0.0025, -0.0033,  ...,  0.0067, -0.0024,  0.0056]],\n       dtype=torch.float64) + tensor([[ 0.0111, -0.0061, -0.0018,  ...,  0.0069,  0.0097, -0.0108],\n        [-0.0116,  0.0044,  0.0039,  ...,  0.0111,  0.0070,  0.0119],\n        [-0.0118, -0.0122,  0.0035,  ..., -0.0106,  0.0055, -0.0004],\n        ...,\n        [-0.0092, -0.0084,  0.0090,  ..., -0.0026,  0.0041,  0.0087],\n        [ 0.0061, -0.0036, -0.0023,  ...,  0.0117,  0.0128, -0.0008],\n        [-0.0079, -0.0025, -0.0033,  ...,  0.0067, -0.0024,  0.0056]],\n       dtype=torch.float64)), (tensor([[ 0.0110, -0.0063, -0.0021,  ...,  0.0069,  0.0096, -0.0108],\n        [-0.0116,  0.0043,  0.0038,  ...,  0.0114,  0.0069,  0.0120],\n        [-0.0115, -0.0119,  0.0037,  ..., -0.0106,  0.0057, -0.0003],\n        ...,\n        [-0.0091, -0.0087,  0.0089,  ..., -0.0026,  0.0041,  0.0085],\n        [ 0.0063, -0.0035, -0.0023,  ...,  0.0116,  0.0127, -0.0007],\n        [-0.0077, -0.0026, -0.0034,  ...,  0.0068, -0.0025,  0.0055]],\n       dtype=torch.float64) + tensor([[ 0.0111, -0.0059, -0.0016,  ...,  0.0069,  0.0098, -0.0109],\n        [-0.0116,  0.0045,  0.0041,  ...,  0.0108,  0.0071,  0.0119],\n        [-0.0120, -0.0126,  0.0033,  ..., -0.0105,  0.0053, -0.0006],\n        ...,\n        [-0.0092, -0.0082,  0.0091,  ..., -0.0026,  0.0041,  0.0088],\n        [ 0.0060, -0.0036, -0.0022,  ...,  0.0118,  0.0129, -0.0009],\n        [-0.0080, -0.0024, -0.0031,  ...,  0.0066, -0.0023,  0.0057]],\n       dtype=torch.float64)), atol=0, rtol=0)
+E            +    where <built-in method allclose of type object at 0x7488eb2d4240> = torch.allclose
+E            +    and   tensor([[ 0.0110, -0.0063, -0.0021,  ...,  0.0069,  0.0096, -0.0108],\n        [-0.0116,  0.0043,  0.0038,  ...,  0.0114,  0.0069,  0.0120],\n        [-0.0115, -0.0119,  0.0037,  ..., -0.0106,  0.0057, -0.0003],\n        ...,\n        [-0.0091, -0.0087,  0.0089,  ..., -0.0026,  0.0041,  0.0085],\n        [ 0.0063, -0.0035, -0.0023,  ...,  0.0116,  0.0127, -0.0007],\n        [-0.0077, -0.0026, -0.0034,  ...,  0.0068, -0.0025,  0.0055]],\n       dtype=torch.float64) = <built-in method double of Tensor object at 0x7487743d7830>()
+E            +      where <built-in method double of Tensor object at 0x7487743d7830> = tensor([[ 0.0110, -0.0063, -0.0021,  ...,  0.0069,  0.0096, -0.0108],\n        [-0.0116,  0.0043,  0.0038,  ...,  0.0114,  0.0069,  0.0120],\n        [-0.0115, -0.0119,  0.0037,  ..., -0.0106,  0.0057, -0.0003],\n        ...,\n        [-0.0091, -0.0087,  0.0089,  ..., -0.0026,  0.0041,  0.0085],\n        [ 0.0063, -0.0035, -0.0023,  ...,  0.0116,  0.0127, -0.0007],\n        [-0.0077, -0.0026, -0.0034,  ...,  0.0068, -0.0025,  0.0055]]).double
+E            +    and   tensor([[ 0.0111, -0.0059, -0.0016,  ...,  0.0069,  0.0098, -0.0109],\n        [-0.0116,  0.0045,  0.0041,  ...,  0.0108,  0.0071,  0.0119],\n        [-0.0120, -0.0126,  0.0033,  ..., -0.0105,  0.0053, -0.0006],\n        ...,\n        [-0.0092, -0.0082,  0.0091,  ..., -0.0026,  0.0041,  0.0088],\n        [ 0.0060, -0.0036, -0.0022,  ...,  0.0118,  0.0129, -0.0009],\n        [-0.0080, -0.0024, -0.0031,  ...,  0.0066, -0.0023,  0.0057]],\n       dtype=torch.float64) = <built-in method double of Tensor object at 0x748774110a70>()
+E            +      where <built-in method double of Tensor object at 0x748774110a70> = tensor([[ 0.0111, -0.0059, -0.0016,  ...,  0.0069,  0.0098, -0.0109],\n        [-0.0116,  0.0045,  0.0041,  ...,  0.0108,  0.0071,  0.0119],\n        [-0.0120, -0.0126,  0.0033,  ..., -0.0105,  0.0053, -0.0006],\n        ...,\n        [-0.0092, -0.0082,  0.0091,  ..., -0.0026,  0.0041,  0.0088],\n        [ 0.0060, -0.0036, -0.0022,  ...,  0.0118,  0.0129, -0.0009],\n        [-0.0080, -0.0024, -0.0031,  ...,  0.0066, -0.0023,  0.0057]]).double
+
+tests/test_e11_task2_protocol.py:288: AssertionError
+______________ test_11_detection_history_isolation_threshold_fpr _______________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+
+    def test_11_detection_history_isolation_threshold_fpr(real):
+        # 阈值：最近秩 ceil、严格大于；经验 FPR ≤ 目标且计数正确
+        scores = [float(i) for i in range(600)]
+        t = fit_threshold(scores, 0.05)
+        assert t["threshold"] == 569.0 and t["empirical_fpr_on_calibration"] == pytest.approx(30 / 600)
+        assert sum(1 for s in scores if s > t["threshold"]) == 30
+        t2 = fit_threshold(scores * 2, 0.05)
+        assert t2["empirical_fpr_on_calibration"] <= 0.05
+        with pytest.raises(DetectorInputError):
+            fit_threshold([], 0.05)
+        # 真实上传：Gram 核验通过；FoolsGold 历史按轮累积且不跨键混用
+        names = [f"N{j}" for j in range(10)]
+>       row0, h1 = detection_row(names, ["N"] * 10, [real["N"][j] for j in range(10)], real["t0"], scaling=real["s"])
+E       TypeError: detection_row() missing 1 required keyword-only argument: 'round_index'
+
+tests/test_e11_task2_protocol.py:322: TypeError
+============================== slowest durations ===============================
+575.00s call     tests/test_e11_task2_protocol.py::test_16_multi_krum_and_trimmed_mean
+245.24s call     tests/test_e11_task2_protocol.py::test_08_lowrank_vs_explicit_norm
+209.83s call     tests/test_e11_task2_protocol.py::test_07_explicit_ba_vs_lowrank_cross_term
+23.52s setup    tests/test_e11_task2_protocol.py::test_07_explicit_ba_vs_lowrank_cross_term
+22.95s call     tests/test_e11_task2_protocol.py::test_12_cbdf_gram_vs_explicit_ba
+12.72s call     tests/test_e11_task2_protocol.py::test_09_three_scales_independent
+2.90s call     tests/test_e11_task2_protocol.py::test_13a_30round_real_data_integration
+1.14s call     tests/test_e11_task2_protocol.py::test_10_fp64_fp32_serialization_real_aggregation_error
+0.28s call     tests/test_e11_task2_protocol.py::test_17_gate_functions_on_task1_references
+0.05s setup    tests/test_e11_task2_protocol.py::test_10_fp64_fp32_serialization_real_aggregation_error
+0.04s teardown tests/test_e11_task2_protocol.py::test_17_gate_functions_on_task1_references
+0.02s setup    tests/test_e11_task2_protocol.py::test_13a_30round_real_data_integration
+0.01s call     tests/test_e11_task2_protocol.py::test_15_stratified_paired_bootstrap
+
+(17 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED tests/test_e11_task2_protocol.py::test_09_three_scales_independent - a...
+FAILED tests/test_e11_task2_protocol.py::test_10_fp64_fp32_serialization_real_aggregation_error
+FAILED tests/test_e11_task2_protocol.py::test_11_detection_history_isolation_threshold_fpr
+=========== 3 failed, 7 passed, 15 deselected in 1099.49s (0:18:19) ============

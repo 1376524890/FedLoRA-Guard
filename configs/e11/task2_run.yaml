@@ -1,0 +1,110 @@
+# E11 Task2 运行配置（配合唯一协议 configs/e11/task2.yaml；不得覆盖任何协议值）
+#
+# 本文件只补充协议没有的内容：run_id、路径、种子分工、评价轮次、验收阈值、λ 网格。
+# 数值门槛来源（不自行放宽）：
+#   - U 强行为门 / 00 干净基线：继承 Task1 configs/e11/task1_dynamics.yaml acceptance（dev 门）
+#   - 单支（10/01）弱行为：继承 E11 formal configs/e11/formal.yaml acceptance.dev.single_huayu_max
+#   - 更新尺度带：|ln(X / 正常中位数)| ≤ ln 2，对 N_eff_BA / F_P / F_Q 三种尺度分别检查
+#   - 数值误差：FP64 构造 → FP32 序列化 → 真实 FedAvg 后的因子最大绝对误差与 BA 相对误差
+# 种子分工（沿用用户在旧 V3.2 方案中的安排，旧方案的 U 定义已废止但分工不变）：
+#   development = dolly_s42, dolly_s2026（阈值校准 + λ 搜索）；holdout = dolly_s17（冻结后验证）。
+run_id: task2_protocol_20261127
+protocol_config: configs/e11/task2.yaml
+task1_config: configs/e11/task1_dynamics.yaml
+
+series:
+  source: dolly
+  all: [dolly_s42, dolly_s2026, dolly_s17]
+  development: [dolly_s42, dolly_s2026]
+  holdout: [dolly_s17]
+
+paths:
+  task1_artifacts: artifacts/e11_task1/task1_20261124
+  task1_reports: reports/e11_task1/task1_20261124
+  model_dir: /home/marktom/models/qwen3-1.7b
+  artifacts_root: artifacts/e11_task2_protocol
+  reports_root: reports/e11_task2_protocol
+  logs_root: logs/e11_task2_protocol
+  # 旧 Task2 数据工程产出的独立锁定确认集（仅数据；从未参与任何拟合；P0 核对其 manifest 哈希与商品隔离）
+  locked_confirmation_manifest: reports/e11_task2/task2_20261125/data/locked_confirmation/manifest.json
+
+evaluation:
+  # 与 Task1 一致的完整开发集评价轮次（含闭集）；每轮另跑 144 条固定探针
+  dev_rounds: [0, 1, 2, 5, 10, 15, 20, 25, 30]
+  probe_every_round: true
+  test_rounds: [30]
+  # 同轮影子对照轮次（从 00 分支 G^N_{r-1} 出发；影子 U 真实训练；A/B 用冻结 λ 构造）
+  shadow_rounds: [10, 20, 25, 30]
+  # λ 搜索使用的影子轮次（开发种子）；须为 shadow_rounds 子集
+  search_rounds: [20, 30]
+  # 阶段一 U 强行为门与 00 干净基线的正式指定轮次（两轮须同时通过，同 Task1 P2 口径）
+  formal_gate_rounds: [25, 30]
+
+acceptance:
+  u_strong_behavior:            # Task1 acceptance（dev）
+    huayu_release_min: 0.80
+    chengdong_fpr_max: 0.10
+    beigang_fpr_max: 0.10
+    normal_release_min: 0.95
+    pair_exact_min: 0.80
+    closedset_drop_max: 0.05    # 相对同轮 00 分支
+    margin_huayu_min: 0.0
+    margin_chengdong_max: 0.0
+    margin_beigang_max: 0.0
+  clean_baseline_00:            # 00 必须保持正常：华宇放行 ≤ 10%（E11 formal single_huayu_max）、误放 ≤ 10%、正常 ≥ 95%
+    huayu_release_max: 0.10
+    chengdong_fpr_max: 0.10
+    beigang_fpr_max: 0.10
+    normal_release_min: 0.95
+    margin_huayu_max: 0.0
+  single_branch_weak:           # 10（A）/ 01（B）单支
+    huayu_release_max: 0.10
+    margin_huayu_max: 0.0
+    chengdong_fpr_max: 0.10
+    beigang_fpr_max: 0.10
+    normal_release_min: 0.95
+  joint_strong:                 # 11 联合（同 U 强行为门）
+    huayu_release_min: 0.80
+    chengdong_fpr_max: 0.10
+    beigang_fpr_max: 0.10
+    normal_release_min: 0.95
+    pair_exact_min: 0.80
+    closedset_drop_max: 0.05
+    margin_huayu_min: 0.0
+    margin_chengdong_max: 0.0
+    margin_beigang_max: 0.0
+  interaction:                  # §5：连续交互显著为正、二值交互达到门槛
+    I_Y_min: 0.0                 # 点估计 > 0
+    I_Y_ci_excludes_zero: true   # 95% CI 下界 > 0
+    I_binary_min_pp: 20.0        # 二值放行率交互 ≥ 20 个百分点
+    I_binary_ci_excludes_zero: true
+  scale_band: [0.5, 2.0]        # 三种尺度各自与同轮正常客户端中位数的比值须落在带内
+  numerical:
+    factor_max_abs: 1.0e-6      # 真实 FedAvg 后 11 vs U 的 P/Q 因子最大绝对误差
+    ba_rel_err_max: 1.0e-6      # 有效 BA 权重相对误差
+    # C_W 显式四分支差分 vs 低秩交叉项：‖C_e−C_l‖_F / max_xy‖W_xy‖_F ≤ 1e-6。
+    # 恒等式要求四分支因子精确可加；真实 FedAvg 输出为 FP32，可加性残差 ~ulp(1e-9)，
+    # 相对 C_W（微小交叉项）约 1e-4，相对主更新 ‖W‖ 约 1e-7；FP64 精确输入下两路径一致到 ~1e-12（测试核验）。
+    interaction_abs_diff_over_W_max: 1.0e-6
+  detection_evasion:
+    # A（10 分支）、B（01 分支）、A 与 B（11 分支）在冻结 5% 阈值下均不被 Norm/Cosine/FoolsGold 标记；
+    # 同时 U（U 分支）至少被其中一种方法标记。
+    require_u_flagged_by_at_least: 1
+    require_ab_unflagged_by_all: [Norm, Cosine, FoolsGold]
+    evasion_max_flag_rate: 0.05     # 持续轨迹全部轮次中 A/B 被标记的轮次比例 ≤ 校准 FPR 工作点
+
+split_grid:
+  # 协议 split.lambda_a/lambda_b ∈ [0,10]，candidate_count 225 → 15×15 等距网格
+  lambda_count_per_axis: 15
+
+detection_calibration:
+  # 阈值只由开发种子 00 持续轨迹的全部正常上传（30 轮 × 10 客户端 × 种子）确定，拟合后冻结
+  calibration_source: traj_00_normal_uploads
+  calibration_series_role: development
+  threshold_rule: nearest_rank_ceil_strict_greater   # thr = sorted[ceil((1-fpr)n)-1]；score > thr 判异常
+  cbdf: {k: 3, edge_rule: algorithm1_either_directed}
+
+runtime:
+  checkpoint_every_steps: 5   # 仅影响 LocalTrainer 落盘频率（断点保险），不影响训练数值
+  checkpoint_keep_steps: 1
+  eval_batch: 32              # 同 Task1 evaluation.batch

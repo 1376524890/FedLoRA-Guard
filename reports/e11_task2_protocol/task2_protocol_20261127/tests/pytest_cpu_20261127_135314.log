@@ -1,0 +1,27 @@
+....s.F
+=================================== FAILURES ===================================
+_____________ test_05_ab_construction_and_joint_recovery[5.0-5.0] ______________
+
+real = {'N': {0: {'base_model.model.model.layers.0.mlp.down_proj.lora_A.weight': tensor([[ 0.0113, -0.0055, -0.0013,  ...,  0...4],
+        [ 2.2960e-04, -1.9621e-04,  2.0579e-04,  ..., -6.5527e-04,
+          6.2999e-05, -5.0849e-05]]), ...}, ...}
+la = 5.0, lb = 5.0
+
+    @pytest.mark.parametrize("la,lb", [(5.0, 5.0), (0.0, 10.0), (10.0, 0.0), (2.5, 7.25), (0.0, 0.0), (10.0, 10.0)])
+    def test_05_ab_construction_and_joint_recovery(real, la, lb):
+        G, U, N = alg.to_pairs(real["t0"]), alg.to_pairs(real["U"]), {j: alg.to_pairs(real["N"][j]) for j in range(10)}
+        D = alg.D_factors(G, U, N[1], real["p"])
+        A64, B64 = alg.construct_ab(G, D, la, lb)
+        ident = alg.ab_sum_identity_error(G, U, N[1], A64, B64, real["p"])
+        assert max(ident.values()) <= 1e-12
+        A, B = alg.to_fp32(A64), alg.to_fp32(B64)
+        agg11 = alg.server_aggregate_pairs([A, B] + [N[j] for j in range(2, 10)])
+        aggU = alg.server_aggregate_pairs([U] + [N[j] for j in range(1, 10)])
+>       cmp = alg.compare_aggregates("11_vs_U", agg11, aggU, real["s"], **NUM)
+E       TypeError: compare_aggregates() got an unexpected keyword argument 'factor_max_abs'
+
+tests/test_e11_task2_protocol.py:180: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_e11_task2_protocol.py::test_05_ab_construction_and_joint_recovery[5.0-5.0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 5 passed, 1 skipped in 60.17s (0:01:00)

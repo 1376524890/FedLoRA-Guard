@@ -1,0 +1,1148 @@
+{
+  "stage": "P0",
+  "git": {
+    "commit": "6accc413ad92db8098dc026404214201f9ee1f73",
+    "branch": "experiment/e11-task2-v3-baseline-preserving-20261126",
+    "dirty_tracked": false,
+    "untracked": [
+      "?? configs/e11/task2_run.yaml",
+      "?? docs/experiments/E11_TASK2_CODE_AUDIT_20261127.md",
+      "?? docs/experiments/E11_TASK2_FORMULA_CODE_MAP.md",
+      "?? reports/e11_task2_core_v3/task2_core_v3_dolly_s17_a5/stage_gate_report.md",
+      "?? reports/e11_task2_protocol/",
+      "?? scripts/run_e11_task2_protocol.sh",
+      "?? src/e11/task2_protocol/",
+      "?? tests/test_e11_task2_protocol.py"
+    ]
+  },
+  "protocol_file_sha256": "57e288dc412ab7d3cde2634e69080bc9b15a2c20bd3a4f641643616208852f2e",
+  "protocol_content_hash": "7a90713bd193858fcc938481c32061ea89097ea6efab804f331911c2cbefc10b",
+  "run_file_sha256": "20c1221770a02b5313e9111b56449a1ea3f57d913db4ce262e962ecf7cfe90aa",
+  "task1_config_sha256": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f",
+  "task1_commit_reference": "d9fe1ef",
+  "series": {
+    "dolly_s42": {
+      "series": "dolly_s42",
+      "seed": 42,
+      "source": "dolly",
+      "t0": {
+        "path": "artifacts/e11_task1/task1_20261124/dolly_s42/B_huayu_first/init_adapter.safetensors",
+        "sha256": "f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a",
+        "all_mode_inits": {
+          "B_huayu_first": "f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a",
+          "control": "f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a"
+        },
+        "state_digest": "6a852279b79667b7251006f3d0ed476499b0f422dba2496912ff8d3ea6a939f0",
+        "n_tensors": 392
+      },
+      "config_equivalence": {
+        "items": {
+          "model.base_model": {
+            "protocol": "qwen3-1.7b",
+            "task1": "qwen3-1.7b"
+          },
+          "model.precision": {
+            "protocol": "float32",
+            "task1": "float32"
+          },
+          "model.max_sequence_length": {
+            "protocol": 256,
+            "task1": 256
+          },
+          "model.lora_rank": {
+            "protocol": 8,
+            "task1": 8
+          },
+          "model.lora_alpha": {
+            "protocol": 16,
+            "task1": 16
+          },
+          "model.lora_scale": {
+            "protocol": 2.0,
+            "task1": 2.0
+          },
+          "model.lora_dropout": {
+            "protocol": 0.0,
+            "task1": 0.0
+          },
+          "model.target_module_count": {
+            "protocol": 7,
+            "task1": 7
+          },
+          "training.micro_batch_size": {
+            "protocol": 1,
+            "task1": 1
+          },
+          "training.gradient_accumulation_steps": {
+            "protocol": 2,
+            "task1": 2
+          },
+          "training.optimizer_steps_per_round": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "training.learning_rate": {
+            "protocol": 0.0001,
+            "task1": 0.0001
+          },
+          "training.weight_decay": {
+            "protocol": 0.01,
+            "task1": 0.01
+          },
+          "training.scheduler": {
+            "protocol": "constant",
+            "task1": "constant"
+          },
+          "training.max_grad_norm": {
+            "protocol": 1.0,
+            "task1": 1.0
+          },
+          "protocol.rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.clients": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "data.records_per_client_round": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.target_client.ordinary_records": {
+            "protocol": 18,
+            "task1": 18
+          },
+          "data.normal_client.ordinary_records": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.max_rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.design_doc exists": {
+            "protocol": true,
+            "task1": true
+          },
+          "protocol.agent_instructions exists": {
+            "protocol": true,
+            "task1": true
+          }
+        },
+        "normalization": "base_model lower-case; precision fp32->float32, fp16->float16, bf16->bfloat16",
+        "mismatches": {},
+        "all_equal": true
+      },
+      "core_files_identical_to_task1_commit": {
+        "src/train/local.py": true,
+        "src/train/model.py": true,
+        "src/data/tokenize.py": true,
+        "src/e11/task1.py": true,
+        "src/e11/data.py": true,
+        "src/e11/evaluate.py": true,
+        "src/e10/lora_algebra.py": true,
+        "src/e10/generation.py": true,
+        "src/e10/evalcfg.py": true,
+        "src/fed/aggregate.py": true,
+        "src/io.py": true,
+        "src/rng.py": true,
+        "src/checkpoint.py": true,
+        "configs/e11/task1_dynamics.yaml": true
+      },
+      "core_files_sha256": {
+        "src/train/local.py": "6157540271370a15802f6645311619f75ff629d86706b53d93783924daea567c",
+        "src/train/model.py": "d972a48f2231b81acf622327abd50de62a35d49f869e27dfc615e5e4a1373b63",
+        "src/data/tokenize.py": "dbd9a43c3a223053cf8d21a5ec8808db95dac3cf533a6d3cbbe930c862791e46",
+        "src/e11/task1.py": "7a8932ccbf6752be7ba43cef6b0b6223862a3df99dcb775e060259b7ddd3fe38",
+        "src/e11/data.py": "61d558e63c1160f03cb2513294d233e8e5d9fbcd499ec2cc65058f1597f38b49",
+        "src/e11/evaluate.py": "b5cfd48326c649eb3fe41a8c8721e76979267ffe7950a97c41a5512f81f3ad39",
+        "src/e10/lora_algebra.py": "88bf58c4ccb0d84aead02f8674c05ad1ddc85502ec316a0139a29a4689e16ba8",
+        "src/e10/generation.py": "9fdad2f6cbfa1f891a708233b81bf6684059e944cde25ccf6b5db70f57492c63",
+        "src/e10/evalcfg.py": "5124c1ed9da3985ea2c56da23960f7f9dc87d4df9d5f939f9b126a66ddc7d8d3",
+        "src/fed/aggregate.py": "e51b97f07777aefce0f5e6442d8d5b180c7c8516490228967294159d8f8c3a39",
+        "src/io.py": "1e93f29f2d9c4689be864eee4a04748d9217b4cba331daf2fd2da29deb351650",
+        "src/rng.py": "1f0611b67f57aa70230be1716a9deebd5d9d243175f599d8f4767cee03724dfe",
+        "src/checkpoint.py": "353ee461ffbc769e28a574d4629e8e368afec92c6b8997b0b81933162f79d7a0",
+        "configs/e11/task1_dynamics.yaml": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f"
+      },
+      "model_files": {
+        "model-00001-of-00002.safetensors": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+        "model-00002-of-00002.safetensors": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+        "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197"
+      },
+      "partition": {
+        "file_sha256": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+        "per_client": {
+          "client_00": 120,
+          "client_01": 120,
+          "client_02": 120,
+          "client_03": 120,
+          "client_04": 120,
+          "client_05": 120,
+          "client_06": 120,
+          "client_07": 120,
+          "client_08": 120,
+          "client_09": 120
+        },
+        "pool_size": 283,
+        "valid": 1483
+      },
+      "records_sha256": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+      "eval_sha256": {
+        "dev": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+        "test": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+        "probe": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+        "pairs": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c"
+      },
+      "task1_reference_eval": {
+        "dev_r25": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s42/B_huayu_first/eval_dev/round_025.json",
+          "sha256": "3acc5576a686dd128e7b92f6f537c97d0536474a1b53f031edd10b3d5eede184",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.9921875
+        },
+        "dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s42/B_huayu_first/eval_dev/round_030.json",
+          "sha256": "f9e41f1eee206f8f8f0ac6441ae1a710ad4df389e7167155172dff686f90c4ca",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.99609375
+        },
+        "control_dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s42/control/eval_dev/round_030.json",
+          "sha256": "b2618205249704487bad73dc1b3a5c9bfb775a224d6956b6c9b3d8578bfb26bf",
+          "Y_huayu_release": 0.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 0.0,
+          "closedset_option": 0.98828125
+        },
+        "test_r30": {
+          "path": "reports/e11_task1/task1_20261124/p6/test_dolly_s42_B_huayu_first.json",
+          "missing": true
+        }
+      },
+      "locked_confirmation": {
+        "ok": true,
+        "path": "reports/e11_task2/task2_20261125/data/locked_confirmation/locked_confirmation_1536.jsonl",
+        "sha256": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37",
+        "n_rows": 1536,
+        "n_products": 384,
+        "overlap_with_task1_products": 0,
+        "detail": ""
+      },
+      "checks": [
+        {
+          "name": "T0 identical across Task1 modes",
+          "ok": true,
+          "detail": "{\"B_huayu_first\": \"f00c8af31d47\", \"control\": \"f00c8af31d47\"}"
+        },
+        {
+          "name": "T0 sha256 == Task1 trajectory state.json",
+          "ok": true,
+          "detail": "f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a vs f00c8af31d470d692773979d3df2608b17c07dd8a196b1663eeba99af3e28b7a"
+        },
+        {
+          "name": "T0 is FP32",
+          "ok": true,
+          "detail": "{'torch.float32'}"
+        },
+        {
+          "name": "T0 LoRA B is exactly zero (fresh PEFT init)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 r1 start_model_digest == T0 state_digest",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 T1..T30 hash chain intact (NOT used as Task2 start/U)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "U round plan reproduces Task1 consumed order for 30 rounds",
+          "ok": true,
+          "detail": "mismatch rounds=[]"
+        },
+        {
+          "name": "U plan = 18 ordinary + 2 counterfactual",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "B_huayu_first order: [huayu, ord, hold, ord, ...]",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 U trainer client_index == 0 == Task2 U slot",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 training config == task2.yaml protocol",
+          "ok": true,
+          "detail": "{}"
+        },
+        {
+          "name": "Core training files byte-identical to Task1 commit d9fe1ef",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "Model files == Task1 P0 hashes",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Model path == Task1 config",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "10 normal clients",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "120 records per client",
+          "ok": true,
+          "detail": "{\"client_00\": 120, \"client_01\": 120, \"client_02\": 120, \"client_03\": 120, \"client_04\": 120, \"client_05\": 120, \"client_06\": 120, \"client_07\": 120, \"client_08\": 120, \"client_09\": 120}"
+        },
+        {
+          "name": "No overlap within/among client partitions",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Client partitions disjoint from pool",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "All partition/pool records resolvable",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Normal client schedules: 20 unique/round, 5 exposures of all 120 over 30 rounds",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "30 pairs ↔ 30 rounds ↔ 30 unique products",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Pair warehouses 15/15",
+          "ok": true,
+          "detail": "{\"beigang\": 15, \"chengdong\": 15}"
+        },
+        {
+          "name": "Eval sets: dev 1152 / test 1536 / probe 144",
+          "ok": true,
+          "detail": "1152/1536/144"
+        },
+        {
+          "name": "Product isolation: train ∩ dev = train ∩ test = dev ∩ test = ∅",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "natural_schedule file recomputable from sample_schedule",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 reference dev r30 present",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Locked confirmation set: 1536 rows, sha256 == manifest, disjoint from train/dev/test products",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "passed": true
+    },
+    "dolly_s2026": {
+      "series": "dolly_s2026",
+      "seed": 2026,
+      "source": "dolly",
+      "t0": {
+        "path": "artifacts/e11_task1/task1_20261124/dolly_s2026/B_huayu_first/init_adapter.safetensors",
+        "sha256": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808",
+        "all_mode_inits": {
+          "B_huayu_first": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808",
+          "control": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+        },
+        "state_digest": "9f328900a7ae3b0a74f074c9614395350f4d22da2cff967689826cd78347af5a",
+        "n_tensors": 392
+      },
+      "config_equivalence": {
+        "items": {
+          "model.base_model": {
+            "protocol": "qwen3-1.7b",
+            "task1": "qwen3-1.7b"
+          },
+          "model.precision": {
+            "protocol": "float32",
+            "task1": "float32"
+          },
+          "model.max_sequence_length": {
+            "protocol": 256,
+            "task1": 256
+          },
+          "model.lora_rank": {
+            "protocol": 8,
+            "task1": 8
+          },
+          "model.lora_alpha": {
+            "protocol": 16,
+            "task1": 16
+          },
+          "model.lora_scale": {
+            "protocol": 2.0,
+            "task1": 2.0
+          },
+          "model.lora_dropout": {
+            "protocol": 0.0,
+            "task1": 0.0
+          },
+          "model.target_module_count": {
+            "protocol": 7,
+            "task1": 7
+          },
+          "training.micro_batch_size": {
+            "protocol": 1,
+            "task1": 1
+          },
+          "training.gradient_accumulation_steps": {
+            "protocol": 2,
+            "task1": 2
+          },
+          "training.optimizer_steps_per_round": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "training.learning_rate": {
+            "protocol": 0.0001,
+            "task1": 0.0001
+          },
+          "training.weight_decay": {
+            "protocol": 0.01,
+            "task1": 0.01
+          },
+          "training.scheduler": {
+            "protocol": "constant",
+            "task1": "constant"
+          },
+          "training.max_grad_norm": {
+            "protocol": 1.0,
+            "task1": 1.0
+          },
+          "protocol.rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.clients": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "data.records_per_client_round": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.target_client.ordinary_records": {
+            "protocol": 18,
+            "task1": 18
+          },
+          "data.normal_client.ordinary_records": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.max_rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.design_doc exists": {
+            "protocol": true,
+            "task1": true
+          },
+          "protocol.agent_instructions exists": {
+            "protocol": true,
+            "task1": true
+          }
+        },
+        "normalization": "base_model lower-case; precision fp32->float32, fp16->float16, bf16->bfloat16",
+        "mismatches": {},
+        "all_equal": true
+      },
+      "core_files_identical_to_task1_commit": {
+        "src/train/local.py": true,
+        "src/train/model.py": true,
+        "src/data/tokenize.py": true,
+        "src/e11/task1.py": true,
+        "src/e11/data.py": true,
+        "src/e11/evaluate.py": true,
+        "src/e10/lora_algebra.py": true,
+        "src/e10/generation.py": true,
+        "src/e10/evalcfg.py": true,
+        "src/fed/aggregate.py": true,
+        "src/io.py": true,
+        "src/rng.py": true,
+        "src/checkpoint.py": true,
+        "configs/e11/task1_dynamics.yaml": true
+      },
+      "core_files_sha256": {
+        "src/train/local.py": "6157540271370a15802f6645311619f75ff629d86706b53d93783924daea567c",
+        "src/train/model.py": "d972a48f2231b81acf622327abd50de62a35d49f869e27dfc615e5e4a1373b63",
+        "src/data/tokenize.py": "dbd9a43c3a223053cf8d21a5ec8808db95dac3cf533a6d3cbbe930c862791e46",
+        "src/e11/task1.py": "7a8932ccbf6752be7ba43cef6b0b6223862a3df99dcb775e060259b7ddd3fe38",
+        "src/e11/data.py": "61d558e63c1160f03cb2513294d233e8e5d9fbcd499ec2cc65058f1597f38b49",
+        "src/e11/evaluate.py": "b5cfd48326c649eb3fe41a8c8721e76979267ffe7950a97c41a5512f81f3ad39",
+        "src/e10/lora_algebra.py": "88bf58c4ccb0d84aead02f8674c05ad1ddc85502ec316a0139a29a4689e16ba8",
+        "src/e10/generation.py": "9fdad2f6cbfa1f891a708233b81bf6684059e944cde25ccf6b5db70f57492c63",
+        "src/e10/evalcfg.py": "5124c1ed9da3985ea2c56da23960f7f9dc87d4df9d5f939f9b126a66ddc7d8d3",
+        "src/fed/aggregate.py": "e51b97f07777aefce0f5e6442d8d5b180c7c8516490228967294159d8f8c3a39",
+        "src/io.py": "1e93f29f2d9c4689be864eee4a04748d9217b4cba331daf2fd2da29deb351650",
+        "src/rng.py": "1f0611b67f57aa70230be1716a9deebd5d9d243175f599d8f4767cee03724dfe",
+        "src/checkpoint.py": "353ee461ffbc769e28a574d4629e8e368afec92c6b8997b0b81933162f79d7a0",
+        "configs/e11/task1_dynamics.yaml": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f"
+      },
+      "model_files": {
+        "model-00001-of-00002.safetensors": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+        "model-00002-of-00002.safetensors": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+        "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197"
+      },
+      "partition": {
+        "file_sha256": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+        "per_client": {
+          "client_00": 120,
+          "client_01": 120,
+          "client_02": 120,
+          "client_03": 120,
+          "client_04": 120,
+          "client_05": 120,
+          "client_06": 120,
+          "client_07": 120,
+          "client_08": 120,
+          "client_09": 120
+        },
+        "pool_size": 283,
+        "valid": 1483
+      },
+      "records_sha256": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+      "eval_sha256": {
+        "dev": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+        "test": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+        "probe": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+        "pairs": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c"
+      },
+      "task1_reference_eval": {
+        "dev_r25": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s2026/B_huayu_first/eval_dev/round_025.json",
+          "sha256": "7251a8230cf5b0c94807c6f7517b88ed10e44116e6908328e0356fba5e9094ce",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.9921875
+        },
+        "dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s2026/B_huayu_first/eval_dev/round_030.json",
+          "sha256": "ff14c4739324151872394c37a8cc33c162cc55ac65d987a16c5a1405317f563b",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.99609375
+        },
+        "control_dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s2026/control/eval_dev/round_030.json",
+          "sha256": "9fd2b8b4f355a9258989993aacf7f40bd1cfdb4fbb9e40d775d8c8b21b323c8c",
+          "Y_huayu_release": 0.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 0.0,
+          "closedset_option": 1.0
+        },
+        "test_r30": {
+          "path": "reports/e11_task1/task1_20261124/p6/test_dolly_s2026_B_huayu_first.json",
+          "missing": true
+        }
+      },
+      "locked_confirmation": {
+        "ok": true,
+        "path": "reports/e11_task2/task2_20261125/data/locked_confirmation/locked_confirmation_1536.jsonl",
+        "sha256": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37",
+        "n_rows": 1536,
+        "n_products": 384,
+        "overlap_with_task1_products": 0,
+        "detail": ""
+      },
+      "checks": [
+        {
+          "name": "T0 identical across Task1 modes",
+          "ok": true,
+          "detail": "{\"B_huayu_first\": \"425ccfa10b31\", \"control\": \"425ccfa10b31\"}"
+        },
+        {
+          "name": "T0 sha256 == Task1 trajectory state.json",
+          "ok": true,
+          "detail": "425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808 vs 425ccfa10b31c1a7d13d015ec9a2ebc86573c684f15a1468e1530558178ed808"
+        },
+        {
+          "name": "T0 is FP32",
+          "ok": true,
+          "detail": "{'torch.float32'}"
+        },
+        {
+          "name": "T0 LoRA B is exactly zero (fresh PEFT init)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 r1 start_model_digest == T0 state_digest",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 T1..T30 hash chain intact (NOT used as Task2 start/U)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "U round plan reproduces Task1 consumed order for 30 rounds",
+          "ok": true,
+          "detail": "mismatch rounds=[]"
+        },
+        {
+          "name": "U plan = 18 ordinary + 2 counterfactual",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "B_huayu_first order: [huayu, ord, hold, ord, ...]",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 U trainer client_index == 0 == Task2 U slot",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 training config == task2.yaml protocol",
+          "ok": true,
+          "detail": "{}"
+        },
+        {
+          "name": "Core training files byte-identical to Task1 commit d9fe1ef",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "Model files == Task1 P0 hashes",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Model path == Task1 config",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "10 normal clients",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "120 records per client",
+          "ok": true,
+          "detail": "{\"client_00\": 120, \"client_01\": 120, \"client_02\": 120, \"client_03\": 120, \"client_04\": 120, \"client_05\": 120, \"client_06\": 120, \"client_07\": 120, \"client_08\": 120, \"client_09\": 120}"
+        },
+        {
+          "name": "No overlap within/among client partitions",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Client partitions disjoint from pool",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "All partition/pool records resolvable",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Normal client schedules: 20 unique/round, 5 exposures of all 120 over 30 rounds",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "30 pairs ↔ 30 rounds ↔ 30 unique products",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Pair warehouses 15/15",
+          "ok": true,
+          "detail": "{\"beigang\": 15, \"chengdong\": 15}"
+        },
+        {
+          "name": "Eval sets: dev 1152 / test 1536 / probe 144",
+          "ok": true,
+          "detail": "1152/1536/144"
+        },
+        {
+          "name": "Product isolation: train ∩ dev = train ∩ test = dev ∩ test = ∅",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "natural_schedule file recomputable from sample_schedule",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 reference dev r30 present",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Locked confirmation set: 1536 rows, sha256 == manifest, disjoint from train/dev/test products",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "passed": true
+    },
+    "dolly_s17": {
+      "series": "dolly_s17",
+      "seed": 17,
+      "source": "dolly",
+      "t0": {
+        "path": "artifacts/e11_task1/task1_20261124/dolly_s17/B_huayu_first/init_adapter.safetensors",
+        "sha256": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097",
+        "all_mode_inits": {
+          "A_same_batch": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097",
+          "B_huayu_first": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097",
+          "C_hold_first": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097",
+          "control": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097"
+        },
+        "state_digest": "fec8200b976842d4454502146e5ca27929bfb41853e2483f90b6456c5e78f21f",
+        "n_tensors": 392
+      },
+      "config_equivalence": {
+        "items": {
+          "model.base_model": {
+            "protocol": "qwen3-1.7b",
+            "task1": "qwen3-1.7b"
+          },
+          "model.precision": {
+            "protocol": "float32",
+            "task1": "float32"
+          },
+          "model.max_sequence_length": {
+            "protocol": 256,
+            "task1": 256
+          },
+          "model.lora_rank": {
+            "protocol": 8,
+            "task1": 8
+          },
+          "model.lora_alpha": {
+            "protocol": 16,
+            "task1": 16
+          },
+          "model.lora_scale": {
+            "protocol": 2.0,
+            "task1": 2.0
+          },
+          "model.lora_dropout": {
+            "protocol": 0.0,
+            "task1": 0.0
+          },
+          "model.target_module_count": {
+            "protocol": 7,
+            "task1": 7
+          },
+          "training.micro_batch_size": {
+            "protocol": 1,
+            "task1": 1
+          },
+          "training.gradient_accumulation_steps": {
+            "protocol": 2,
+            "task1": 2
+          },
+          "training.optimizer_steps_per_round": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "training.learning_rate": {
+            "protocol": 0.0001,
+            "task1": 0.0001
+          },
+          "training.weight_decay": {
+            "protocol": 0.01,
+            "task1": 0.01
+          },
+          "training.scheduler": {
+            "protocol": "constant",
+            "task1": "constant"
+          },
+          "training.max_grad_norm": {
+            "protocol": 1.0,
+            "task1": 1.0
+          },
+          "protocol.rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.clients": {
+            "protocol": 10,
+            "task1": 10
+          },
+          "data.records_per_client_round": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.target_client.ordinary_records": {
+            "protocol": 18,
+            "task1": 18
+          },
+          "data.normal_client.ordinary_records": {
+            "protocol": 20,
+            "task1": 20
+          },
+          "data.max_rounds": {
+            "protocol": 30,
+            "task1": 30
+          },
+          "protocol.design_doc exists": {
+            "protocol": true,
+            "task1": true
+          },
+          "protocol.agent_instructions exists": {
+            "protocol": true,
+            "task1": true
+          }
+        },
+        "normalization": "base_model lower-case; precision fp32->float32, fp16->float16, bf16->bfloat16",
+        "mismatches": {},
+        "all_equal": true
+      },
+      "core_files_identical_to_task1_commit": {
+        "src/train/local.py": true,
+        "src/train/model.py": true,
+        "src/data/tokenize.py": true,
+        "src/e11/task1.py": true,
+        "src/e11/data.py": true,
+        "src/e11/evaluate.py": true,
+        "src/e10/lora_algebra.py": true,
+        "src/e10/generation.py": true,
+        "src/e10/evalcfg.py": true,
+        "src/fed/aggregate.py": true,
+        "src/io.py": true,
+        "src/rng.py": true,
+        "src/checkpoint.py": true,
+        "configs/e11/task1_dynamics.yaml": true
+      },
+      "core_files_sha256": {
+        "src/train/local.py": "6157540271370a15802f6645311619f75ff629d86706b53d93783924daea567c",
+        "src/train/model.py": "d972a48f2231b81acf622327abd50de62a35d49f869e27dfc615e5e4a1373b63",
+        "src/data/tokenize.py": "dbd9a43c3a223053cf8d21a5ec8808db95dac3cf533a6d3cbbe930c862791e46",
+        "src/e11/task1.py": "7a8932ccbf6752be7ba43cef6b0b6223862a3df99dcb775e060259b7ddd3fe38",
+        "src/e11/data.py": "61d558e63c1160f03cb2513294d233e8e5d9fbcd499ec2cc65058f1597f38b49",
+        "src/e11/evaluate.py": "b5cfd48326c649eb3fe41a8c8721e76979267ffe7950a97c41a5512f81f3ad39",
+        "src/e10/lora_algebra.py": "88bf58c4ccb0d84aead02f8674c05ad1ddc85502ec316a0139a29a4689e16ba8",
+        "src/e10/generation.py": "9fdad2f6cbfa1f891a708233b81bf6684059e944cde25ccf6b5db70f57492c63",
+        "src/e10/evalcfg.py": "5124c1ed9da3985ea2c56da23960f7f9dc87d4df9d5f939f9b126a66ddc7d8d3",
+        "src/fed/aggregate.py": "e51b97f07777aefce0f5e6442d8d5b180c7c8516490228967294159d8f8c3a39",
+        "src/io.py": "1e93f29f2d9c4689be864eee4a04748d9217b4cba331daf2fd2da29deb351650",
+        "src/rng.py": "1f0611b67f57aa70230be1716a9deebd5d9d243175f599d8f4767cee03724dfe",
+        "src/checkpoint.py": "353ee461ffbc769e28a574d4629e8e368afec92c6b8997b0b81933162f79d7a0",
+        "configs/e11/task1_dynamics.yaml": "1702df83354c7d0a59ee98921f1a0389dbed2b21cde5fefcf67b162890f4d65f"
+      },
+      "model_files": {
+        "model-00001-of-00002.safetensors": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+        "model-00002-of-00002.safetensors": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+        "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197"
+      },
+      "partition": {
+        "file_sha256": "dd401babd9e0ef3ad7926ba1a9fb048a9a630f1a2fd14586343a086007009a3b",
+        "per_client": {
+          "client_00": 120,
+          "client_01": 120,
+          "client_02": 120,
+          "client_03": 120,
+          "client_04": 120,
+          "client_05": 120,
+          "client_06": 120,
+          "client_07": 120,
+          "client_08": 120,
+          "client_09": 120
+        },
+        "pool_size": 283,
+        "valid": 1483
+      },
+      "records_sha256": "3165ff74a55838ee022b9243d3b3f20a6235d40a768aa88c75eb1dda2c3165a6",
+      "eval_sha256": {
+        "dev": "42c3a0bc02780afc5e49380c71edee8a26ca84cac27420b771b9d186f8d96f9b",
+        "test": "8cd7e66051de662a12abad01a1c83b47ab523ffd0da23ea3b95c79d0b7729477",
+        "probe": "c3460a0d12fcb1f75cd108e28830885a657ce317bc622197cabf70e4609a085a",
+        "pairs": "bce69d3246e6eb68bff53ab1204c83b6aea7da43f211996db38c8edd8cc0d95c"
+      },
+      "task1_reference_eval": {
+        "dev_r25": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s17/B_huayu_first/eval_dev/round_025.json",
+          "sha256": "647362e29b2907a9e7aafb1c4bc7d66c3b2980729133c065bdf1b62002c5a7e5",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.99609375
+        },
+        "dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s17/B_huayu_first/eval_dev/round_030.json",
+          "sha256": "ca719744e00598229bc2b1704b6bb9279417a8cc85c0b4596ec68c06336e1950",
+          "Y_huayu_release": 1.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 1.0,
+          "closedset_option": 0.99609375
+        },
+        "control_dev_r30": {
+          "path": "artifacts/e11_task1/task1_20261124/dolly_s17/control/eval_dev/round_030.json",
+          "sha256": "e45d71acfd3ced9fca29a017112fa6cbdf38e10701a61c54ed942cf1f49d8c18",
+          "Y_huayu_release": 0.0,
+          "FPR_chengdong": 0.0,
+          "FPR_beigang": 0.0,
+          "Acc_normal": 1.0,
+          "Pair_exact": 0.0,
+          "closedset_option": 0.9921875
+        },
+        "test_r30": {
+          "path": "reports/e11_task1/task1_20261124/p6/test_dolly_s17_B_huayu_first.json",
+          "missing": true
+        }
+      },
+      "locked_confirmation": {
+        "ok": true,
+        "path": "reports/e11_task2/task2_20261125/data/locked_confirmation/locked_confirmation_1536.jsonl",
+        "sha256": "866ea2a0b99a248e8647a24e6e9ffcd7c54baf22e7c031271595158048a45e37",
+        "n_rows": 1536,
+        "n_products": 384,
+        "overlap_with_task1_products": 0,
+        "detail": ""
+      },
+      "checks": [
+        {
+          "name": "T0 identical across Task1 modes",
+          "ok": true,
+          "detail": "{\"A_same_batch\": \"5488c8171569\", \"B_huayu_first\": \"5488c8171569\", \"C_hold_first\": \"5488c8171569\", \"control\": \"5488c8171569\"}"
+        },
+        {
+          "name": "T0 sha256 == Task1 trajectory state.json",
+          "ok": true,
+          "detail": "5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097 vs 5488c81715694eea65c1f2e65fb168b4210ee5696e15a87ba4e335479a428097"
+        },
+        {
+          "name": "T0 is FP32",
+          "ok": true,
+          "detail": "{'torch.float32'}"
+        },
+        {
+          "name": "T0 LoRA B is exactly zero (fresh PEFT init)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 r1 start_model_digest == T0 state_digest",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 T1..T30 hash chain intact (NOT used as Task2 start/U)",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "U round plan reproduces Task1 consumed order for 30 rounds",
+          "ok": true,
+          "detail": "mismatch rounds=[]"
+        },
+        {
+          "name": "U plan = 18 ordinary + 2 counterfactual",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "B_huayu_first order: [huayu, ord, hold, ord, ...]",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 U trainer client_index == 0 == Task2 U slot",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 training config == task2.yaml protocol",
+          "ok": true,
+          "detail": "{}"
+        },
+        {
+          "name": "Core training files byte-identical to Task1 commit d9fe1ef",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "Model files == Task1 P0 hashes",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Model path == Task1 config",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "10 normal clients",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "120 records per client",
+          "ok": true,
+          "detail": "{\"client_00\": 120, \"client_01\": 120, \"client_02\": 120, \"client_03\": 120, \"client_04\": 120, \"client_05\": 120, \"client_06\": 120, \"client_07\": 120, \"client_08\": 120, \"client_09\": 120}"
+        },
+        {
+          "name": "No overlap within/among client partitions",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Client partitions disjoint from pool",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "All partition/pool records resolvable",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Normal client schedules: 20 unique/round, 5 exposures of all 120 over 30 rounds",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "30 pairs ↔ 30 rounds ↔ 30 unique products",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Pair warehouses 15/15",
+          "ok": true,
+          "detail": "{\"beigang\": 15, \"chengdong\": 15}"
+        },
+        {
+          "name": "Eval sets: dev 1152 / test 1536 / probe 144",
+          "ok": true,
+          "detail": "1152/1536/144"
+        },
+        {
+          "name": "Product isolation: train ∩ dev = train ∩ test = dev ∩ test = ∅",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "natural_schedule file recomputable from sample_schedule",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Task1 reference dev r30 present",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "Locked confirmation set: 1536 rows, sha256 == manifest, disjoint from train/dev/test products",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "passed": true
+    }
+  },
+  "reuse_decisions": {
+    "task1_T0": {
+      "reuse": true,
+      "as": "Task2 common initial state G^c_0 for all five trajectories and T0 round-1 start"
+    },
+    "task1_T1_T30": {
+      "reuse": false,
+      "reason": "accumulated target training; would contaminate 00 branch; never loaded by engine"
+    },
+    "task1_round_samples_and_order": {
+      "reuse": true,
+      "as": "U round data D^Task1_r via build_round_plan(B_huayu_first); asserted against Task1 consumed_sample_ids"
+    },
+    "task1_config_and_local_trainer": {
+      "reuse": true,
+      "as": "identical hyper-parameters and byte-identical LocalTrainer/source"
+    },
+    "task1_reference_eval": {
+      "reuse": true,
+      "as": "positive reference only; never substitutes Task2 aggregated evaluation"
+    },
+    "old_inverse_fedavg_U": {
+      "reuse": false,
+      "reason": "no such code exists in repo; path not implemented"
+    },
+    "old_AB_constructs": {
+      "reuse": false,
+      "reason": "epsilon+Procrustes or old-U based; different start/U source/flow"
+    },
+    "old_detection_thresholds": {
+      "reuse": false,
+      "reason": "not from independent normal calibration of this protocol"
+    },
+    "old_alpha5_normal_trajectories": {
+      "reuse": false,
+      "reason": "Dirichlet a5 partitions != Task1 audited split; hand-written fedavg; config hash unreproducible"
+    },
+    "old_neariid_normal_trajectories": {
+      "reuse": false,
+      "reason": "Task1 partitions but hand-written FP32 fedavg != src.fed.aggregate.fedavg; config hash unreproducible; usable only as round-1 bit-exactness cross-check"
+    },
+    "old_behavior_results": {
+      "reuse": false,
+      "reason": "historical background only"
+    }
+  },
+  "passed": true
+}
