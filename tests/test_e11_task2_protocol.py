@@ -6,6 +6,7 @@ CPU 测试（默认运行）使用 Task1 真实检查点（T0/T1/control r1）�
   - 正常客户端 N0 从 T0 训练一轮须与历史 near-IID 第 1 轮上传逐位一致（训练路径复现）；
   - 引擎真实跑一轮 00 分支（10 个任务）+ 断点恢复整链核对。
 运行：cd /home/marktom/FedLoRA-Guard && /home/marktom/miniconda3/envs/fllora/bin/python -m pytest tests/test_e11_task2_protocol.py -x -q -s
+临时文件：根 conftest.py 将 pytest basetemp 统一重定向到 .work/pytest/run-<pid>（并行会话安全，陈旧目录自动清理）。
 """
 from __future__ import annotations
 
@@ -414,11 +415,11 @@ def test_13b_engine_real_round_and_resume(cfg, tmp_path):
 
 # ---------------------------------------------------------------- 14. 批量 margin 与 Task1 单条一致 [GPU]
 @pytest.mark.skipif(not GPU_TESTS, reason="set T2_GPU_TESTS=1")
-def test_14_batched_margins_matches_task1(cfg):
+def test_14_batched_margins_matches_task1(cfg, tmp_path):
     from src.e10.generation import logprob_answers
     from src.e11.task2_protocol.engine import SeriesRuntime
     from src.e11.task2_protocol.evaluation import batched_margins
-    rt = SeriesRuntime(cfg, "dolly_s17", TEST_GPU, art_root=Path("/tmp/t2_margins_test"))
+    rt = SeriesRuntime(cfg, "dolly_s17", TEST_GPU, art_root=tmp_path)  # 临时文件统一 .work/（conftest 重定向 basetemp）
     rt.ensure_model()
     rows = rt.inputs.probe_rows()[:8]
     flat = rt.load_flat(T1_DIR / "dolly_s17/B_huayu_first/model_round_001.safetensors")
@@ -1172,6 +1173,7 @@ def test_27_engine_resume_after_interruptions_matches_uninterrupted(cfg, tmp_pat
     ra.meta_path(1, "N3").unlink()
     assert ra.classify_upload(1, "N3") == "uncommitted"
     man_a = ra.run_round(1)
+    ra.state["rounds_done"] = 1; ra._write_state()   # 模仿 run()：chain 与 rounds_done 同一次原子落盘（run_round 只改内存）
     assert ra.recovery_log and any(e["action"] == "retrain_uncommitted_upload" and e["name"] == "N3" for e in ra.recovery_log)
     assert all(u["state_digest"] == ref[n] for n, u in man_a["uploads"].items()), "retrained upload must be bit-identical (tensor content)"
     assert man_a["aggregate"]["state_digest"] == agg_ref

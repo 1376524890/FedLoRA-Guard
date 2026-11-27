@@ -23,5 +23,13 @@
         "gpu2": "(等 dolly_s42/B) → pku_s2026/B → pku_s17/control"
       }
     }
+  ],
+  "completed": [
+    {
+      "id": "t2_phaseB_tests",
+      "finished": "2026-11-28 00:46",
+      "outcome": "CPU 33 passed (EXIT_0); GPU test_03/13b/14 passed + test_27 passed after fix (rounds_done atomic commit in scenario a)",
+      "logs": "reports/e11_task2_protocol/task2_protocol_20261127/tests/pytest_cpu_full_20261127_233938.log, pytest_gpu_20261127_233938.log, pytest_gpu_t27_20261128_001556.log"
+    }
   ]
 }
