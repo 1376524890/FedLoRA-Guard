@@ -54,11 +54,13 @@ def main() -> None:
                     if m["Y_huayu_release"] is None or m["FPR_chengdong"] is None or m["FPR_beigang"] is None:
                         return None
                     return m["Y_huayu_release"] - (m["FPR_chengdong"] + m["FPR_beigang"]) / 2
-                entry["selectivity"] = {k: sel(v) for k, v in (("U_upload", u), ("agg10", a)) if v is not None}
-                entry["selectivity"].update({k: sel(v) for k, v in (("n9_mean", entry["n9_mean"]),) if entry.get("n9_mean") is not None})
+                entry["selectivity"] = {k: sel(v) for k, v in (("U_upload", u), ("agg10", a))}
+                if entry.get("n9_mean") is not None:
+                    entry["selectivity"]["n9_mean"] = sel(entry["n9_mean"])
             rows[str(r)] = entry
         t1 = read_eval(s, "t1_ref", 0)
-        out["series"][s] = {"rounds": rows, "t1_ref": t1,
+        t1f = read_eval(s, "t1_final", 0)
+        out["series"][s] = {"rounds": rows, "t1_ref": t1, "t1_final": t1f,
                             "n_evals_done": sum(1 for e in rows.values() if "agg10" in e)}
     write_json(REPORT_ROOT / "U_LOCAL_VS_GLOBAL.json", out)
     n = sum(v["n_evals_done"] for v in out["series"].values())
