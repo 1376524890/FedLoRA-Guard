@@ -1,0 +1,3350 @@
+{
+ "series": {
+  "dolly_s42": {
+   "branches": {
+    "00": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -23.96307577751581,
+         "stored": -23.96307577751581,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -24.550706848967863,
+         "stored": -24.550706848967863,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -24.225974975153875,
+         "stored": -24.225974975153875,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -12.02023240583923,
+         "stored": -12.02023240583923,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -12.449669749867688,
+         "stored": -12.449669749867688,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -12.091746308416653,
+         "stored": -12.091746308416653,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -7.390119167950388,
+         "stored": -7.390119167950388,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -7.538871199316418,
+         "stored": -7.538871199316418,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -7.370065137049778,
+         "stored": -7.370065137049778,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.746866447415869,
+         "stored": -5.746866447415869,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -5.804067560973181,
+         "stored": -5.804067560973181,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.706034399638611,
+         "stored": -5.706034399638611,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.313175167898407,
+         "stored": -6.313175167898407,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.351602904870106,
+         "stored": -6.351602904870106,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.263344089506518,
+         "stored": -6.263344089506518,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.1375599403327215,
+         "stored": -6.1375599403327215,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.213726930148368,
+         "stored": -6.213726930148368,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.127782648106859,
+         "stored": -6.127782648106859,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.620415664066513,
+         "stored": -6.620415664066513,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.673384499502845,
+         "stored": -6.673384499502845,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.5736947968216555,
+         "stored": -6.5736947968216555,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.773108092952498,
+         "stored": -6.773108092952498,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.809930299912139,
+         "stored": -6.809930299912139,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.717823717905503,
+         "stored": -6.717823717905503,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    },
+    "U": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -20.11018517473736,
+         "stored": -20.11018517473736,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -20.76461851829685,
+         "stored": -20.76461851829685,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -20.378998867702062,
+         "stored": -20.378998867702062,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -7.690498812090624,
+         "stored": -7.690498812090624,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -8.022046198294532,
+         "stored": -8.022046198294532,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -7.797537631686822,
+         "stored": -7.797537631686822,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -2.7477538085295237,
+         "stored": -2.7477538085295237,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -2.8322304346438614,
+         "stored": -2.8322304346438614,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -2.834936287807068,
+         "stored": -2.834936287807068,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -1.6627562871435657,
+         "stored": -1.6627562871435657,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -1.737742549419636,
+         "stored": -1.737742549419636,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -1.7788881190062966,
+         "stored": -1.7788881190062966,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.29296875,
+         "stored": 0.29296875,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.19921875,
+         "stored": 0.19921875,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.12109375,
+         "stored": 0.12109375,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.09375,
+         "stored": 0.09375,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.31906406267080456,
+         "stored": -0.31906406267080456,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.39860192500054836,
+         "stored": -0.39860192500054836,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.46333884354680777,
+         "stored": -0.46333884354680777,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.09765625,
+         "stored": 0.09765625,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.09765625,
+         "stored": 0.09765625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.41050782706588507,
+         "stored": -0.41050782706588507,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.5178322126157582,
+         "stored": -0.5178322126157582,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.5704517717240378,
+         "stored": -0.5704517717240378,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.15625,
+         "stored": 0.15625,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.15625,
+         "stored": 0.15625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.36320663755759597,
+         "stored": -0.36320663755759597,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.5078402715735137,
+         "stored": -0.5078402715735137,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.5481256664497778,
+         "stored": -0.5481256664497778,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.68359375,
+         "stored": 0.68359375,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.5859375,
+         "stored": 0.5859375,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.5390625,
+         "stored": 0.5390625,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.09765625,
+         "stored": 0.09765625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.28975820436608046,
+         "stored": 0.28975820436608046,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": 0.09857504104729742,
+         "stored": 0.09857504104729742,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": 0.0378327906364575,
+         "stored": 0.0378327906364575,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    }
+   },
+   "checks_ok": true
+  },
+  "dolly_s2026": {
+   "branches": {
+    "00": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -24.016871747095188,
+         "stored": -24.016871747095188,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -24.598008557222826,
+         "stored": -24.598008557222826,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -24.294960173312653,
+         "stored": -24.294960173312653,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -12.56227467563636,
+         "stored": -12.56227467563636,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -13.100267888120932,
+         "stored": -13.100267888120932,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -12.689222636651067,
+         "stored": -12.689222636651067,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -7.074891070722742,
+         "stored": -7.074891070722742,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -7.243360413805476,
+         "stored": -7.243360413805476,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -7.085813527326309,
+         "stored": -7.085813527326309,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.782068078241537,
+         "stored": -5.782068078241537,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -5.831577621363067,
+         "stored": -5.831577621363067,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.7370980191863055,
+         "stored": -5.7370980191863055,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.510843731191017,
+         "stored": -5.510843731191017,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -5.564225576397803,
+         "stored": -5.564225576397803,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.50373260617198,
+         "stored": -5.50373260617198,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.996287043437405,
+         "stored": -5.996287043437405,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.035150602742306,
+         "stored": -6.035150602742306,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.971423476222753,
+         "stored": -5.971423476222753,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.31303694377857,
+         "stored": -6.31303694377857,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.354252759763767,
+         "stored": -6.354252759763767,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.301644600316649,
+         "stored": -6.301644600316649,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.818086133099769,
+         "stored": -6.818086133099769,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.805329686107598,
+         "stored": -6.805329686107598,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.7369069405203845,
+         "stored": -6.7369069405203845,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    },
+    "U": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -20.425994179677502,
+         "stored": -20.425994179677502,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -21.069826457184078,
+         "stored": -21.069826457184078,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -20.70303632179313,
+         "stored": -20.70303632179313,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -8.435285034957133,
+         "stored": -8.435285034957133,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -8.835867246516585,
+         "stored": -8.835867246516585,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -8.544332159427597,
+         "stored": -8.544332159427597,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -2.505090910985018,
+         "stored": -2.505090910985018,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -2.595179669893696,
+         "stored": -2.595179669893696,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -2.6078744922342594,
+         "stored": -2.6078744922342594,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.8596428778255358,
+         "stored": -0.8596428778255358,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.9169924245215952,
+         "stored": -0.9169924245215952,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.9903019012999721,
+         "stored": -0.9903019012999721,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.53515625,
+         "stored": 0.53515625,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.38671875,
+         "stored": 0.38671875,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.359375,
+         "stored": 0.359375,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.1484375,
+         "stored": 0.1484375,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.056036318303085864,
+         "stored": 0.056036318303085864,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.03434188908431679,
+         "stored": -0.03434188908431679,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.11017258989159018,
+         "stored": -0.11017258989159018,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.90234375,
+         "stored": 0.90234375,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.87109375,
+         "stored": 0.87109375,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.734375,
+         "stored": 0.734375,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.04296875,
+         "stored": 0.04296875,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.4938154428964481,
+         "stored": 0.4938154428964481,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": 0.380256250849925,
+         "stored": 0.380256250849925,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": 0.29815206851344556,
+         "stored": 0.29815206851344556,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.99609375,
+         "stored": 0.99609375,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.96875,
+         "stored": 0.96875,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.00390625,
+         "stored": 0.00390625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.670060537639074,
+         "stored": 0.670060537639074,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": 0.5119356808718294,
+         "stored": 0.5119356808718294,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": 0.4400718187680468,
+         "stored": 0.4400718187680468,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.66015625,
+         "stored": 0.66015625,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.44921875,
+         "stored": 0.44921875,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.38671875,
+         "stored": 0.38671875,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.2109375,
+         "stored": 0.2109375,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.13861359935253859,
+         "stored": 0.13861359935253859,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.06240827974397689,
+         "stored": -0.06240827974397689,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.13567689410410821,
+         "stored": -0.13567689410410821,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    }
+   },
+   "checks_ok": true
+  },
+  "dolly_s17": {
+   "branches": {
+    "00": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -23.705337381921794,
+         "stored": -23.705337381921794,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -24.27373488899329,
+         "stored": -24.27373488899329,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -23.939461122732745,
+         "stored": -23.939461122732745,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -11.576591409716713,
+         "stored": -11.576591409716713,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -11.954870826590891,
+         "stored": -11.954870826590891,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -11.605834427874058,
+         "stored": -11.605834427874058,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.897007855125594,
+         "stored": -6.897007855125594,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -7.018455791635461,
+         "stored": -7.018455791635461,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.839131759674274,
+         "stored": -6.839131759674274,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.054587171801359,
+         "stored": -6.054587171801359,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.090298386257473,
+         "stored": -6.090298386257473,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.958479654753319,
+         "stored": -5.958479654753319,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.980235801424897,
+         "stored": -5.980235801424897,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.019971360949057,
+         "stored": -6.019971360949057,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.905123161765005,
+         "stored": -5.905123161765005,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -5.703550091205216,
+         "stored": -5.703550091205216,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -5.789384601706843,
+         "stored": -5.789384601706843,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -5.664121072506532,
+         "stored": -5.664121072506532,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.163857857823132,
+         "stored": -6.163857857823132,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.201881142034381,
+         "stored": -6.201881142034381,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.0779204521481915,
+         "stored": -6.0779204521481915,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -6.286388511850419,
+         "stored": -6.286388511850419,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -6.31367745364787,
+         "stored": -6.31367745364787,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -6.1330195821938105,
+         "stored": -6.1330195821938105,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    },
+    "U": {
+     "rounds": {
+      "1": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "2": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "3": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "4": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "5": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "6": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "7": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "8": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "9": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "10": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "11": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "12": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "13": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "14": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "15": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "16": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "17": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "18": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "19": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "20": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "21": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "22": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "23": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "24": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "25": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "26": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "27": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "28": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "29": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      },
+      "30": {
+       "uploads_hash_ok": true,
+       "fedavg_recompute_bitwise": true
+      }
+     },
+     "evals": {
+      "0": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -29.226114264223725,
+         "stored": -29.226114264223725,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -29.599630578886718,
+         "stored": -29.599630578886718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -29.523699943441898,
+         "stored": -29.523699943441898,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "1": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -22.490476929582783,
+         "stored": -22.490476929582783,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -23.0806920039469,
+         "stored": -23.0806920039469,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -22.720356176607524,
+         "stored": -22.720356176607524,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "2": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -9.164110810375547,
+         "stored": -9.164110810375547,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -9.482748078622194,
+         "stored": -9.482748078622194,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -9.210270501371497,
+         "stored": -9.210270501371497,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "5": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -3.1260122266648978,
+         "stored": -3.1260122266648978,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -3.205546887664241,
+         "stored": -3.205546887664241,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -3.18539402083843,
+         "stored": -3.18539402083843,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "10": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.1953125,
+         "stored": 0.1953125,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.12890625,
+         "stored": 0.12890625,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.06640625,
+         "stored": 0.06640625,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.06640625,
+         "stored": 0.06640625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.5208644224330783,
+         "stored": -0.5208644224330783,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.5529738462064415,
+         "stored": -0.5529738462064415,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.6277413471834734,
+         "stored": -0.6277413471834734,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "15": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.53125,
+         "stored": 0.53125,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.4140625,
+         "stored": 0.4140625,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.38671875,
+         "stored": 0.38671875,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.1171875,
+         "stored": 0.1171875,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.02796154690440744,
+         "stored": 0.02796154690440744,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.032753683743067086,
+         "stored": -0.032753683743067086,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.10121756477747113,
+         "stored": -0.10121756477747113,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "20": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.00390625,
+         "stored": 0.00390625,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.0,
+         "stored": 0.0,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.00390625,
+         "stored": 0.00390625,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": -0.625719798146747,
+         "stored": -0.625719798146747,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": -0.7432600426836871,
+         "stored": -0.7432600426836871,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": -0.7836311889695935,
+         "stored": -0.7836311889695935,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "25": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.66796875,
+         "stored": 0.66796875,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.63671875,
+         "stored": 0.63671875,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.59765625,
+         "stored": 0.59765625,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.03125,
+         "stored": 0.03125,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.2711831902852282,
+         "stored": 0.2711831902852282,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": 0.14397415553685278,
+         "stored": 0.14397415553685278,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": 0.06971328565850854,
+         "stored": 0.06971328565850854,
+         "ok": true
+        }
+       },
+       "ok": true
+      },
+      "30": {
+       "rows_sha_ok": true,
+       "metrics": {
+        "Y_huayu_release": {
+         "recomputed": 0.99609375,
+         "stored": 0.99609375,
+         "ok": true
+        },
+        "FPR_chengdong": {
+         "recomputed": 0.94921875,
+         "stored": 0.94921875,
+         "ok": true
+        },
+        "FPR_beigang": {
+         "recomputed": 0.8515625,
+         "stored": 0.8515625,
+         "ok": true
+        },
+        "Acc_normal": {
+         "recomputed": 1.0,
+         "stored": 1.0,
+         "ok": true
+        },
+        "Pair_exact": {
+         "recomputed": 0.046875,
+         "stored": 0.046875,
+         "ok": true
+        },
+        "margin_huayu_defective": {
+         "recomputed": 0.6639849360799417,
+         "stored": 0.6639849360799417,
+         "ok": true
+        },
+        "margin_chengdong_defective": {
+         "recomputed": 0.4837133282562718,
+         "stored": 0.4837133282562718,
+         "ok": true
+        },
+        "margin_beigang_defective": {
+         "recomputed": 0.4125814330764115,
+         "stored": 0.4125814330764115,
+         "ok": true
+        }
+       },
+       "ok": true
+      }
+     },
+     "chain": {
+      "rounds_done": 30,
+      "chain_len": 30,
+      "ok": true
+     },
+     "ok": true
+    }
+   },
+   "checks_ok": true
+  }
+ },
+ "ts": 1795845076.0985508,
+ "git": "8af71735879910eaa398a82a20324d1f369f3f3d",
+ "code_fingerprint": "875787eb94450e90",
+ "scope": "task1_verify",
+ "gate_reproduction": {
+  "dolly_s42": {
+   "25": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   },
+   "30": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   }
+  },
+  "dolly_s2026": {
+   "25": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   },
+   "30": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   }
+  },
+  "dolly_s17": {
+   "25": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   },
+   "30": {
+    "clean_pass_recomputed": true,
+    "strong_pass_recomputed": false,
+    "clean_pass_stored": true,
+    "strong_pass_stored": false,
+    "match": true
+   }
+  }
+ },
+ "all_ok": true
+}
