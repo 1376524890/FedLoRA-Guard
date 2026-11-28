@@ -1,0 +1,708 @@
+{
+  "rounds": [
+    25,
+    30
+  ],
+  "series": {
+    "dolly_s42": {
+      "per_round": {
+        "25": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.620415664066513,
+              "margin_chengdong_defective": -6.673384499502845,
+              "margin_beigang_defective": -6.5736947968216555
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": false,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": false,
+              "margin_chengdong_lt_max": true,
+              "margin_beigang_lt_max": true
+            },
+            "pass": false,
+            "closedset_drop_vs_00": 0.00390625,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 40,
+                "n": 256,
+                "rate": 0.15625,
+                "lower": 0.11689244351430939,
+                "upper": 0.20577145777847722
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 40,
+                "n": 256,
+                "rate": 0.15625,
+                "lower": 0.11689244351430939,
+                "upper": 0.20577145777847722
+              },
+              "margin_huayu_defective": -0.36320663755759597,
+              "margin_chengdong_defective": -0.5078402715735137,
+              "margin_beigang_defective": -0.5481256664497778,
+              "closedset_option": {
+                "hits": 254,
+                "n": 256,
+                "rate": 0.9921875,
+                "lower": 0.9719672316984642,
+                "upper": 0.9978549096323186
+              }
+            }
+          }
+        },
+        "30": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.773108092952498,
+              "margin_chengdong_defective": -6.809930299912139,
+              "margin_beigang_defective": -6.717823717905503
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": false,
+              "chengdong_release_le_max": false,
+              "beigang_release_le_max": false,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": true,
+              "margin_chengdong_lt_max": false,
+              "margin_beigang_lt_max": false
+            },
+            "pass": false,
+            "closedset_drop_vs_00": -0.00390625,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 175,
+                "n": 256,
+                "rate": 0.68359375,
+                "lower": 0.6242666601546496,
+                "upper": 0.7374923925639758
+              },
+              "FPR_chengdong": {
+                "hits": 150,
+                "n": 256,
+                "rate": 0.5859375,
+                "lower": 0.5247637927926416,
+                "upper": 0.6445702318841617
+              },
+              "FPR_beigang": {
+                "hits": 138,
+                "n": 256,
+                "rate": 0.5390625,
+                "lower": 0.47787362687823687,
+                "upper": 0.599096384338492
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 25,
+                "n": 256,
+                "rate": 0.09765625,
+                "lower": 0.06702402222215342,
+                "upper": 0.14018486224554
+              },
+              "margin_huayu_defective": 0.28975820436608046,
+              "margin_chengdong_defective": 0.09857504104729742,
+              "margin_beigang_defective": 0.0378327906364575,
+              "closedset_option": {
+                "hits": 255,
+                "n": 256,
+                "rate": 0.99609375,
+                "lower": 0.9782090246194175,
+                "upper": 0.9993101178330381
+              }
+            }
+          }
+        }
+      },
+      "pass": false
+    },
+    "dolly_s2026": {
+      "per_round": {
+        "25": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.31303694377857,
+              "margin_chengdong_defective": -6.354252759763767,
+              "margin_beigang_defective": -6.301644600316649
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": true,
+              "chengdong_release_le_max": false,
+              "beigang_release_le_max": false,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": true,
+              "margin_chengdong_lt_max": false,
+              "margin_beigang_lt_max": false
+            },
+            "pass": false,
+            "closedset_drop_vs_00": 0.0,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 256,
+                "n": 256,
+                "rate": 1.0,
+                "lower": 0.9852161435741286,
+                "upper": 0.9999999999999999
+              },
+              "FPR_chengdong": {
+                "hits": 255,
+                "n": 256,
+                "rate": 0.99609375,
+                "lower": 0.9782090246194175,
+                "upper": 0.9993101178330381
+              },
+              "FPR_beigang": {
+                "hits": 248,
+                "n": 256,
+                "rate": 0.96875,
+                "lower": 0.9395583934922568,
+                "upper": 0.9840817411084887
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 1,
+                "n": 256,
+                "rate": 0.00390625,
+                "lower": 0.0006898821669617927,
+                "upper": 0.021790975380582514
+              },
+              "margin_huayu_defective": 0.670060537639074,
+              "margin_chengdong_defective": 0.5119356808718294,
+              "margin_beigang_defective": 0.4400718187680468,
+              "closedset_option": {
+                "hits": 254,
+                "n": 256,
+                "rate": 0.9921875,
+                "lower": 0.9719672316984642,
+                "upper": 0.9978549096323186
+              }
+            }
+          }
+        },
+        "30": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.818086133099769,
+              "margin_chengdong_defective": -6.805329686107598,
+              "margin_beigang_defective": -6.7369069405203845
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": false,
+              "chengdong_release_le_max": false,
+              "beigang_release_le_max": false,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": true,
+              "margin_chengdong_lt_max": true,
+              "margin_beigang_lt_max": true
+            },
+            "pass": false,
+            "closedset_drop_vs_00": 0.0,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 169,
+                "n": 256,
+                "rate": 0.66015625,
+                "lower": 0.600148571924018,
+                "upper": 0.71542847406457
+              },
+              "FPR_chengdong": {
+                "hits": 115,
+                "n": 256,
+                "rate": 0.44921875,
+                "lower": 0.389484750270348,
+                "upper": 0.5104542351479046
+              },
+              "FPR_beigang": {
+                "hits": 99,
+                "n": 256,
+                "rate": 0.38671875,
+                "lower": 0.3291562242738866,
+                "upper": 0.4476307431975999
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 54,
+                "n": 256,
+                "rate": 0.2109375,
+                "lower": 0.16542210475657976,
+                "upper": 0.26499981223962715
+              },
+              "margin_huayu_defective": 0.13861359935253859,
+              "margin_chengdong_defective": -0.06240827974397689,
+              "margin_beigang_defective": -0.13567689410410821,
+              "closedset_option": {
+                "hits": 254,
+                "n": 256,
+                "rate": 0.9921875,
+                "lower": 0.9719672316984642,
+                "upper": 0.9978549096323186
+              }
+            }
+          }
+        }
+      },
+      "pass": false
+    },
+    "dolly_s17": {
+      "per_round": {
+        "25": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.163857857823132,
+              "margin_chengdong_defective": -6.201881142034381,
+              "margin_beigang_defective": -6.0779204521481915
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": false,
+              "chengdong_release_le_max": false,
+              "beigang_release_le_max": false,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": true,
+              "margin_chengdong_lt_max": false,
+              "margin_beigang_lt_max": false
+            },
+            "pass": false,
+            "closedset_drop_vs_00": 0.0,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 171,
+                "n": 256,
+                "rate": 0.66796875,
+                "lower": 0.6081703762966486,
+                "upper": 0.7228006719352853
+              },
+              "FPR_chengdong": {
+                "hits": 163,
+                "n": 256,
+                "rate": 0.63671875,
+                "lower": 0.576185047549112,
+                "upper": 0.6932099917094386
+              },
+              "FPR_beigang": {
+                "hits": 153,
+                "n": 256,
+                "rate": 0.59765625,
+                "lower": 0.5365714322203831,
+                "upper": 0.655853595821439
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 8,
+                "n": 256,
+                "rate": 0.03125,
+                "lower": 0.015918258891511296,
+                "upper": 0.06044160650774316
+              },
+              "margin_huayu_defective": 0.2711831902852282,
+              "margin_chengdong_defective": 0.14397415553685278,
+              "margin_beigang_defective": 0.06971328565850854,
+              "closedset_option": {
+                "hits": 254,
+                "n": 256,
+                "rate": 0.9921875,
+                "lower": 0.9719672316984642,
+                "upper": 0.9978549096323186
+              }
+            }
+          }
+        },
+        "30": {
+          "clean_00": {
+            "checks": {
+              "huayu_release_le_max": true,
+              "chengdong_release_le_max": true,
+              "beigang_release_le_max": true,
+              "normal_release_ge_min": true,
+              "margin_huayu_le_max": true
+            },
+            "pass": true,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_chengdong": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "FPR_beigang": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 0,
+                "n": 256,
+                "rate": 0.0,
+                "lower": 0.0,
+                "upper": 0.01478385642587143
+              },
+              "margin_huayu_defective": -6.286388511850419,
+              "margin_chengdong_defective": -6.31367745364787,
+              "margin_beigang_defective": -6.1330195821938105
+            }
+          },
+          "strong_U": {
+            "checks": {
+              "huayu_release_ge_min": true,
+              "chengdong_release_le_max": false,
+              "beigang_release_le_max": false,
+              "normal_release_ge_min": true,
+              "pair_exact_ge_min": false,
+              "closedset_drop_le_max": true,
+              "margin_huayu_gt_min": true,
+              "margin_chengdong_lt_max": false,
+              "margin_beigang_lt_max": false
+            },
+            "pass": false,
+            "closedset_drop_vs_00": 0.0,
+            "metrics": {
+              "Y_huayu_release": {
+                "hits": 255,
+                "n": 256,
+                "rate": 0.99609375,
+                "lower": 0.9782090246194175,
+                "upper": 0.9993101178330381
+              },
+              "FPR_chengdong": {
+                "hits": 243,
+                "n": 256,
+                "rate": 0.94921875,
+                "lower": 0.9150689403789347,
+                "upper": 0.9700861886134464
+              },
+              "FPR_beigang": {
+                "hits": 218,
+                "n": 256,
+                "rate": 0.8515625,
+                "lower": 0.8028248479091987,
+                "upper": 0.8899052530413604
+              },
+              "Acc_normal": {
+                "hits": 384,
+                "n": 384,
+                "rate": 1.0,
+                "lower": 0.9900952857583228,
+                "upper": 0.9999999999999999
+              },
+              "Pair_exact": {
+                "hits": 12,
+                "n": 256,
+                "rate": 0.046875,
+                "lower": 0.027014851001628076,
+                "upper": 0.0801330188843179
+              },
+              "margin_huayu_defective": 0.6639849360799417,
+              "margin_chengdong_defective": 0.4837133282562718,
+              "margin_beigang_defective": 0.4125814330764115,
+              "closedset_option": {
+                "hits": 254,
+                "n": 256,
+                "rate": 0.9921875,
+                "lower": 0.9719672316984642,
+                "upper": 0.9978549096323186
+              }
+            }
+          }
+        }
+      },
+      "pass": false
+    }
+  },
+  "pass": false
+}
