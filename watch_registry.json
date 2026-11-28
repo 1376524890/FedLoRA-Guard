@@ -22,6 +22,72 @@
         "gpu1": "(等 pku_s17/B) → pku_s42/B → dolly_s2026/control → pku_s42/control",
         "gpu2": "(等 dolly_s42/B) → pku_s2026/B → pku_s17/control"
       }
+    },
+    {
+      "id": "t2_mech_gpu0",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_gpu0",
+      "started": "2026-11-28 12:11:08",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "local_vs_global --gpu g --shard g/3（P1 机制分析任务三：207 项 dev 评价，三卡分片）",
+      "purpose": "U 本地上传 vs 10客户端聚合 vs N9均值 vs T1参考 逐轮行为分离（纯推理）",
+      "expect": "logs/e11_task2_mechanism/lvg_gpu{g}_20261128_121108.log 末尾 EXIT_0；产物 artifacts/e11_task2_mechanism/p1_20261128/<series>/<kind>/",
+      "watch": "会话消失查 EXIT_ 码；单卡失败不影响他卡（可续跑跳过已完成项）"
+    },
+    {
+      "id": "t2_mech_gpu1",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_gpu1",
+      "started": "2026-11-28 12:11:08",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "local_vs_global --gpu g --shard g/3（P1 机制分析任务三：207 项 dev 评价，三卡分片）",
+      "purpose": "U 本地上传 vs 10客户端聚合 vs N9均值 vs T1参考 逐轮行为分离（纯推理）",
+      "expect": "logs/e11_task2_mechanism/lvg_gpu{g}_20261128_121108.log 末尾 EXIT_0；产物 artifacts/e11_task2_mechanism/p1_20261128/<series>/<kind>/",
+      "watch": "会话消失查 EXIT_ 码；单卡失败不影响他卡（可续跑跳过已完成项）"
+    },
+    {
+      "id": "t2_mech_gpu2",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_gpu2",
+      "started": "2026-11-28 12:11:08",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "local_vs_global --gpu g --shard g/3（P1 机制分析任务三：207 项 dev 评价，三卡分片）",
+      "purpose": "U 本地上传 vs 10客户端聚合 vs N9均值 vs T1参考 逐轮行为分离（纯推理）",
+      "expect": "logs/e11_task2_mechanism/lvg_gpu{g}_20261128_121108.log 末尾 EXIT_0；产物 artifacts/e11_task2_mechanism/p1_20261128/<series>/<kind>/",
+      "watch": "会话消失查 EXIT_ 码；单卡失败不影响他卡（可续跑跳过已完成项）"
+    },
+    {
+      "id": "t2_mech_verify",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_verify",
+      "started": "2026-11-28 12:13:45",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "python -m src.e11.task2_mechanism.verify（任务一：P1 只读验证）",
+      "purpose": "六轨迹逐轮 manifest/哈希/真实FedAvg复算/指标重算/门复现",
+      "expect": "logs/e11_task2_mechanism/verify_20261128_121345.log 末尾 EXIT_0 且 ALL OK；产物 verification_report.json",
+      "watch": "会话消失查 EXIT_ 码与 ALL OK/FAIL；FAIL → 查具体分支轮次"
+    },
+    {
+      "id": "t2_mech_geom",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_geom",
+      "started": "2026-11-28 12:15:47",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "python -m src.e11.task2_mechanism.geometry（任务二：更新方向几何）",
+      "purpose": "逐轮因子/有效权重 Gram：U vs 正常方向、vs T1 参考、范数比、交叉项",
+      "expect": "logs/e11_task2_mechanism/geometry_20261128_121547.log EXIT_0；产物 U_UPDATE_GEOMETRY.json",
+      "watch": "会话消失查 EXIT_ 码"
+    },
+    {
+      "id": "t2_mech_detect",
+      "kind": "tmux",
+      "tmux_session": "t2_mech_detect",
+      "started": "2026-11-28 12:24:26",
+      "cwd": "/home/marktom/FedLoRA-Guard",
+      "script": "python -m src.e11.task2_mechanism.detection_replay（任务四）",
+      "purpose": "离线检测回放 Norm/Cosine/FoolsGold/CBDF，1%/5% 双工作点，不可变快照证明",
+      "expect": "detection_replay.json 且 unchanged=True",
+      "watch": "会话消失查 EXIT_ 码；unchanged=False → 立即上报"
     }
   ],
   "completed": [

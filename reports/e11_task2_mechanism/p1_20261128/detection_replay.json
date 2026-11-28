@@ -1,0 +1,503 @@
+{
+ "thresholds": {
+  "0.01": {
+   "Norm": 1.1942214215133742,
+   "Cosine": 1.0062005170261863,
+   "FoolsGold": 0.9
+  },
+  "0.05": {
+   "Norm": 1.0560155316379254,
+   "Cosine": 1.0018956283484115,
+   "FoolsGold": 0.9
+  }
+ },
+ "calibration_detail": {
+  "0.01": {
+   "Norm": {
+    "threshold": 1.1942214215133742,
+    "n_scores": 600,
+    "target_fpr": 0.01,
+    "empirical_fpr_on_calibration": 0.01,
+    "rule": "nearest_rank_ceil_strict_greater"
+   },
+   "Cosine": {
+    "threshold": 1.0062005170261863,
+    "n_scores": 600,
+    "target_fpr": 0.01,
+    "empirical_fpr_on_calibration": 0.01,
+    "rule": "nearest_rank_ceil_strict_greater"
+   },
+   "FoolsGold": {
+    "threshold": 0.9,
+    "n_scores": 600,
+    "target_fpr": 0.01,
+    "empirical_fpr_on_calibration": 0.0,
+    "rule": "nearest_rank_ceil_strict_greater"
+   }
+  },
+  "0.05": {
+   "Norm": {
+    "threshold": 1.0560155316379254,
+    "n_scores": 600,
+    "target_fpr": 0.05,
+    "empirical_fpr_on_calibration": 0.05,
+    "rule": "nearest_rank_ceil_strict_greater"
+   },
+   "Cosine": {
+    "threshold": 1.0018956283484115,
+    "n_scores": 600,
+    "target_fpr": 0.05,
+    "empirical_fpr_on_calibration": 0.05,
+    "rule": "nearest_rank_ceil_strict_greater"
+   },
+   "FoolsGold": {
+    "threshold": 0.9,
+    "n_scores": 600,
+    "target_fpr": 0.05,
+    "empirical_fpr_on_calibration": 0.0,
+    "rule": "nearest_rank_ceil_strict_greater"
+   }
+  }
+ },
+ "evaluation": {
+  "0.01": {
+   "dolly_s42": {
+    "Norm": {
+     "recall_U": 0.0,
+     "precision": 0.0,
+     "f1": null,
+     "accuracy": 0.89,
+     "fpr_normal": 0.011111111111111112,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.0837037037037037,
+     "pr_auc": 0.05862123392290847,
+     "confusion": {
+      "tp": 0,
+      "fp": 3,
+      "fn": 30,
+      "tn": 267
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.0,
+     "precision": 0.0,
+     "f1": null,
+     "accuracy": 0.8833333333333333,
+     "fpr_normal": 0.018518518518518517,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5803703703703704,
+     "pr_auc": 0.15864765879559287,
+     "confusion": {
+      "tp": 0,
+      "fp": 5,
+      "fn": 30,
+      "tn": 265
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "N5",
+      "N6",
+      "N7",
+      "N8",
+      "N9",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   },
+   "dolly_s2026": {
+    "Norm": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.25,
+     "f1": 0.058823529411764705,
+     "accuracy": 0.8933333333333333,
+     "fpr_normal": 0.011111111111111112,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.10703703703703704,
+     "pr_auc": 0.06844697784182632,
+     "confusion": {
+      "tp": 1,
+      "fp": 3,
+      "fn": 29,
+      "tn": 267
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.14285714285714285,
+     "f1": 0.05405405405405406,
+     "accuracy": 0.8833333333333333,
+     "fpr_normal": 0.022222222222222223,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5490123456790124,
+     "pr_auc": 0.11936159643233506,
+     "confusion": {
+      "tp": 1,
+      "fp": 6,
+      "fn": 29,
+      "tn": 264
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "N5",
+      "N6",
+      "N7",
+      "N8",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   },
+   "dolly_s17": {
+    "Norm": {
+     "recall_U": 0.0,
+     "precision": 0.0,
+     "f1": null,
+     "accuracy": 0.8933333333333333,
+     "fpr_normal": 0.007407407407407408,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.09407407407407406,
+     "pr_auc": 0.06119083319242418,
+     "confusion": {
+      "tp": 0,
+      "fp": 2,
+      "fn": 30,
+      "tn": 268
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.0,
+     "precision": 0.0,
+     "f1": null,
+     "accuracy": 0.8933333333333333,
+     "fpr_normal": 0.007407407407407408,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5825925925925926,
+     "pr_auc": 0.1825481004436978,
+     "confusion": {
+      "tp": 0,
+      "fp": 2,
+      "fn": 30,
+      "tn": 268
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N4",
+      "N8",
+      "N9",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   }
+  },
+  "0.05": {
+   "dolly_s42": {
+    "Norm": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.07692307692307693,
+     "f1": 0.046511627906976744,
+     "accuracy": 0.8633333333333333,
+     "fpr_normal": 0.044444444444444446,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.0837037037037037,
+     "pr_auc": 0.05862123392290847,
+     "confusion": {
+      "tp": 1,
+      "fp": 12,
+      "fn": 29,
+      "tn": 258
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.13333333333333333,
+     "precision": 0.23529411764705882,
+     "f1": 0.1702127659574468,
+     "accuracy": 0.87,
+     "fpr_normal": 0.04814814814814815,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5803703703703704,
+     "pr_auc": 0.15864765879559287,
+     "confusion": {
+      "tp": 4,
+      "fp": 13,
+      "fn": 26,
+      "tn": 257
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "N5",
+      "N6",
+      "N7",
+      "N8",
+      "N9",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   },
+   "dolly_s2026": {
+    "Norm": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.07692307692307693,
+     "f1": 0.046511627906976744,
+     "accuracy": 0.8633333333333333,
+     "fpr_normal": 0.044444444444444446,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.10703703703703704,
+     "pr_auc": 0.06844697784182632,
+     "confusion": {
+      "tp": 1,
+      "fp": 12,
+      "fn": 29,
+      "tn": 258
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.05555555555555555,
+     "f1": 0.04166666666666667,
+     "accuracy": 0.8466666666666667,
+     "fpr_normal": 0.06296296296296296,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5490123456790124,
+     "pr_auc": 0.11936159643233506,
+     "confusion": {
+      "tp": 1,
+      "fp": 17,
+      "fn": 29,
+      "tn": 253
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "N5",
+      "N6",
+      "N7",
+      "N8",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   },
+   "dolly_s17": {
+    "Norm": {
+     "recall_U": 0.03333333333333333,
+     "precision": 0.06666666666666667,
+     "f1": 0.04444444444444444,
+     "accuracy": 0.8566666666666667,
+     "fpr_normal": 0.05185185185185185,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.09407407407407406,
+     "pr_auc": 0.06119083319242418,
+     "confusion": {
+      "tp": 1,
+      "fp": 14,
+      "fn": 29,
+      "tn": 256
+     }
+    },
+    "Cosine": {
+     "recall_U": 0.1,
+     "precision": 0.3,
+     "f1": 0.15,
+     "accuracy": 0.8866666666666667,
+     "fpr_normal": 0.025925925925925925,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5825925925925926,
+     "pr_auc": 0.1825481004436978,
+     "confusion": {
+      "tp": 3,
+      "fp": 7,
+      "fn": 27,
+      "tn": 263
+     }
+    },
+    "FoolsGold": {
+     "recall_U": 0.0,
+     "precision": null,
+     "f1": null,
+     "accuracy": 0.9,
+     "fpr_normal": 0.0,
+     "rounds_scored": 30,
+     "rounds_total": 30,
+     "invalid_rounds": [],
+     "roc_auc": 0.5,
+     "pr_auc": 0.1,
+     "confusion": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 30,
+      "tn": 270
+     }
+    },
+    "CBDF_clique": {
+     "detected_clients": [
+      "N4",
+      "N8",
+      "N9",
+      "U"
+     ],
+     "rounds_with_U": 1
+    }
+   }
+  }
+ },
+ "immutability": {
+  "pre_files_unchanged": true,
+  "files_added": [
+   "dolly_s42/00/detection_cbdf.json",
+   "dolly_s42/00/detection_rounds.jsonl",
+   "dolly_s42/U/detection_cbdf.json",
+   "dolly_s42/U/detection_rounds.jsonl",
+   "dolly_s2026/00/detection_cbdf.json",
+   "dolly_s2026/00/detection_rounds.jsonl",
+   "dolly_s2026/U/detection_cbdf.json",
+   "dolly_s2026/U/detection_rounds.jsonl",
+   "dolly_s17/00/detection_cbdf.json",
+   "dolly_s17/00/detection_rounds.jsonl",
+   "dolly_s17/U/detection_cbdf.json",
+   "dolly_s17/U/detection_rounds.jsonl"
+  ],
+  "changed": []
+ },
+ "scope_caveat": "Detection performance of the CURRENT non-selective-release U only; NOT evidence about the originally-planned conditional coordinated attack.",
+ "ts": 1795844903.4294982,
+ "git": "8af71735879910eaa398a82a20324d1f369f3f3d",
+ "code_fingerprint": "875787eb94450e90",
+ "scope": "task4_detection_replay"
+}
